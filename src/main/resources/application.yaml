@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ritual_bitrix_bot_db
+    username: spring_user
+    password: spring_user
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+application:
+  telegram:
+    token: 8030327375:AAGLyLpQSn-Yhx7i7C2s8S7Cl-TQTttz2go
