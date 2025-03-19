@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import ru.snptech.ritualbitrixbot.entity.Deal;
+import ru.snptech.ritualbitrixbot.entity.DealActionStatus;
 import ru.snptech.ritualbitrixbot.entity.DealFlow;
 import ru.snptech.ritualbitrixbot.entity.DealStatus;
 import ru.snptech.ritualbitrixbot.entity.Region;
@@ -19,6 +20,7 @@ import ru.snptech.ritualbitrixbot.repository.TelegramUserRepository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,8 @@ public class DealService {
         deal.setContactPhone(data.clientPhone());
         deal.setTelegramUser(targetUser);
         deal.setFlow(DealFlow.SHOP);
+        deal.setDealActionStatus(DealActionStatus.WAITING_APPROVAL);
+        deal.setComment(Optional.ofNullable(deal.getComment()).map(value -> value.endsWith("_") ? value.substring(0, value.length() - 1) : value).orElse(""));
         dealRepository.save(deal);
         sendNewDealEvent(deal, targetUser);
     }
@@ -83,6 +87,8 @@ public class DealService {
         deal.setDeceasedSurname(data.deceasedSurname());
         deal.setTelegramUser(targetUser);
         deal.setFlow(DealFlow.FUNERAL);
+        deal.setDealActionStatus(DealActionStatus.WAITING_APPROVAL);
+        deal.setComment(Optional.ofNullable(deal.getComment()).map(value -> value.endsWith("_") ? value.substring(0, value.length() - 1) : value).orElse(""));
         dealRepository.save(deal);
         sendNewDealEvent(deal, targetUser);
     }
@@ -92,6 +98,7 @@ public class DealService {
         if (deal == null) return;
         deal.setContactName(contactName);
         deal.setContactPhone(contactPhone);
+        deal.setRequestedPhone(contactPhone);
         dealRepository.save(deal);
         applicationEventPublisher.publishEvent(new PhoneReceivedEvent(this, dealId));
     }

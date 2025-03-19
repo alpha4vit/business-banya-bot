@@ -4,8 +4,9 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.springframework.context.annotation.Primary;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.snptech.ritualbitrixbot.telegram.client.ExceptionSafeTelegramClient;
 
 @Getter
 @Configuration
@@ -14,8 +15,9 @@ public class TelegramConfiguration {
     private String token;
 
     @Bean
+    @Primary
     public TelegramClient telegramClient() {
-        return new OkHttpTelegramClient(token);
+        return new ExceptionSafeTelegramClient(token);
     }
 
 }

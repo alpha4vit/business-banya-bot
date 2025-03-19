@@ -46,7 +46,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
                 userRegistrationScenario.invoke(requestContext);
                 return;
             }
-            if (!AUTHENTICATED_USER.getValue(requestContext).isActive()) {
+            if (!AUTHENTICATED_USER.getValue(requestContext).isActive() && AUTHENTICATED_USER.getValue(requestContext).isRegistered()) {
                 log.info("Запрос пользователя {} заблокирован!", CHAT_ID.getValue(requestContext));
                 return;
             }

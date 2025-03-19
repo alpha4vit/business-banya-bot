@@ -17,7 +17,7 @@ public class BitrixIntegrationServiceImpl implements BitrixIntegrationService {
     public void problem(String dealId, String problem) {
         final var PROBLEM_STATUS_ID = "C1:UC_ZTXAB8";
         updateStatus(dealId, PROBLEM_STATUS_ID);
-        final var AGENT_COMMENT_FIELD_ID = "UF_CRM_1716184185";
+        final var AGENT_COMMENT_FIELD_ID = "UF_CRM_1739256712996";
         updateCustomField(dealId, AGENT_COMMENT_FIELD_ID, problem);
     }
 
@@ -48,35 +48,39 @@ public class BitrixIntegrationServiceImpl implements BitrixIntegrationService {
     }
 
     @Override
-    public void successDealShop(String dealId, String amount) {
+    public void successDealShop(String dealId) {
         final var SHOP_SUCCESS_STATUS_ID = "C1:UC_Y23RVD";
-        updateCustomField(dealId, "OPPORTUNITY", amount);
-        updateCustomField(dealId, "CURRENCY_ID", "RUB");
         updateStatus(dealId, SHOP_SUCCESS_STATUS_ID);
     }
 
     @Override
-    public void successDealFuneral(String dealId, String amount) {
+    public void successDealFuneral(String dealId) {
         final var FUNERAL_SUCCESS_STATUS_ID = "C1:UC_ZJD009";
-        updateCustomField(dealId, "OPPORTUNITY", amount);
-        updateCustomField(dealId, "CURRENCY_ID", "RUB");
         updateStatus(dealId, FUNERAL_SUCCESS_STATUS_ID);
     }
 
     @Override
-    public void commissionShop(String dealId, String cashedAmount) {
+    public void updateDealAmount(String dealId, String amount) {
+        updateCustomField(dealId, "OPPORTUNITY", amount);
+        updateCustomField(dealId, "CURRENCY_ID", "RUB");
+    }
+
+    @Override
+    public void commissionShop(String dealId) {
         final var SHOP_COMMISSION_STATUS_ID = "C1:UC_FGWLQ4";
-        final var SHOP_COMMISSION_CASHED_AMOUNT_FIELD_ID = "UF_CRM_1735195362";
-        updateCustomField(dealId, SHOP_COMMISSION_CASHED_AMOUNT_FIELD_ID, cashedAmount);
         updateStatus(dealId, SHOP_COMMISSION_STATUS_ID);
     }
 
     @Override
-    public void commissionFuneral(String dealId, String cashedAmount) {
+    public void commissionFuneral(String dealId) {
         final var FUNERAL_COMMISSION_STATUS_ID = "C1:UC_ZC3KN2";
+        updateStatus(dealId, FUNERAL_COMMISSION_STATUS_ID);
+    }
+
+    @Override
+    public void updateDealCommission(String dealId, String cashedAmount) {
         final var FUNERAL_COMMISSION_CASHED_AMOUNT_FIELD_ID = "UF_CRM_1735195362";
         updateCustomField(dealId, FUNERAL_COMMISSION_CASHED_AMOUNT_FIELD_ID, cashedAmount);
-        updateStatus(dealId, FUNERAL_COMMISSION_STATUS_ID);
     }
 
     private void updateStatus(String dealId, String status) {

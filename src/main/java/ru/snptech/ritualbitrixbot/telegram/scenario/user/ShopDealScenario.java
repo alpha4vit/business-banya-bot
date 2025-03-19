@@ -63,8 +63,4 @@ public class ShopDealScenario extends AbstractScenario {
                 .orElse(null);
     }
 
-    private static String extractDealId(String input) {
-        return input.split("-")[1];
-    }
-
 }

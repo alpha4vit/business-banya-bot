@@ -12,7 +12,9 @@ import ru.snptech.ritualbitrixbot.service.DealService;
 import ru.snptech.ritualbitrixbot.service.UserContextService;
 import ru.snptech.ritualbitrixbot.telegram.MessageConstants;
 import ru.snptech.ritualbitrixbot.telegram.scenario.AbstractScenario;
+import ru.snptech.ritualbitrixbot.telegram.service.TelegramDealSenderService;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.AUTHENTICATED_USER;
@@ -24,7 +26,7 @@ import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.USER_STATE;
 @Component
 @RequiredArgsConstructor
 public class UserProcessAmountCashedScenario extends AbstractScenario {
-    private final TelegramClient telegramClient;
+    private final TelegramDealSenderService telegramDealSenderService;
     private final BitrixIntegrationService bitrixIntegrationService;
     private final UserContextService userContextService;
     private final DealService dealService;
@@ -38,25 +40,30 @@ public class UserProcessAmountCashedScenario extends AbstractScenario {
                     AUTHENTICATED_USER.getValue(requestContext),
                     CURRENT_DEAL_ID
             ));
-            if (deal.getFlow() == DealFlow.SHOP) {
-                bitrixIntegrationService.commissionShop(
-                        userContextService.getUserContextParamValue(
-                                AUTHENTICATED_USER.getValue(requestContext),
-                                CURRENT_DEAL_ID
-                        ),
-                        tgUpdate.getMessage().getText()
-                );
-            } else if (deal.getFlow() == DealFlow.FUNERAL) {
-                bitrixIntegrationService.commissionFuneral(
-                        userContextService.getUserContextParamValue(
-                                AUTHENTICATED_USER.getValue(requestContext),
-                                CURRENT_DEAL_ID
-                        ),
-                        tgUpdate.getMessage().getText()
-                );
+            if (deal.getFlow() == DealFlow.FUNERAL) {
+                bitrixIntegrationService.commissionFuneral(deal.getId());
+            } else {
+                bitrixIntegrationService.commissionShop(deal.getId());
             }
+            bitrixIntegrationService.updateDealCommission(
+                    userContextService.getUserContextParamValue(
+                            AUTHENTICATED_USER.getValue(requestContext),
+                            CURRENT_DEAL_ID
+                    ),
+                    tgUpdate.getMessage().getText()
+            );
+            deal.setCommission(new BigDecimal(tgUpdate.getMessage().getText()));
+            dealRepository.save(deal);
             dealService.finishDeal(deal.getId(), true);
-            telegramClient.execute(sentToBitrix(CHAT_ID.getValue(requestContext)));
+            telegramDealSenderService.notifyPartnerAndAssistantsAboutAmountCashedEntered(
+                    AUTHENTICATED_USER.getValue(requestContext),
+                    deal.getId(),
+                    tgUpdate.getMessage().getText()
+            );
+            telegramDealSenderService.notifyPartnerAndAssistantsAboutDealFinished(
+                    AUTHENTICATED_USER.getValue(requestContext),
+                    deal
+            );
             userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
         }
     }

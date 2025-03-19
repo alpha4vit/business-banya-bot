@@ -41,4 +41,8 @@ public class TelegramUser {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "region_id")
     private Region region;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "partner_account_telegram_chat_id")
+    private TelegramUser partnerAccount;
+    private boolean registered = false;
 }

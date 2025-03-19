@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.AUTHENTICATED_USER;
+import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.SCENARIO;
+import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.SCENARIO_STEP;
 import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.TG_UPDATE;
 import static ru.snptech.ritualbitrixbot.types.ServiceConstantHolder.USER_STATE;
 
@@ -21,11 +23,33 @@ public class UserUpdateScenario extends AbstractScenario {
     private final UserProcessAmountCashedScenario userProcessAmountCashedScenario;
     private final UserProcessProblemScenario userProcessProblemScenario;
     private final UserContextService userContextService;
+    private final UserManageAssistantScenario userManageAssistantScenario;
+    private final AddPartnerScenario addPartnerScenario;
 
     public void invoke(Map<String, Object> requestContext) {
         if (TG_UPDATE.getValue(requestContext).hasCallbackQuery()) {
             userCallbackScenario.invoke(requestContext);
         } else if (TG_UPDATE.getValue(requestContext).hasMessage()) {
+            if (UserManageAssistantScenario.isNeedInvoke(requestContext)) {
+                userManageAssistantScenario.invoke(requestContext);
+                return;
+            }
+            var currentScenario = userContextService.getUserContextParamValue(
+                    AUTHENTICATED_USER.getValue(requestContext),
+                    SCENARIO
+            );
+            if (
+                    TG_UPDATE.getValue(requestContext).getMessage().hasText()
+                            && "/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                            && UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
+            ) {
+                userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
+            }
+            if (currentScenario != null) {
+                if ("AddPartnerScenario".equals(currentScenario)) {
+                    addPartnerScenario.invoke(requestContext);
+                }
+            }
             var currentState = Optional.ofNullable(
                     userContextService.getUserContextParamValue(
                             AUTHENTICATED_USER.getValue(requestContext),
@@ -36,12 +60,15 @@ public class UserUpdateScenario extends AbstractScenario {
                 case null -> userMainMenuScenario.invoke(requestContext);
                 case WAITING_AMOUNT -> {
                     userProcessAmountScenario.invoke(requestContext);
+                    userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
                 case WAITING_PROBLEM -> {
                     userProcessProblemScenario.invoke(requestContext);
+                    userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
                 case WAITING_AMOUNT_CASHED -> {
                     userProcessAmountCashedScenario.invoke(requestContext);
+                    userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
             }
         }

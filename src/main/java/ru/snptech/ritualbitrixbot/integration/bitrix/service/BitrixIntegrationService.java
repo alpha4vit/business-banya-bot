@@ -6,8 +6,10 @@ public interface BitrixIntegrationService {
     void inWorkShop(String dealId);
     void inWorkFuneral(String dealId);
     void needPhone(String dealId);
-    void successDealShop(String dealId, String amount);
-    void successDealFuneral(String dealId, String amount);
-    void commissionShop(String dealId, String cashedAmount);
-    void commissionFuneral(String dealId, String cashedAmount);
+    void successDealShop(String dealId);
+    void successDealFuneral(String dealId);
+    void updateDealAmount(String dealId, String amount);
+    void commissionShop(String dealId);
+    void commissionFuneral(String dealId);
+    void updateDealCommission(String dealId, String cashedAmount);
 }

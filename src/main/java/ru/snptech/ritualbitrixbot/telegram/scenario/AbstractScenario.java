@@ -58,4 +58,8 @@ abstract public class AbstractScenario {
         if (tgMessage.getText().startsWith("/start ")) tgMessage.setText("/start");
     }
 
+    protected static String extractDealId(String input) {
+        return input.split("-")[1];
+    }
+
 }

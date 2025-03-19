@@ -9,38 +9,24 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.ritualbitrixbot.events.dto.NewDealEvent;
+import ru.snptech.ritualbitrixbot.repository.TelegramUserRepository;
 import ru.snptech.ritualbitrixbot.telegram.MenuConstants;
-import ru.snptech.ritualbitrixbot.telegram.MessageConstants;
-
-import static ru.snptech.ritualbitrixbot.telegram.TelegramUtils.escapeMarkdownV2;
+import ru.snptech.ritualbitrixbot.telegram.service.TelegramDealSenderService;
 
 @Component
 @RequiredArgsConstructor
 public class NewShopDealEventListener implements ApplicationListener<NewDealEvent> {
-    private final TelegramClient telegramClient;
+    private final TelegramUserRepository telegramUserRepository;
+    private final TelegramDealSenderService telegramDealSenderService;
 
     @Async
     @Override
     @SneakyThrows
     public void onApplicationEvent(NewDealEvent event) {
-        var messageText = MessageConstants.NEW_DEAL_MESSAGE_TEMPLATE.formatted(
-                escapeMarkdownV2(event.getDealId()),
-                escapeMarkdownV2(event.getSource()),
-                escapeMarkdownV2(event.getSource2()),
-                escapeMarkdownV2(event.getDealType())
+        telegramDealSenderService.notifyPartnerAndAssistantsAboutNewDeal(
+                telegramUserRepository.findByChatId(Long.valueOf(event.getChatId())),
+                event
         );
-        telegramClient.execute(createSendMessage(event, messageText));
-    }
-
-    private static SendMessage createSendMessage(NewDealEvent event, String messageText) {
-        return SendMessage.builder()
-                .chatId(event.getChatId())
-                .text(messageText)
-                .parseMode(ParseMode.MARKDOWNV2)
-                .replyMarkup(
-                        MenuConstants.createGetOrCantDealMenu(event.getDealId())
-                )
-                .build();
     }
 
     @Override

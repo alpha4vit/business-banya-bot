@@ -11,6 +11,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,4 +43,10 @@ public class Deal {
     private String region;
     private String customerName;
     private String deceasedSurname;
+    private BigDecimal amount;
+    private BigDecimal commission;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private DealActionStatus dealActionStatus;
 }

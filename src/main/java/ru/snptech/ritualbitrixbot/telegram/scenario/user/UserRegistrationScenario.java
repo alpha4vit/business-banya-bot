@@ -1,11 +1,15 @@
 package ru.snptech.ritualbitrixbot.telegram.scenario.user;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.ritualbitrixbot.entity.Role;
 import ru.snptech.ritualbitrixbot.entity.TelegramUser;
@@ -16,6 +20,8 @@ import ru.snptech.ritualbitrixbot.telegram.MenuConstants;
 import ru.snptech.ritualbitrixbot.telegram.MessageConstants;
 import ru.snptech.ritualbitrixbot.telegram.scenario.AbstractScenario;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +44,7 @@ public class UserRegistrationScenario extends AbstractScenario {
         switch (scenarioStep) {
             case WAITING_FULLNAME -> processScenarioFullnameInput(requestContext);
             case WAITING_REGION -> processScenarioRegionSelect(requestContext);
+            case WAITING_CONFIRMATION -> processScenarioConfirmationSelect(requestContext);
             default -> processScenarioInit(requestContext);
         }
     }
@@ -53,12 +60,28 @@ public class UserRegistrationScenario extends AbstractScenario {
             var authUser = AUTHENTICATED_USER.getValue(requestContext);
             authUser.setFullName(tgUpdate.getMessage().getText());
             authUser = telegramUserRepository.save(authUser);
-            userContextService.updateUserContext(authUser, SCENARIO_STEP, Steps.WAITING_REGION.name());
-            sendConstantMessage(
-                    requestContext,
-                    MessageConstants.REGISTRATION_REGION_INPUT_MESSAGE,
-                    MenuConstants.createRegionSelectMenu(regionRepository.findAll())
-            );
+            if (authUser.getRegion() != null) {
+                userContextService.updateUserContext(authUser, SCENARIO_STEP, Steps.WAITING_CONFIRMATION.name());
+                sendConstantMessage(
+                        requestContext,
+                        MessageConstants.REGISTRATION_CONFIRMATION_INPUT_MESSAGE.formatted(
+                                escapeMarkdownV2(authUser.getFullName()),
+                                escapeMarkdownV2(authUser.getRegion().getName())
+                        ),
+                        InlineKeyboardMarkup.builder().keyboard(List.of(
+                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Подтвердить").callbackData(Callbacks.CONFIRM.name()).build()),
+                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Изменить имя").callbackData(Callbacks.EDIT_FULLNAME.name()).build()),
+                                new InlineKeyboardRow(InlineKeyboardButton.builder().text("Изменить регион").callbackData(Callbacks.EDIT_REGION.name()).build())
+                        )).build()
+                );
+            } else {
+                userContextService.updateUserContext(authUser, SCENARIO_STEP, Steps.WAITING_REGION.name());
+                sendConstantMessage(
+                        requestContext,
+                        MessageConstants.REGISTRATION_REGION_INPUT_MESSAGE,
+                        MenuConstants.createRegionSelectMenu(regionRepository.findAll())
+                );
+            }
         }
     }
 
@@ -70,9 +93,49 @@ public class UserRegistrationScenario extends AbstractScenario {
             var authUser = AUTHENTICATED_USER.getValue(requestContext);
             authUser.setRegion(region.get());
             authUser = telegramUserRepository.save(authUser);
-            userContextService.cleanUserContext(authUser);
-            sendConstantMessage(requestContext, MessageConstants.REGISTRATION_SENT_TO_MODERATION_MESSAGE);
-            notifyAdminAboutModerationRequest(authUser);
+            userContextService.updateUserContext(authUser, SCENARIO_STEP, Steps.WAITING_CONFIRMATION.name());
+            sendConstantMessage(
+                    requestContext,
+                    MessageConstants.REGISTRATION_CONFIRMATION_INPUT_MESSAGE.formatted(
+                            escapeMarkdownV2(authUser.getFullName()),
+                            escapeMarkdownV2(authUser.getRegion().getName())
+                    ),
+                    InlineKeyboardMarkup.builder().keyboard(List.of(
+                            new InlineKeyboardRow(InlineKeyboardButton.builder().text("Подтвердить").callbackData(Callbacks.CONFIRM.name()).build()),
+                            new InlineKeyboardRow(InlineKeyboardButton.builder().text("Изменить имя").callbackData(Callbacks.EDIT_FULLNAME.name()).build()),
+                            new InlineKeyboardRow(InlineKeyboardButton.builder().text("Изменить регион").callbackData(Callbacks.EDIT_REGION.name()).build())
+                    )).build()
+            );
+        }
+    }
+
+    private void processScenarioConfirmationSelect(Map<String, Object> requestContext) {
+        var tgUpdate = TG_UPDATE.getValue(requestContext);
+        if (tgUpdate.hasCallbackQuery() && Arrays.stream(Callbacks.values()).anyMatch(value -> value.name().equals(tgUpdate.getCallbackQuery().getData()))) {
+            var callbackValue = Callbacks.valueOf(tgUpdate.getCallbackQuery().getData());
+            var authUser = AUTHENTICATED_USER.getValue(requestContext);
+            switch (callbackValue) {
+                case CONFIRM -> {
+                    userContextService.cleanUserContext(authUser);
+                    authUser.setRegistered(true);
+                    authUser = telegramUserRepository.save(authUser);
+                    sendConstantMessage(requestContext, MessageConstants.REGISTRATION_SENT_TO_MODERATION_MESSAGE);
+                    notifyAdminAboutModerationRequest(authUser);
+                }
+                case EDIT_REGION -> {
+                    userContextService.updateUserContext(authUser, SCENARIO_STEP, Steps.WAITING_REGION.name());
+                    sendConstantMessage(
+                            requestContext,
+                            MessageConstants.REGISTRATION_REGION_INPUT_MESSAGE,
+                            MenuConstants.createRegionSelectMenu(regionRepository.findAll())
+                    );
+                }
+                case EDIT_FULLNAME -> {
+                    sendConstantMessage(requestContext, MessageConstants.REGISTRATION_FULLNAME_INPUT_MESSAGE);
+                    userContextService.updateUserContext(AUTHENTICATED_USER.getValue(requestContext), SCENARIO_STEP, Steps.WAITING_FULLNAME.name());
+                }
+            }
+
         }
     }
 
@@ -124,13 +187,19 @@ public class UserRegistrationScenario extends AbstractScenario {
 
     public boolean isNeedInvoke(Map<String, Object> requestContext) {
         var authUser = AUTHENTICATED_USER.getValue(requestContext);
-        return authUser.getFullName() == null || authUser.getRegion() == null;
+        return (!authUser.isRegistered())
+                && (authUser.getPartnerAccount() == null);
     }
 
     public enum Steps {
         WAITING_FULLNAME,
         WAITING_REGION,
+        WAITING_CONFIRMATION,
         NONE
+    }
+
+    public enum Callbacks {
+        CONFIRM, EDIT_FULLNAME, EDIT_REGION;
     }
 
     private Steps getUserStep(Map<String, Object> requestContext) {

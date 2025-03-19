@@ -29,6 +29,7 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<Boolean> IS_ADMIN = new MetaDataKey<>("isAdmin", Boolean.class);
     public static final MetaDataKey<Boolean> HAS_USERNAME = new MetaDataKey<>("isAdmin", Boolean.class);
     public static final MetaDataKey<String> SCENARIO_STEP = new MetaDataKey<>("scenarioStep", String.class);
+    public static final MetaDataKey<String> SCENARIO = new MetaDataKey<>("scenario", String.class);
     public static final MetaDataKey<String> USER_STATE = new MetaDataKey<>("userState", String.class);
     public static final MetaDataKey<String> CURRENT_DEAL_ID = new MetaDataKey<>("currentDealId", String.class);
     public static final MetaDataKey<Deal> DEAL = new MetaDataKey<>("deal", Deal.class);

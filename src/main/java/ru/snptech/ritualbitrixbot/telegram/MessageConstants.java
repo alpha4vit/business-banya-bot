@@ -6,6 +6,12 @@ import lombok.experimental.UtilityClass;
 public class MessageConstants {
     public static final String REGISTRATION_FULLNAME_INPUT_MESSAGE = "Введите ваше имя и фамилию";
     public static final String REGISTRATION_REGION_INPUT_MESSAGE = "Выберите ваш регион из списка";
+    public static final String REGISTRATION_CONFIRMATION_INPUT_MESSAGE = """
+            *Имя:* %s
+            *Регион:* %s
+            
+            Подтвердите данные или скорректируйте
+            """;
     public static final String REGISTRATION_SENT_TO_MODERATION_MESSAGE = """
             ℹ️ Анкета успешно сформирована и отправлена на модерацию, ожидайте сообщения с результатом\\.
             """;
@@ -26,53 +32,55 @@ public class MessageConstants {
             *Новая заявка*
             
             *ID:* %s
-            *Источник:* %s
             *Источник 2:* %s
             *Тип сделки:* %s
             """;
     public static final String SHOP_DEAL_MESSAGE_TEMPLATE = """
-            *Новая заявка*
-            
             *ID:* %s
             *Тип сделки:* %s
-            *Источник:* %s
             *Источник 2:* %s
             *Комментарий:* %s
             *Клиент \\(Имя\\):* %s
             *Клиент \\(Телефон\\):* %s
             """;
 
-    public static final String FUNERAL_DEAL_MESSAGE_TEMPLATE = """
+    public static final String NEW_SHOP_DEAL_MESSAGE_TEMPLATE = """
             *Новая заявка*
             
+            """ + SHOP_DEAL_MESSAGE_TEMPLATE;
+
+    public static final String FUNERAL_DEAL_MESSAGE_TEMPLATE = """
             *ID:* %s
             *Тип сделки:* %s
-            *Источник:* %s
             *Источник 2:* %s
             *Комментарий:* %s
             *Адрес встречи:* %s
             *Город:* %s
-            *Имя заказчика:* %s
             *Фамилия умершего:* %s
             """;
+
+    public static final String NEW_FUNERAL_DEAL_MESSAGE_TEMPLATE = """
+            *Новая заявка*
+            
+            """ + FUNERAL_DEAL_MESSAGE_TEMPLATE;
 
     public static final String FUNERAL_DEAL_WITH_CONTACTS_MESSAGE_TEMPLATE = """
             *Получен телефон по заявке*
             
             *ID:* %s
             *Тип сделки:* %s
-            *Источник:* %s
             *Источник 2:* %s
             *Комментарий:* %s
             *Адрес встречи:* %s
             *Город:* %s
-            *Имя заказчика:* %s
             *Фамилия умершего:* %s
             *Клиент \\(Имя\\):* %s
             *Клиент \\(Телефон\\):* %s
             """;
 
     public static final String DATA_SENT_TO_BITRIX_MESSAGE = """
+            %s
+            
             ✅ Данные переданы в систему
             """;
 
@@ -93,7 +101,45 @@ public class MessageConstants {
             """;
 
     public static final String PHONE_REQUESTED_MESSAGE = """
-            ✅ Номер телефона запрошен
+            %s
+            
+            ✅ По сделке запрошен номер телефона
+            """;
+
+    public static final String DEAL_AMOUNT_ENTERED_MESSAGE = """
+            %s
+            
+            ✅ По сделке указана сумма сделки %s
+            """;
+
+    public static final String DEAL_COMMISSION_ENTERED_MESSAGE = """
+            %s
+            
+            ✅ По сделке указана сумма комиссии %s
+            """;
+
+    public static final String DEAL_FINISHED_MESSAGE = """
+            %s
+            
+            ✅ Сделка завершена\\!
+            """;
+
+    public static final String DEAL_SUCCESS_MESSAGE = """
+            %s
+            
+            ✅ Сделка успешна\\! Ожидается ввод суммы заказа
+            """;
+
+    public static final String DEAL_PROBLEM_MESSAGE = """
+            %s
+            
+            ❌ Проблема по сделке\\! Проблема: %s
+            """;
+
+    public static final String DEAL_REJECT_MESSAGE = """
+            %s
+            
+            ❌ Отказ по сделке\\! Причина: %s
             """;
 
     public static final String MAIN_MENU = """
