@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ritual_bitrix_bot_db
-    username: spring_user
-    password: spring_user
+    url: jdbc:mysql://localhost:5432/business_banya_bot_db
+    username: postgres
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   flyway:
     url: ${spring.datasource.url}

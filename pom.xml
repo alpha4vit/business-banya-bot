@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.snptech</groupId>
-    <artifactId>ritual-bitrix-bot</artifactId>
+    <artifactId>business-banya-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Ritual Bitrix Bot</name>
-    <description>Ritual Bitrix Bot</description>
+    <name>Business Banya Bot</name>
+    <description>Business Banya Bot</description>
     <url/>
     <licenses>
         <license/>
