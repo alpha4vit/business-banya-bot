@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class MessageConstants {
-    public static final String REGISTRATION_FULLNAME_INPUT_MESSAGE = "Введите ваше имя и фамилию";
+    public static final String PHONE_NUMBER_IS_REQUIRED = "Необходимо ввести корректный номер мобильного телефона";
     public static final String REGISTRATION_REGION_INPUT_MESSAGE = "Выберите ваш регион из списка";
     public static final String REGISTRATION_CONFIRMATION_INPUT_MESSAGE = """
             *Имя:* %s
@@ -22,9 +22,9 @@ public class MessageConstants {
             *Telegram:* %s
             *Регион:* %s
             """;
-            telegramClient.execute(createSendMessage(String.valueOf(chatId), MessageConstants.VERIFICATION_NEED_MESSAGE));
+
     public static final String VERIFICATION_NEED_MESSAGE = """
-            ⚠️ Для продолжения взаимодействия с ботом вам необходимо принять пользовательское соглашение и ввести номер мобильного телефона.
+            ⚠️ Для продолжения взаимодействия с ботом вам необходимо принять пользовательское соглашение и ввести номер мобильного телефона\\.
             
             ССЫЛКА
             """;

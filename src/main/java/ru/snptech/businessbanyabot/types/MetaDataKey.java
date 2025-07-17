@@ -14,6 +14,11 @@ public class MetaDataKey<T> {
         return (T) params.get(serializationName);
     }
 
+    @Override
+    public String toString() {
+        return serializationName;
+    }
+
     public void setValue(Map<String, Object> params, T value) {
         params.put(serializationName, value);
     }

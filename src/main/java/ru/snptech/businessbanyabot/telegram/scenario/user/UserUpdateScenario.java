@@ -18,23 +18,14 @@ import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.USER_STATE
 public class UserUpdateScenario extends AbstractScenario {
     private final UserCallbackScenario userCallbackScenario;
     private final UserMainMenuScenario userMainMenuScenario;
-    private final UserProcessAmountScenario userProcessAmountScenario;
-    private final UserProcessAmountCashedScenario userProcessAmountCashedScenario;
-    private final UserProcessProblemScenario userProcessProblemScenario;
     private final UserContextService userContextService;
-    private final UserManageAssistantScenario userManageAssistantScenario;
-    private final AddPartnerScenario addPartnerScenario;
 
     public void invoke(Map<String, Object> requestContext) {
         if (TG_UPDATE.getValue(requestContext).hasCallbackQuery()) {
             userCallbackScenario.invoke(requestContext);
         } else if (TG_UPDATE.getValue(requestContext).hasMessage()) {
-            if (UserManageAssistantScenario.isNeedInvoke(requestContext)) {
-                userManageAssistantScenario.invoke(requestContext);
-                return;
-            }
             var currentScenario = userContextService.getUserContextParamValue(
-                    AUTHENTICATED_USER.getValue(requestContext),
+                AUTHENTICATED_USER.getValue(requestContext),
                     SCENARIO
             );
             if (
@@ -44,29 +35,25 @@ public class UserUpdateScenario extends AbstractScenario {
             ) {
                 userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
             }
-            if (currentScenario != null) {
-                if ("AddPartnerScenario".equals(currentScenario)) {
-                    addPartnerScenario.invoke(requestContext);
-                }
-            }
+
             var currentState = Optional.ofNullable(
                     userContextService.getUserContextParamValue(
-                            AUTHENTICATED_USER.getValue(requestContext),
+                        AUTHENTICATED_USER.getValue(requestContext),
                             USER_STATE
                     )
             ).map(UserState::valueOf).orElse(null);
             switch (currentState) {
                 case null -> userMainMenuScenario.invoke(requestContext);
                 case WAITING_AMOUNT -> {
-                    userProcessAmountScenario.invoke(requestContext);
+//                    userProcessAmountScenario.invoke(requestContext);
                     userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
                 case WAITING_PROBLEM -> {
-                    userProcessProblemScenario.invoke(requestContext);
+//                    userProcessProblemScenario.invoke(requestContext);
                     userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
                 case WAITING_AMOUNT_CASHED -> {
-                    userProcessAmountCashedScenario.invoke(requestContext);
+//                    userProcessAmountCashedScenario.invoke(requestContext);
                     userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
                 }
             }

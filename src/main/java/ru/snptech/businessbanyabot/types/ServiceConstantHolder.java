@@ -3,7 +3,6 @@ package ru.snptech.businessbanyabot.types;
 
 import lombok.experimental.UtilityClass;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.snptech.businessbanyabot.entity.Deal;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 
 @UtilityClass
@@ -27,11 +26,8 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<String> CHAT_ID = new MetaDataKey<>("chatId", String.class);
     public static final MetaDataKey<Update> TG_UPDATE = new MetaDataKey<>("tgUpdate", Update.class);
     public static final MetaDataKey<Boolean> IS_ADMIN = new MetaDataKey<>("isAdmin", Boolean.class);
-    public static final MetaDataKey<Boolean> HAS_USERNAME = new MetaDataKey<>("isAdmin", Boolean.class);
     public static final MetaDataKey<String> SCENARIO_STEP = new MetaDataKey<>("scenarioStep", String.class);
     public static final MetaDataKey<String> SCENARIO = new MetaDataKey<>("scenario", String.class);
     public static final MetaDataKey<String> USER_STATE = new MetaDataKey<>("userState", String.class);
-    public static final MetaDataKey<String> CURRENT_DEAL_ID = new MetaDataKey<>("currentDealId", String.class);
-    public static final MetaDataKey<Boolean> IS_VERIFIED = new MetaDataKey<>("IS_VERIFIED", Boolean.class);
-    public static final MetaDataKey<Deal> DEAL = new MetaDataKey<>("deal", Deal.class);
+    public static final MetaDataKey<Boolean> IS_VERIFIED = new MetaDataKey<>("isVerified", Boolean.class);
 }

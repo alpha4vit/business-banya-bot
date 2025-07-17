@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.telegram.scenario.admin.AdminUpdateScenario;
 import ru.snptech.businessbanyabot.telegram.scenario.user.UserCallbackScenario;
 import ru.snptech.businessbanyabot.telegram.scenario.user.UserMainMenuScenario;
 
@@ -40,19 +39,6 @@ public class MenuConstants {
         ));
     }
 
-    public static InlineKeyboardMarkup createRegionSelectMenu(List<Region> regions) {
-        return new InlineKeyboardMarkup(
-                regions.stream()
-                        .map(region -> new InlineKeyboardRow(
-                                        InlineKeyboardButton.builder()
-                                                .text(region.getName())
-                                                .callbackData(region.getId().toString())
-                                                .build()
-                                )
-                        )
-                        .toList()
-        );
-    }
 
     public static InlineKeyboardMarkup createAdminModerationMenu(TelegramUser userForModeration) {
         return new InlineKeyboardMarkup(List.of(
@@ -231,46 +217,24 @@ public class MenuConstants {
                 .build();
     }
 
-    public static ReplyKeyboard createUserMainMenu(boolean isRootAccount) {
+    public static ReplyKeyboard createUserMainMenu() {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(new ArrayList<>());
         keyboardMarkup.setIsPersistent(true);
         keyboardMarkup.setResizeKeyboard(true);
         keyboardMarkup.getKeyboard().addAll(List.of(
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.REPORTS_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.STATISTICS_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.ACTIVE_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.CLOSED_COMMAND))
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.SEARCH)),
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.BALANCE)),
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS))
         ));
-        if (isRootAccount) {
-            keyboardMarkup.getKeyboard().add(
-                    new KeyboardRow(new KeyboardButton(UserMainMenuScenario.PARTNERS))
-            );
-        }
         return keyboardMarkup;
     }
 
-    public static ReplyKeyboard createPartnerEditMenu(boolean isRootAccount) {
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(new ArrayList<>());
-        keyboardMarkup.setIsPersistent(true);
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.getKeyboard().addAll(List.of(
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.REPORTS_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.STATISTICS_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.ACTIVE_COMMAND)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.CLOSED_COMMAND))
-        ));
-        if (isRootAccount) {
-            keyboardMarkup.getKeyboard().add(
-                    new KeyboardRow(new KeyboardButton(UserMainMenuScenario.PARTNERS))
-            );
-        }
-        return keyboardMarkup;
-    }
+
 
     public static ReplyKeyboard adminMainMenu() {
         return ReplyKeyboardMarkup.builder()
                 .resizeKeyboard(true)
-                .keyboardRow(new KeyboardRow(new KeyboardButton(AdminUpdateScenario.DELETE_PARTNER_FROM_REGION_COMMAND)))
+//                .keyboardRow(new KeyboardRow(new KeyboardButton(AdminUpdateScenario.DELETE_PARTNER_FROM_REGION_COMMAND)))
                 .build();
     }
 }

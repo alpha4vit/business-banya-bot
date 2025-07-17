@@ -5,25 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.snptech.businessbanyabot.scenario.step.VerificationScenarioStep;
+import ru.snptech.businessbanyabot.service.UserContextService;
 import ru.snptech.businessbanyabot.telegram.scenario.RegistrationScenario;
 import ru.snptech.businessbanyabot.telegram.scenario.VerificationScenario;
-import ru.snptech.businessbanyabot.telegram.scenario.admin.AdminUpdateScenario;
+import ru.snptech.businessbanyabot.telegram.scenario.user.UserMainMenuScenario;
 import ru.snptech.businessbanyabot.telegram.scenario.user.UserUpdateScenario;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.IS_ADMIN;
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.TG_UPDATE;
+import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     private final RegistrationScenario registrationScenario;
-    private final AdminUpdateScenario adminUpdateScenario;
     private final VerificationScenario verificationScenario;
     private final UserUpdateScenario userUpdateScenario;
+    private final UserContextService userContextService;
 
     @Override
     public void consume(Update update) {
@@ -32,14 +33,10 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
         registrationScenario.invoke(requestContext);
 
-        if (IS_ADMIN.getValue(requestContext)) {
-            adminUpdateScenario.invoke(requestContext);
-        } else {
-            var isVerified = verificationScenario.verifyIfNeeded(requestContext);
+        verificationScenario.invoke(requestContext);
 
-            if (isVerified) {
-                userUpdateScenario.invoke(requestContext);
-            }
+        if (Boolean.TRUE.equals(IS_VERIFIED.getValue(requestContext))) {
+            userUpdateScenario.invoke(requestContext);
         }
     }
 }

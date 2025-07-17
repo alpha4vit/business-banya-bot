@@ -23,15 +23,15 @@ public class UserContextService {
     @SuppressWarnings("unchecked")
     public Map<String, Object> getUserContext(TelegramUser telegramUser) {
         return Optional
-                .ofNullable(telegramUser.getContext())
-                .map(stringContext -> {
-                    try {
-                        return objectMapper.readValue(stringContext, Map.class);
-                    } catch (JsonProcessingException e) {
-                        return new HashMap<String, Object>();
-                    }
-                })
-                .orElse(new HashMap<String, Object>());
+            .ofNullable(telegramUser.getContext())
+            .map(stringContext -> {
+                try {
+                    return objectMapper.readValue(stringContext, Map.class);
+                } catch (JsonProcessingException e) {
+                    return new HashMap<String, Object>();
+                }
+            })
+            .orElse(new HashMap<String, Object>());
     }
 
     @SuppressWarnings("unchecked")

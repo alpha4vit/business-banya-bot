@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -29,8 +30,10 @@ public class TelegramUser {
 
     private String fullName;
 
+    private String phoneNumber;
+
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
