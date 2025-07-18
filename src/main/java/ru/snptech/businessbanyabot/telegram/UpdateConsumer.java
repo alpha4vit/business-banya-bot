@@ -5,26 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.snptech.businessbanyabot.scenario.step.VerificationScenarioStep;
-import ru.snptech.businessbanyabot.service.UserContextService;
-import ru.snptech.businessbanyabot.telegram.scenario.RegistrationScenario;
-import ru.snptech.businessbanyabot.telegram.scenario.VerificationScenario;
-import ru.snptech.businessbanyabot.telegram.scenario.user.UserMainMenuScenario;
-import ru.snptech.businessbanyabot.telegram.scenario.user.UserUpdateScenario;
+import ru.snptech.businessbanyabot.service.scenario.RegistrationScenario;
+import ru.snptech.businessbanyabot.service.scenario.VerificationScenario;
+import ru.snptech.businessbanyabot.service.scenario.common.UserUpdateScenario;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.IS_VERIFIED;
+import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.TG_UPDATE;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
+
     private final RegistrationScenario registrationScenario;
     private final VerificationScenario verificationScenario;
     private final UserUpdateScenario userUpdateScenario;
-    private final UserContextService userContextService;
 
     @Override
     public void consume(Update update) {

@@ -1,7 +1,7 @@
-package ru.snptech.businessbanyabot.scenario.step;
+package ru.snptech.businessbanyabot.model.scenario.step;
 
-import ru.snptech.businessbanyabot.scenario.ScenarioStep;
-import ru.snptech.businessbanyabot.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.ScenarioStep;
+import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 
 public class VerificationScenarioStep implements ScenarioStep {
 

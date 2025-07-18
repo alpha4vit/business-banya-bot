@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.telegram.scenario.user;
+package ru.snptech.businessbanyabot.service.scenario.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -15,8 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.UserContextService;
+import ru.snptech.businessbanyabot.service.scenario.user.UserState;
 import ru.snptech.businessbanyabot.telegram.MessageConstants;
-import ru.snptech.businessbanyabot.telegram.scenario.AbstractScenario;
 
 import java.util.List;
 import java.util.Map;

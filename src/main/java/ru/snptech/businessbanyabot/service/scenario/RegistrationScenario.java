@@ -1,11 +1,11 @@
-package ru.snptech.businessbanyabot.telegram.scenario;
+package ru.snptech.businessbanyabot.service.scenario;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.Role;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.service.UserContextService;
 import ru.snptech.businessbanyabot.telegram.TelegramUtils;
 
@@ -26,7 +26,9 @@ public class RegistrationScenario {
         var user = userRepository.findByChatId(chatId);
 
         if (user != null) {
-            Map<String, Object> contextWithoutUpdates = userContextService.getUserContext(user).entrySet().stream()
+            var context = userContextService.getUserContext(user);
+
+            Map<String, Object> contextWithoutUpdates = context.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(TG_UPDATE.toString()))
                 .collect(Collectors.toMap(
                     Map.Entry::getKey,
@@ -48,9 +50,9 @@ public class RegistrationScenario {
         user = userRepository.save(user);
 
         AUTHENTICATED_USER.setValue(requestContext, user);
-        IS_ADMIN.setValue(requestContext, user.getRole() == Role.ADMIN);
         CHAT_ID.setValue(requestContext, user.getChatId().toString());
         SCENARIO.setValue(requestContext, ScenarioType.VERIFICATION.name());
+        USER_ROLE.setValue(requestContext, user.getRole());
 
         userContextService.updateUserContext(user, requestContext);
     }

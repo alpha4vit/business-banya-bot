@@ -1,16 +1,16 @@
-package ru.snptech.businessbanyabot.telegram.scenario;
+package ru.snptech.businessbanyabot.service.scenario;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.snptech.businessbanyabot.entity.Role;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.scenario.ScenarioType;
-import ru.snptech.businessbanyabot.scenario.step.VerificationScenarioStep;
+import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
 import ru.snptech.businessbanyabot.service.UserContextService;
+import ru.snptech.businessbanyabot.service.scenario.common.AbstractScenario;
 import ru.snptech.businessbanyabot.telegram.MessageConstants;
 
 import java.util.Map;
@@ -24,15 +24,12 @@ public class VerificationScenario extends AbstractScenario {
 
     private final TelegramClient telegramClient;
     private final UserContextService userContextService;
-    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
         var user = AUTHENTICATED_USER.getValue(requestContext);
 
-        var t = objectMapper.readValue(user.getContext(),  new TypeReference<Map<String, Object>>() {});
-
-        if (IS_ADMIN.getValue(requestContext)) return;
+        if (Role.ADMIN.equals(USER_ROLE.getValue(requestContext))) return;
 
         var isVerified = IS_VERIFIED.getValue(requestContext);
 
@@ -70,7 +67,6 @@ public class VerificationScenario extends AbstractScenario {
 
         IS_VERIFIED.setValue(context, true);
         SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
-        SCENARIO_STEP.setValue(context, null);
         AUTHENTICATED_USER.setValue(context, user);
         userContextService.updateUserContext(user, context);
     }

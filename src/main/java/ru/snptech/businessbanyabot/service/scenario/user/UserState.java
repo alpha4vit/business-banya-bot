@@ -1,5 +1,6 @@
-package ru.snptech.businessbanyabot.telegram.scenario.user;
+package ru.snptech.businessbanyabot.service.scenario.user;
 
+@Deprecated()
 public enum UserState {
     WAITING_AMOUNT,
     WAITING_PROBLEM,

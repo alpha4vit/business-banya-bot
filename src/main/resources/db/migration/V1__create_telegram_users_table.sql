@@ -1,4 +1,4 @@
-CREATE TABLE telegram_users
+CREATE TABLE IF NOT EXISTS telegram_users
 (
     chat_id             BIGINT      NOT NULL PRIMARY KEY,
     telegram_username   TEXT        NOT NULL,
