@@ -4,19 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-import ru.snptech.businessbanyabot.entity.Role;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
+import ru.snptech.businessbanyabot.model.common.MenuConstants;
+import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
-import ru.snptech.businessbanyabot.repository.impl.JdbcUserRepository;
-import ru.snptech.businessbanyabot.service.UserContextService;
+import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
+import ru.snptech.businessbanyabot.model.user.Role;
+import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.scenario.SurveyScenario;
 import ru.snptech.businessbanyabot.service.scenario.common.AbstractScenario;
-import ru.snptech.businessbanyabot.telegram.MenuConstants;
-import ru.snptech.businessbanyabot.telegram.MessageConstants;
+import ru.snptech.businessbanyabot.service.user.UserContextService;
 
 import java.util.Map;
 import java.util.Set;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Component
 @RequiredArgsConstructor
@@ -32,12 +34,14 @@ public class UserMainMenuScenario extends AbstractScenario {
         SEARCH, BALANCE, EVENTS
     );
     private final UserContextService userContextService;
-    private final JdbcUserRepository userRepository;
+    private final UserRepository userRepository;
+    private final SurveyScenario surveyScenario;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
         var tgUpdate = TG_UPDATE.getValue(requestContext);
-        var user = AUTHENTICATED_USER.getValue(requestContext);
+        var chatId = CHAT_ID.getValue(requestContext, Long.class);
+        var user = userRepository.findByChatId(chatId);
         var role = USER_ROLE.getValue(requestContext, Role.class);
 
         if (tgUpdate.getMessage().hasText()) {
@@ -48,7 +52,10 @@ public class UserMainMenuScenario extends AbstractScenario {
 
                 case REQUEST -> {
                     SCENARIO.setValue(requestContext, ScenarioType.SURVEY.name());
+                    SCENARIO_STEP.setValue(requestContext, SurveyScenarioStep.INITIAL.name());
                     userContextService.updateUserContext(user, requestContext);
+
+                    surveyScenario.invoke(requestContext);
                 }
 
                 default -> {

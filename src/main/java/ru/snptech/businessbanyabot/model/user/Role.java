@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.entity;
+package ru.snptech.businessbanyabot.model.user;
 
 public enum Role {
     NON_RESIDENT,

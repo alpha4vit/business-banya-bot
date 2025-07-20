@@ -1,10 +1,10 @@
-package ru.snptech.businessbanyabot.types;
+package ru.snptech.businessbanyabot.model.common;
 
 
 import lombok.experimental.UtilityClass;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.snptech.businessbanyabot.entity.Role;
-import ru.snptech.businessbanyabot.entity.TelegramUser;
+import ru.snptech.businessbanyabot.entity.Survey;
+import ru.snptech.businessbanyabot.model.user.Role;
 
 @UtilityClass
 public class ServiceConstantHolder {
@@ -23,7 +23,6 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<String> BITRIX_RQ_REGION = new MetaDataKey<>("bitrixRqRegion", String.class);
     public static final MetaDataKey<String> BITRIX_RQ_PHONE = new MetaDataKey<>("bitrixRqPhone", String.class);
     // TELEGRAM
-    public static final MetaDataKey<TelegramUser> AUTHENTICATED_USER = new MetaDataKey<>("authenticatedUser", TelegramUser.class);
     public static final MetaDataKey<String> CHAT_ID = new MetaDataKey<>("chatId", String.class);
     public static final MetaDataKey<Update> TG_UPDATE = new MetaDataKey<>("tgUpdate", Update.class);
     public static final MetaDataKey<Role> USER_ROLE = new MetaDataKey<>("userRole", Role.class);
@@ -31,4 +30,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<String> SCENARIO = new MetaDataKey<>("scenario", String.class);
     public static final MetaDataKey<String> USER_STATE = new MetaDataKey<>("userState", String.class);
     public static final MetaDataKey<Boolean> IS_VERIFIED = new MetaDataKey<>("isVerified", Boolean.class);
+    public static final MetaDataKey<Survey> LATEST_SURVEY = new MetaDataKey<>("latestSurvey", Survey.class);
 }

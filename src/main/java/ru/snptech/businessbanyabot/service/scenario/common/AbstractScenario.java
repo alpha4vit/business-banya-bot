@@ -4,11 +4,11 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import ru.snptech.businessbanyabot.telegram.MessageConstants;
+import ru.snptech.businessbanyabot.model.common.MessageConstants;
 
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.TG_UPDATE;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
 
 abstract public class AbstractScenario {
 

@@ -4,19 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
-import ru.snptech.businessbanyabot.service.UserContextService;
+import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.scenario.SurveyScenario;
 import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
+import ru.snptech.businessbanyabot.service.user.UserContextService;
 
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Component
 @RequiredArgsConstructor
 public class UserUpdateScenario extends AbstractScenario {
     private final UserCallbackScenario userCallbackScenario;
     private final UserMainMenuScenario userMainMenuScenario;
+    private final SurveyScenario surveyScenario;
     private final UserContextService userContextService;
+    private final UserRepository userRepository;
 
     public void invoke(Map<String, Object> requestContext) {
         if (TG_UPDATE.getValue(requestContext).hasCallbackQuery()) {
@@ -38,6 +42,9 @@ public class UserUpdateScenario extends AbstractScenario {
                 userMainMenuScenario.invoke(requestContext);
             }
 
+            case SURVEY -> {
+                surveyScenario.invoke(requestContext);
+            }
 
             default -> {
                 // nothing for now
@@ -51,7 +58,10 @@ public class UserUpdateScenario extends AbstractScenario {
                 && "/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
                 && UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
         ) {
-            userContextService.cleanUserContext(AUTHENTICATED_USER.getValue(requestContext));
+            var chatId = CHAT_ID.getValue(requestContext, Long.class);
+            var user = userRepository.findByChatId(chatId);
+
+            userContextService.cleanUserContext(user);
         }
 
     }

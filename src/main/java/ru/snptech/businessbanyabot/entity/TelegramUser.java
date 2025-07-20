@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
+import ru.snptech.businessbanyabot.model.user.Role;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +21,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TelegramUser {
+
     @Id
+    @Column(name = "chat_id")
     private Long chatId;
 
     private String telegramUsername;
@@ -41,5 +45,4 @@ public class TelegramUser {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
 }

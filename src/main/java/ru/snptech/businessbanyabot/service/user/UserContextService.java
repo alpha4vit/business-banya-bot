@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.service;
+package ru.snptech.businessbanyabot.service.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.types.MetaDataKey;
+import ru.snptech.businessbanyabot.model.common.MetaDataKey;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -4,38 +4,44 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
-import ru.snptech.businessbanyabot.entity.Role;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
+import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
+import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
-import ru.snptech.businessbanyabot.service.UserContextService;
+import ru.snptech.businessbanyabot.model.user.Role;
+import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.common.AbstractScenario;
-import ru.snptech.businessbanyabot.telegram.MessageConstants;
+import ru.snptech.businessbanyabot.service.user.UserContextService;
+import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.types.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class VerificationScenario extends AbstractScenario {
 
-    private final TelegramClient telegramClient;
+    private final TelegramClientAdapter telegramClientAdapter;
     private final UserContextService userContextService;
+    private final UserRepository userRepository;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
-        var user = AUTHENTICATED_USER.getValue(requestContext);
+        var chatId = CHAT_ID.getValue(requestContext, Long.class);
+        var user = userRepository.findByChatId(chatId);
 
         if (Role.ADMIN.equals(USER_ROLE.getValue(requestContext))) return;
 
         var isVerified = IS_VERIFIED.getValue(requestContext);
 
         if (Boolean.TRUE.equals(isVerified)) {
-            SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
-            userContextService.updateUserContext(user, requestContext);
+            if (SCENARIO.getValue(requestContext) == null) {
+                SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+                userContextService.updateUserContext(user, requestContext);
+            }
 
             return;
         }
@@ -46,12 +52,7 @@ public class VerificationScenario extends AbstractScenario {
             return;
         }
 
-        telegramClient.execute(
-            createSendMessage(
-                String.valueOf(user.getChatId()),
-                MessageConstants.VERIFICATION_NEED_MESSAGE
-            )
-        );
+        telegramClientAdapter.sendMessage(user.getChatId(), MessageConstants.VERIFICATION_NEED_MESSAGE);
 
         IS_VERIFIED.setValue(requestContext, false);
         SCENARIO_STEP.setValue(requestContext, VerificationScenarioStep.WAITING_NUMBER);
@@ -62,12 +63,11 @@ public class VerificationScenario extends AbstractScenario {
         var message = TG_UPDATE.getValue(context).getMessage();
 
         if (!message.hasText() || !isPhoneNumber(message.getText())) {
-            throw new IllegalArgumentException(MessageConstants.PHONE_NUMBER_IS_REQUIRED);
+            throw new BusinessBanyaDomainLogicException.PHONE_NUMBER_IS_REQUIRED();
         }
 
         IS_VERIFIED.setValue(context, true);
         SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
-        AUTHENTICATED_USER.setValue(context, user);
         userContextService.updateUserContext(user, context);
     }
 

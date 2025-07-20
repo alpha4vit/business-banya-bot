@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 
 @Getter
 @Setter
@@ -20,4 +21,6 @@ public class SurveyQuestion {
 
     private String message;
 
+    @Enumerated(value = EnumType.STRING)
+    private SurveyScenarioStep scenarioStep;
 }

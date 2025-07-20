@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.types;
+package ru.snptech.businessbanyabot.model.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

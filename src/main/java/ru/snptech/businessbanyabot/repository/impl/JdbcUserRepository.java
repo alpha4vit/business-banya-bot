@@ -2,7 +2,7 @@ package ru.snptech.businessbanyabot.repository.impl;
 
 
 import org.springframework.data.repository.CrudRepository;
-import ru.snptech.businessbanyabot.entity.Role;
+import ru.snptech.businessbanyabot.model.user.Role;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 
