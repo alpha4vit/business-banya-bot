@@ -1,27 +1,20 @@
-package ru.snptech.businessbanyabot.service.scenario.common;
+package ru.snptech.businessbanyabot.service.scenario.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
-import ru.snptech.businessbanyabot.service.scenario.user.UserState;
-import ru.snptech.businessbanyabot.model.common.MessageConstants;
 
-import java.util.List;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.CHAT_ID;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
 
 @Component
 @RequiredArgsConstructor

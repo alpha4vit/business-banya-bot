@@ -7,16 +7,17 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
-import ru.snptech.businessbanyabot.service.scenario.RegistrationScenario;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.VerificationScenario;
-import ru.snptech.businessbanyabot.service.scenario.common.UserUpdateScenario;
+import ru.snptech.businessbanyabot.service.scenario.admin.AdminUpdateScenario;
+import ru.snptech.businessbanyabot.service.scenario.user.RegistrationScenario;
+import ru.snptech.businessbanyabot.service.scenario.user.UserUpdateScenario;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.IS_VERIFIED;
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Slf4j
 @Component
@@ -26,6 +27,8 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
     private final RegistrationScenario registrationScenario;
     private final VerificationScenario verificationScenario;
     private final UserUpdateScenario userUpdateScenario;
+    private final AdminUpdateScenario adminUpdateScenario;
+
     private final TelegramClientAdapter telegramClientAdapter;
 
     @Override
@@ -38,6 +41,12 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
             registrationScenario.invoke(requestContext);
 
+            if (true) { //(USER_ROLE.getValue(requestContext, UserRole.class).equals(UserRole.ADMIN)) {// {
+                adminUpdateScenario.invoke(requestContext);
+
+                return;
+            }
+
             verificationScenario.invoke(requestContext);
 
             if (Boolean.TRUE.equals(IS_VERIFIED.getValue(requestContext))) {
@@ -45,10 +54,16 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
             }
         } catch (BusinessBanyaInternalException e) {
             telegramClientAdapter.sendMessage(chatId, e.getMessage());
+
+            throw e;
         } catch (BusinessBanyaDomainLogicException e) {
             telegramClientAdapter.sendMessage(chatId, e.getMessage());
+
+            throw e;
         } catch (Throwable t) {
             telegramClientAdapter.sendMessage(chatId, t.getMessage());
+
+            throw t;
         }
 
     }

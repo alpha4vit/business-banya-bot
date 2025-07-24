@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class MessageConstants {
+
     public static final String PHONE_NUMBER_IS_REQUIRED = "Необходимо ввести корректный номер мобильного телефона";
     public static final String REGISTRATION_REGION_INPUT_MESSAGE = "Выберите ваш регион из списка";
     public static final String REGISTRATION_CONFIRMATION_INPUT_MESSAGE = """
@@ -33,15 +34,7 @@ public class MessageConstants {
     public static final String MODERATION_APPROVED_TO_USER_MESSAGE = """
         ✅ Анкета одобрена, вам открыт доступ к заявкам и основным функциям бота.
         """;
-    public static final String NEW_SURVEY_MESSAGE_TEMPLATE = """
-        *Новая заявка*
-                    
-        *ID:* %s
-        *ФИО:* %s
-        *Сфера деятельности компании:* %s
-        *Годовой оборот:* %s руб\\.
-        *Интересы:* %s
-        """;
+
 
     public static final String SHOP_DEAL_MESSAGE_TEMPLATE = """
         *ID:* %s

@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.service.scenario.common;
+package ru.snptech.businessbanyabot.service.scenario;
 
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

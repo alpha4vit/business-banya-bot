@@ -9,9 +9,8 @@ import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
-import ru.snptech.businessbanyabot.model.user.Role;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.scenario.common.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
@@ -33,7 +32,7 @@ public class VerificationScenario extends AbstractScenario {
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
         var user = userRepository.findByChatId(chatId);
 
-        if (Role.ADMIN.equals(USER_ROLE.getValue(requestContext))) return;
+        if (UserRole.ADMIN.equals(USER_ROLE.getValue(requestContext))) return;
 
         var isVerified = IS_VERIFIED.getValue(requestContext);
 

@@ -1,6 +1,6 @@
 package ru.snptech.businessbanyabot.model.user;
 
-public enum Role {
+public enum UserRole {
     NON_RESIDENT,
     RESIDENT,
     COORDINATOR,

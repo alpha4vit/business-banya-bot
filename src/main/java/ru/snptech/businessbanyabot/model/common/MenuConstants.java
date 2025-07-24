@@ -8,14 +8,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import ru.snptech.businessbanyabot.entity.Survey;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.model.user.Role;
-import ru.snptech.businessbanyabot.service.scenario.common.UserCallbackScenario;
+import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.service.scenario.user.UserCallbackScenario;
 import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
 
 @UtilityClass
 public class MenuConstants {
@@ -111,31 +113,32 @@ public class MenuConstants {
     }
 
 
-    public static ReplyKeyboard createUserMainMenu(Role userRole) {
+    public static ReplyKeyboard createUserMainMenu(UserRole userRole) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(new ArrayList<>());
         keyboardMarkup.setIsPersistent(true);
         keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.getKeyboard().addAll(List.of(
-            new KeyboardRow(new KeyboardButton(UserMainMenuScenario.SEARCH)),
-            new KeyboardRow(new KeyboardButton(UserMainMenuScenario.BALANCE)),
-            new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS))
-        ));
 
-        if (Role.NON_RESIDENT.equals(userRole)) {
+        if (UserRole.NON_RESIDENT.equals(userRole)) {
             keyboardMarkup.getKeyboard().add(new KeyboardRow(new KeyboardButton(UserMainMenuScenario.REQUEST)));
+        } else {
+            keyboardMarkup.getKeyboard().addAll(List.of(
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.SEARCH)),
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.BALANCE)),
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS))
+            ));
         }
 
         return keyboardMarkup;
     }
 
-    public static InlineKeyboardMarkup createAdminSurveyAcceptMenu(Survey survey) {
+    public static InlineKeyboardMarkup createAdminSurveyAcceptMenu(Long surveyId) {
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("✅ Принять").callbackData("AA_" + survey.getId().toString()).build()
+                    InlineKeyboardButton.builder().text("✅ Принять").callbackData(ADMIN_SURVEY_ACCEPT_PREFIX + surveyId).build()
                 ),
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("❌ Отклонить").callbackData("AR_" + survey.getId().toString()).build()
+                    InlineKeyboardButton.builder().text("❌ Отклонить").callbackData(ADMIN_SURVEY_DECLINE_PREFIX + surveyId).build()
                 )
             ));
     }

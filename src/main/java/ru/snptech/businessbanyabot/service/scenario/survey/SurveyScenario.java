@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.service.scenario;
+package ru.snptech.businessbanyabot.service.scenario.survey;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,7 +16,7 @@ import ru.snptech.businessbanyabot.model.survey.SurveyStatus;
 import ru.snptech.businessbanyabot.repository.SurveyQuestionRepository;
 import ru.snptech.businessbanyabot.repository.SurveyRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.scenario.common.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
@@ -103,6 +103,7 @@ public class SurveyScenario extends AbstractScenario {
         );
 
         SCENARIO_STEP.setValue(context, firstQuestion.getScenarioStep().name());
+        IS_SURVEY_ACCEPTED.setValue(context, false);
 
         sendQuestion(user, firstQuestion);
 
@@ -138,14 +139,9 @@ public class SurveyScenario extends AbstractScenario {
     }
 
     private Survey updateSurvey(Survey survey, SurveyScenarioStep step, String value) {
-        switch (step) {
-            case FIO -> survey.setFio(value);
-            case INTERESTS -> survey.setInterests(value);
-            case COMPANY_TURNOVER -> survey.setCompanyTurnover(value);
-            case ACTIVITY_SCOPE -> survey.setActivityScope(value);
-        }
+        var updated = survey.updateField(step, value);
 
-        return surveyRepository.save(survey);
+        return surveyRepository.save(updated);
     }
 
     private SurveyQuestion getQuestionByFilter(Predicate<SurveyQuestion> predicate) {

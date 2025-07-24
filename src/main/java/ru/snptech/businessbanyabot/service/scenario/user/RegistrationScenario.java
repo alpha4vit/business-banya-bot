@@ -1,11 +1,12 @@
-package ru.snptech.businessbanyabot.service.scenario;
+package ru.snptech.businessbanyabot.service.scenario.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.snptech.businessbanyabot.model.user.Role;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.model.user.UserStatus;
+import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.TelegramUtils;
 
@@ -45,7 +46,8 @@ public class RegistrationScenario {
         user.setTelegramFirstName(tgUser.getFirstName());
         user.setTelegramLastName(tgUser.getLastName());
         user.setTelegramUsername(tgUser.getUserName());
-        user.setRole(Role.NON_RESIDENT);
+        user.setRole(UserRole.NON_RESIDENT);
+        user.setStatus(UserStatus.ACTIVE);
         user = userRepository.save(user);
 
         CHAT_ID.setValue(requestContext, user.getChatId().toString());

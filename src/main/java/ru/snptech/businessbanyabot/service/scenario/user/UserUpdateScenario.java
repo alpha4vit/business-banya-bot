@@ -1,12 +1,12 @@
-package ru.snptech.businessbanyabot.service.scenario.common;
+package ru.snptech.businessbanyabot.service.scenario.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.scenario.SurveyScenario;
-import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
+import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
+import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 
 import java.util.Map;
@@ -63,6 +63,5 @@ public class UserUpdateScenario extends AbstractScenario {
 
             userContextService.cleanUserContext(user);
         }
-
     }
 }

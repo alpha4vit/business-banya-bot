@@ -8,5 +8,7 @@ CREATE TABLE IF NOT EXISTS telegram_users
     phone_number        TEXT,
     created_at          timestamptz NOT NULL,
     context             json,
-    role                TEXT        NOT NULL
+    role                TEXT        NOT NULL,
+    status              TEXT        NOT NULL,
+    banned_at           timestamptz
 );

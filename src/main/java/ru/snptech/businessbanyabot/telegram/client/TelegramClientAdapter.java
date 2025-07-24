@@ -3,6 +3,7 @@ package ru.snptech.businessbanyabot.telegram.client;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -58,6 +59,11 @@ public class TelegramClientAdapter {
             .build();
 
         telegramClient.execute(message);
+    }
+
+    @SneakyThrows
+    public void releaseCallback(String callbackId) {
+        telegramClient.execute(new AnswerCallbackQuery(callbackId));
     }
 
 }

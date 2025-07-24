@@ -1,12 +1,33 @@
 CREATE TABLE IF NOT EXISTS survey
 (
-    id               bigserial primary key,
-    chat_id          bigint      not null references telegram_users (chat_id),
-    fio              text,
-    company_turnover text,
-    interests        text,
-    activity_scope   text,
-    created_at       timestamptz not null,
-    delivered_at     timestamptz,
-    status           text        not null
+    id                   bigserial PRIMARY KEY,
+    chat_id              bigint      NOT NULL REFERENCES telegram_users (chat_id),
+
+    fio                  text,
+    social_media         text,
+    date_of_birth        date,
+    city                 text,
+    years_of_experience  text,
+    withdrawals          text,
+    business_description text,
+    family_status        text,
+    children_count       text,
+    sport_interests      text,
+    beliefs              text,
+    music_singers        text,
+    crucial_words        text,
+    films                text,
+    strengths            text,
+    victories            text,
+    defeats              text,
+    teachers             text,
+    goals                text,
+    active_side          text,
+    passive_side         text,
+    referrer             text,
+
+    status               text        NOT NULL,
+    created_at           timestamptz NOT NULL DEFAULT now(),
+    delivered_at         timestamptz
 );
+

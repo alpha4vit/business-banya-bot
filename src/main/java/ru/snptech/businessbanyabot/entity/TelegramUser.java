@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-import ru.snptech.businessbanyabot.model.user.Role;
+import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.model.user.UserStatus;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @Setter
@@ -44,5 +43,11 @@ public class TelegramUser {
     private String context;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    private Instant bannedAt;
+
 }

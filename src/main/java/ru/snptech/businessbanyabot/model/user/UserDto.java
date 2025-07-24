@@ -22,6 +22,6 @@ public record UserDto(
 
     String context,
 
-    Role role
+    UserRole role
 ) {
 }
