@@ -106,32 +106,5 @@ public class Survey {
     @Column(name = "delivered_at")
     private Instant deliveredAt;
 
-    public Survey updateField(SurveyScenarioStep step, String value) {
-        switch (step) {
-            case FIO -> setFio(value);
-            case SOCIAL_MEDIA -> setSocialMedia(value);
-            case DATE_OF_BIRTH -> setDateOfBirth(LocalDate.parse(value));
-            case CITY -> setCity(value);
-            case YEARS_OF_EXPERIENCE -> setYearsOfExperience(value);
-            case BUSINESS_DESCRIPTION -> setBusinessDescription(value);
-            case WITHDRAWALS -> setWithdrawals(value);
-            case FAMILY_STATUS -> setFamilyStatus(value);
-            case CHILDREN_COUNT -> setChildrenCount(value);
-            case SPORT_INTERESTS -> setSportInterests(value);
-            case BELIEFS -> setBeliefs(value);
-            case MUSIC_SINGERS -> setMusicSingers(value);
-            case CRUCIAL_WORDS -> setCrucialWords(value);
-            case FILMS -> setFilms(value);
-            case STRENGTHS -> setStrengths(value);
-            case VICTORIES -> setVictories(value);
-            case DEFEATS -> setDefeats(value);
-            case TEACHERS -> setTeachers(value);
-            case GOALS -> setGoals(value);
-            case ACTIVE_SIDE -> setActiveSide(value);
-            case PASSIVE_SIDE -> setPassiveSide(value);
-            case REFERRER -> setReferrer(value);
-        }
 
-        return this;
-    }
 }

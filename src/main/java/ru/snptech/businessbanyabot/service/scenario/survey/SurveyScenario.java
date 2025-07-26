@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.service.survey.SurveyStepMappings.updateField;
 
 @Component
 @RequiredArgsConstructor
@@ -139,7 +140,7 @@ public class SurveyScenario extends AbstractScenario {
     }
 
     private Survey updateSurvey(Survey survey, SurveyScenarioStep step, String value) {
-        var updated = survey.updateField(step, value);
+        var updated = updateField(survey, step, value);
 
         return surveyRepository.save(updated);
     }

@@ -1,8 +1,13 @@
 package ru.snptech.businessbanyabot.service.scenario.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
+import ru.snptech.businessbanyabot.integrations.bank.client.FeignBankClient;
+import ru.snptech.businessbanyabot.integrations.bank.dto.common.QrType;
+import ru.snptech.businessbanyabot.integrations.bank.dto.request.QRCodeRequestParams;
+import ru.snptech.businessbanyabot.integrations.bank.dto.request.RegisterPaymentQrCodeRequest;
 import ru.snptech.businessbanyabot.model.common.AdminMessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.survey.SurveyStatus;
@@ -26,6 +31,8 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
     private final UserRepository userRepository;
     private final SurveyRepository surveyRepository;
     private final UserContextService userContextService;
+    private final ObjectMapper objectMapper;
+    private final FeignBankClient bankClient;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -42,6 +49,7 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
         releaseCallback(requestContext);
     }
 
+    @SneakyThrows
     private void handleSurveyVerdict(
         Map<String, Object> requestContext,
         String callbackPrefix,
@@ -67,7 +75,29 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
                 SCENARIO.setValue(requestContext, ScenarioType.PAYMENT.name());
                 IS_SURVEY_ACCEPTED.setValue(requestContext, true);
 
+
+                var bankResponse = bankClient.registerQrCode(
+                    "v1.0",
+                    "fbff76236132043e85f2524ad59524b8",
+                    "40817810802000000008/044525104",
+                    new RegisterPaymentQrCodeRequest(
+                        10,
+                        "BYN",
+                        "test",
+                        QrType.DYNAMIC.getValue(),
+                        new QRCodeRequestParams(
+                            "100",
+                            "100",
+                            "image/png"
+                        ),
+                        "test-source",
+                        100
+
+                    )
+                );
+
                 sendMessage(requestContext, AdminMessageConstants.SURVEY_ACCEPT_MESSAGE);
+                sendMessage(requestContext, objectMapper.writeValueAsString(bankResponse));
             }
         }
 
@@ -81,12 +111,16 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
         UserRepository userRepository,
         SurveyRepository surveyRepository,
         UserContextService userContextService,
-        TelegramClientAdapter telegramClientAdapter
+        TelegramClientAdapter telegramClientAdapter,
+        FeignBankClient bankClient,
+        ObjectMapper objectMapper
     ) {
         super(telegramClientAdapter);
 
+        this.objectMapper = objectMapper;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.surveyRepository = surveyRepository;
+        this.bankClient = bankClient;
     }
 }

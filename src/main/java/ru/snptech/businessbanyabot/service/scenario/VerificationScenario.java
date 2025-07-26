@@ -65,8 +65,10 @@ public class VerificationScenario extends AbstractScenario {
             throw new BusinessBanyaDomainLogicException.PHONE_NUMBER_IS_REQUIRED();
         }
 
+        user.setPhoneNumber(message.getText());
         IS_VERIFIED.setValue(context, true);
         SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
+
         userContextService.updateUserContext(user, context);
     }
 

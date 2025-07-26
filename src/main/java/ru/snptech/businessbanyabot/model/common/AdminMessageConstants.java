@@ -10,6 +10,8 @@ public final class AdminMessageConstants {
                     
         *ID:* %s
         *ФИО:* %s
+        *Номер мобильного телефона:* %s
+        *Социальная сеть:* %s
         """;
 
     public static final String SURVEY_ACCEPT_MESSAGE = "Анкета успешно одобрена\\. Ожидание оплаты от пользователя\\.";
