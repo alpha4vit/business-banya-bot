@@ -1,11 +1,11 @@
 package ru.snptech.businessbanyabot.service.scenario;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
+import java.io.File;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.CHAT_ID;
@@ -36,6 +36,14 @@ public abstract class BaseCallbackScenario extends AbstractScenario {
             CHAT_ID.getValue(requestContext, Long.class),
             message,
             replyKeyboard
+        );
+    }
+
+    @SneakyThrows
+    protected void sendFile(Map<String, Object> requestContext, File file) {
+        telegramClientAdapter.sendFile(
+            CHAT_ID.getValue(requestContext, Long.class),
+            file
         );
     }
 

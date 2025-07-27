@@ -41,8 +41,7 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
             registrationScenario.invoke(requestContext);
 
-            if (true) {
-                // (USER_ROLE.getValue(requestContext, UserRole.class).equals(UserRole.ADMIN)) {// {
+            if (true) {//(USER_ROLE.getValue(requestContext, UserRole.class).equals(UserRole.ADMIN)) {// {
                 adminUpdateScenario.invoke(requestContext);
 
                 return;

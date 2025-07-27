@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS telegram_users
     context             json,
     role                TEXT        NOT NULL,
     status              TEXT        NOT NULL,
-    banned_at           timestamptz
+    banned_at           timestamptz,
+    qr_code             TEXT
 );

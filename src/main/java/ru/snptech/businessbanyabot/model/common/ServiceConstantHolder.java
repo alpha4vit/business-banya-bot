@@ -33,4 +33,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<Boolean> IS_VERIFIED = new MetaDataKey<>("isVerified", Boolean.class);
     public static final MetaDataKey<Boolean> IS_SURVEY_ACCEPTED = new MetaDataKey<>("isSurveyAccepted", Boolean.class);
     public static final MetaDataKey<Survey> LATEST_SURVEY = new MetaDataKey<>("latestSurvey", Survey.class);
+    public static final MetaDataKey<String> QR_CODE = new MetaDataKey<>("qrCode", String.class);
 }

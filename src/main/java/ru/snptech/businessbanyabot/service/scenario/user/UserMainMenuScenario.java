@@ -3,7 +3,6 @@ package ru.snptech.businessbanyabot.service.scenario.user;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
@@ -11,9 +10,10 @@ import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
+import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +23,7 @@ import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 @Component
 @RequiredArgsConstructor
 public class UserMainMenuScenario extends AbstractScenario {
-    private final TelegramClient telegramClient;
+    private final TelegramClientAdapter telegramClientAdapter;
 
     public static final String SEARCH = "Поиск";
     public static final String BALANCE = "Мой баланс";
@@ -59,12 +59,11 @@ public class UserMainMenuScenario extends AbstractScenario {
                 }
 
                 default -> {
-                    telegramClient.execute(
-                        createSendMessage(
-                            CHAT_ID.getValue(requestContext),
-                            MessageConstants.MAIN_MENU,
-                            MenuConstants.createUserMainMenu(role)
-                        ));
+                    telegramClientAdapter.sendMessage(
+                        CHAT_ID.getValue(requestContext, Long.class),
+                        MessageConstants.MAIN_MENU,
+                        MenuConstants.createUserMainMenu(role)
+                    );
                 }
             }
         }

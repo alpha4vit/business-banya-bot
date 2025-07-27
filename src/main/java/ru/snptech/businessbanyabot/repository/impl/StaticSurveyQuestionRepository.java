@@ -20,7 +20,7 @@ public class StaticSurveyQuestionRepository implements SurveyQuestionRepository 
         ),
         new SurveyQuestion(
             2L,
-            "Укажите свой аккаунт в социальных сетях \\(Instagram\\, VK\\, Facebook\\, можно указать все\\, можно какую\\-то одну\\, где вы чаще всего бываете\\)",
+            "Укажите свой аккаунт в социальных сетях (Instagram, VK, Facebook, можно указать все, можно какую-то одну, где вы чаще всего бываете)",
             SurveyScenarioStep.SOCIAL_MEDIA
         )
     );

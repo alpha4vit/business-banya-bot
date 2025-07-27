@@ -6,8 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.snptech.businessbanyabot.telegram.TelegramUtils;
+
+import java.io.File;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +24,7 @@ public class TelegramClientAdapter {
     public void sendMessage(Long chatId, String text) {
         var message = SendMessage.builder()
             .chatId(chatId)
-            .text(text)
+            .text(TelegramUtils.escapeMarkdownV2(text))
             .parseMode(ParseMode.MARKDOWNV2)
             .build();
 
@@ -41,7 +46,7 @@ public class TelegramClientAdapter {
     public void sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         var message = SendMessage.builder()
             .chatId(chatId)
-            .text(text)
+            .text(TelegramUtils.escapeMarkdownV2(text))
             .replyMarkup(replyKeyboard)
             .parseMode(ParseMode.MARKDOWNV2)
             .build();
@@ -56,6 +61,18 @@ public class TelegramClientAdapter {
             .text(text)
             .replyMarkup(replyKeyboard)
             .parseMode(parseMode)
+            .build();
+
+        telegramClient.execute(message);
+    }
+
+    @SneakyThrows
+    public void sendFile(Long chatId, File file) {
+        var inputFile = new InputFile(file);
+
+        var message = SendPhoto.builder()
+            .chatId(chatId)
+            .photo(inputFile)
             .build();
 
         telegramClient.execute(message);

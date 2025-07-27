@@ -17,7 +17,7 @@ public class MetaDataKey<T> {
         return (T) params.get(serializationName);
     }
 
-    public <T> T getValue(Map<String, Object> params, Class<T> clazz) {
+    public <T> T  getValue(Map<String, Object> params, Class<T> clazz) {
         return mapper.convertValue(params.get(serializationName), clazz);
     }
 

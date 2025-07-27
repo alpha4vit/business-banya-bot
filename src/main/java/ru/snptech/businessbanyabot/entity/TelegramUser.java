@@ -35,6 +35,9 @@ public class TelegramUser {
 
     private String phoneNumber;
 
+    // base64 qrCode
+    private String qrCode;
+
     @CreationTimestamp
     private Instant createdAt;
 

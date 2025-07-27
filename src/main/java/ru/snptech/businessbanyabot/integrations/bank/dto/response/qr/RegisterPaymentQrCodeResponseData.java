@@ -1,4 +1,6 @@
-package ru.snptech.businessbanyabot.integrations.bank.dto.response;
+package ru.snptech.businessbanyabot.integrations.bank.dto.response.qr;
+
+import ru.snptech.businessbanyabot.integrations.bank.dto.common.QrImage;
 
 public record RegisterPaymentQrCodeResponseData(
     String status,

@@ -30,21 +30,6 @@ public class TelegramUtils {
         }
     }
 
-    public static SendMessage buildSendMessage(String chatId, String text, ReplyKeyboard replyKeyboard) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .replyMarkup(replyKeyboard)
-                .build();
-    }
-
-    public static SendMessage buildSendMessage(String chatId, String text) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .build();
-    }
-
 
     public static String escapeMarkdownV2(String str) {
         return Optional.ofNullable(str).orElse("")

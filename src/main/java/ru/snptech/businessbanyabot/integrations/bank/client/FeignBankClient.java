@@ -4,13 +4,16 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.snptech.businessbanyabot.integrations.bank.dto.request.RegisterPaymentQrCodeRequest;
-import ru.snptech.businessbanyabot.integrations.bank.dto.response.RegisterPaymentQrCodeResponse;
+import ru.snptech.businessbanyabot.integrations.bank.dto.request.qr.RegisterPaymentQrCodeRequest;
+import ru.snptech.businessbanyabot.integrations.bank.dto.request.webhook.CreateWebhookRequest;
+import ru.snptech.businessbanyabot.integrations.bank.dto.response.qr.RegisterPaymentQrCodeResponse;
 
 @FeignClient(
     name = "bank-tochka-feign-client",
-    url = "https://enter.tochka.com/sandbox/v2"
+    url = "https://enter.tochka.com/uapi/",
+    configuration = FeignBankClientConfiguration.class
 )
 public interface FeignBankClient {
 
@@ -19,15 +22,13 @@ public interface FeignBankClient {
         @PathVariable("apiVersion") String apiVersion,
         @PathVariable("merchantId") String merchantId,
         @PathVariable("accountId") String accountId,
-        @RequestBody RegisterPaymentQrCodeRequest registerPaymentQrCodeRequest
+        @RequestBody RegisterPaymentQrCodeRequest registerPaymentQrCodeData
     );
 
-    @PostMapping("/webhook/{apiVersion}/{client_id}")
+    @PutMapping("/webhook/{apiVersion}/{clientId}")
     ResponseEntity<String> createWebhook(
         @PathVariable("apiVersion") String apiVersion,
         @PathVariable("clientId") String clientId,
-        @RequestBody RegisterPay mentQrCodeRequest registerPaymentQrCodeRequest
-    ) {
-
-    }
+        @RequestBody CreateWebhookRequest createWebhookRequest
+    );
 }

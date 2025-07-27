@@ -59,23 +59,6 @@ public class UserCallbackScenario extends AbstractScenario {
         telegramClient.execute(new AnswerCallbackQuery(TG_UPDATE.getValue(requestContext).getCallbackQuery().getId()));
     }
 
-    @SneakyThrows
-    private void sendMessage(Map<String, Object> requestContext, String message) {
-        telegramClient.execute(createSendMessage(
-                CHAT_ID.getValue(requestContext),
-                message,
-                (String) null
-        ));
-    }
-
-    @SneakyThrows
-    private Message sendMessage(Map<String, Object> requestContext, String message, ReplyKeyboard replyKeyboard) {
-        return telegramClient.execute(createSendMessage(
-                CHAT_ID.getValue(requestContext),
-                message,
-                replyKeyboard
-        ));
-    }
 
     private static String extractCallbackPrefix(String callback) {
         return callback.split("_")[0] + "_";
