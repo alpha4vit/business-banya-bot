@@ -14,8 +14,8 @@ public final class AdminMessageConstants {
         *Социальная сеть:* %s
         """;
 
-    public static final String SURVEY_ACCEPT_MESSAGE = "Анкета успешно одобрена\\. Ожидание оплаты от пользователя\\.";
+    public static final String SURVEY_ACCEPT_MESSAGE = "Анкета успешно одобрена. Ожидание оплаты от пользователя.";
 
-    public static final String SURVEY_DECLINED_MESSAGE = "Анкета успешно отклонена\\. Пользователь заблокирован до N";
+    public static final String SURVEY_DECLINED_MESSAGE = "Анкета успешно отклонена. Пользователь заблокирован до %s";
 
 }

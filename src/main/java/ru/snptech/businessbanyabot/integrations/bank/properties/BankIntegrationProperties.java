@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 @Getter
 @Setter
 @Component
@@ -28,7 +30,7 @@ public class BankIntegrationProperties {
     @Getter
     @Setter
     public static class QrCodeSettings {
-        private Integer ttlInMinutes;
+        private Duration ttl;
         private QrCodeImageSettings imageSettings;
         private String currency;
         private Integer moneyAmount;

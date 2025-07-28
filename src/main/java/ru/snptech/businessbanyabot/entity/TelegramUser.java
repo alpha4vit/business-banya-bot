@@ -2,10 +2,7 @@ package ru.snptech.businessbanyabot.entity;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import ru.snptech.businessbanyabot.model.user.UserRole;
@@ -13,12 +10,9 @@ import ru.snptech.businessbanyabot.model.user.UserStatus;
 
 import java.time.Instant;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "telegram_users")
-@NoArgsConstructor
-@AllArgsConstructor
 public class TelegramUser {
 
     @Id
@@ -34,9 +28,6 @@ public class TelegramUser {
     private String fullName;
 
     private String phoneNumber;
-
-    // base64 qrCode
-    private String qrCode;
 
     @CreationTimestamp
     private Instant createdAt;

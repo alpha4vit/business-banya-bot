@@ -35,7 +35,7 @@ public class TelegramUtils {
         return Optional.ofNullable(str).orElse("")
                 .replace("!", "\\!")
                 .replace("_", "\\_")
-                .replace("*", "\\*")
+//                .replace("*", "\\*")
                 .replace("~", "\\~")
                 .replace("|", "\\|")
                 .replace("[", "\\[")
@@ -50,6 +50,7 @@ public class TelegramUtils {
                 .replace("}", "\\}")
                 .replace("{", "\\{")
                 .replace("-", "\\-")
-                .replace(">", "\\>");
+                .replace(">", "\\>")
+                .replace("&", "\\&");
     }
 }

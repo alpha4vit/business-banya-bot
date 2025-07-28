@@ -1,6 +1,5 @@
 package ru.snptech.businessbanyabot.service.scenario;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,10 +19,8 @@ import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class VerificationScenario extends AbstractScenario {
 
-    private final TelegramClientAdapter telegramClientAdapter;
     private final UserContextService userContextService;
     private final UserRepository userRepository;
 
@@ -51,7 +48,7 @@ public class VerificationScenario extends AbstractScenario {
             return;
         }
 
-        telegramClientAdapter.sendMessage(user.getChatId(), MessageConstants.VERIFICATION_NEED_MESSAGE);
+        sendMessage(requestContext, MessageConstants.VERIFICATION_NEED_MESSAGE);
 
         IS_VERIFIED.setValue(requestContext, false);
         SCENARIO_STEP.setValue(requestContext, VerificationScenarioStep.WAITING_NUMBER);
@@ -74,5 +71,15 @@ public class VerificationScenario extends AbstractScenario {
 
     private Boolean isPhoneNumber(String text) {
         return text != null && text.matches("^\\+\\d{10,15}$");
+    }
+
+    public VerificationScenario(
+        TelegramClientAdapter telegramClientAdapter,
+        UserContextService userContextService,
+        UserRepository userRepository
+    ) {
+        super(telegramClientAdapter);
+        this.userContextService = userContextService;
+        this.userRepository = userRepository;
     }
 }

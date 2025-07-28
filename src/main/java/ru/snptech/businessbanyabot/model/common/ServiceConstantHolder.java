@@ -4,6 +4,7 @@ package ru.snptech.businessbanyabot.model.common;
 import lombok.experimental.UtilityClass;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.snptech.businessbanyabot.entity.Survey;
+import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
 
@@ -33,5 +34,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<Boolean> IS_VERIFIED = new MetaDataKey<>("isVerified", Boolean.class);
     public static final MetaDataKey<Boolean> IS_SURVEY_ACCEPTED = new MetaDataKey<>("isSurveyAccepted", Boolean.class);
     public static final MetaDataKey<Survey> LATEST_SURVEY = new MetaDataKey<>("latestSurvey", Survey.class);
-    public static final MetaDataKey<String> QR_CODE = new MetaDataKey<>("qrCode", String.class);
+    public static final MetaDataKey<PaymentType> PAYMENT_TYPE = new MetaDataKey<>("paymentType", PaymentType.class);
 }

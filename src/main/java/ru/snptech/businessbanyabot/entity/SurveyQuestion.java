@@ -1,18 +1,14 @@
 package ru.snptech.businessbanyabot.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name = "survey_question")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "survey_question")
 public class SurveyQuestion {
 
     @Id

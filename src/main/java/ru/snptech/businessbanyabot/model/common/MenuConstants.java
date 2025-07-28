@@ -18,30 +18,11 @@ import java.util.List;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT;
 
 @UtilityClass
 public class MenuConstants {
-    public static InlineKeyboardMarkup createInitDealAmountMenu(String dealId) {
-        return new InlineKeyboardMarkup(List.of(
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("Указать сумму заказа")
-                    .callbackData(UserCallbackScenario.USER_DEAL_AMOUNT_ENTER + dealId)
-                    .build()
-            )
-        ));
-    }
-
-    public static InlineKeyboardMarkup createInitDealAmountCashedMenu(String dealId) {
-        return new InlineKeyboardMarkup(List.of(
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("Указать размер комиссии")
-                    .callbackData(UserCallbackScenario.USER_DEAL_COMMISSION_ENTER + dealId)
-                    .build()
-            )
-        ));
-    }
 
 
     public static InlineKeyboardMarkup createAdminSurveyAcceptMenu(TelegramUser userForModeration) {
@@ -54,64 +35,6 @@ public class MenuConstants {
             )
         ));
     }
-
-    public static InlineKeyboardMarkup createGetOrCantDealMenu(String dealId) {
-        return new InlineKeyboardMarkup(List.of(
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("✅ Беру заказ")
-                    .callbackData(UserCallbackScenario.USER_DEAL_APPROVE_CALLBACK_PREFIX + dealId)
-                    .build()
-            ),
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("❌ Не могу взять")
-                    .callbackData(UserCallbackScenario.USER_DEAL_REJECT_CALLBACK_PREFIX + dealId).
-                    build()
-            )
-        ));
-    }
-
-    public static InlineKeyboardMarkup funeralMenu(String dealId) {
-        return new InlineKeyboardMarkup(List.of(
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("✅ Сделка успешна")
-                    .callbackData(UserCallbackScenario.USER_DEAL_SECOND_APPROVE_CALLBACK_PREFIX + dealId)
-                    .build()
-            ),
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("Нужен номер телефона")
-                    .callbackData(UserCallbackScenario.USER_DEAL_SECOND_PHONE_CALLBACK_PREFIX + dealId)
-                    .build()
-            ),
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("❌ Отказ")
-                    .callbackData(UserCallbackScenario.USER_DEAL_SECOND_REJECT_CALLBACK_PREFIX + dealId)
-                    .build()
-            )
-        ));
-    }
-
-    public static InlineKeyboardMarkup dealSecondMenu(String dealId) {
-        return new InlineKeyboardMarkup(List.of(
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("✅ Сделка успешна")
-                    .callbackData(UserCallbackScenario.USER_DEAL_SECOND_APPROVE_CALLBACK_PREFIX + dealId)
-                    .build()
-            ),
-            new InlineKeyboardRow(
-                InlineKeyboardButton.builder()
-                    .text("❌ Отказ")
-                    .callbackData(UserCallbackScenario.USER_DEAL_SECOND_REJECT_CALLBACK_PREFIX + dealId)
-                    .build()
-            )
-        ));
-    }
-
 
     public static ReplyKeyboard createUserMainMenu(UserRole userRole) {
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(new ArrayList<>());
@@ -139,6 +62,18 @@ public class MenuConstants {
                 ),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("❌ Отклонить").callbackData(ADMIN_SURVEY_DECLINE_PREFIX + surveyId).build()
+                )
+            ));
+    }
+
+    public static InlineKeyboardMarkup createChoosePaymentMethodMenu(Long chatId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Оплата через СБП QR").callbackData(USER_CHOOSE_FAST_PAYMENT + chatId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_CHOOSE_INVOICE_PAYMENT + chatId).build()
                 )
             ));
     }

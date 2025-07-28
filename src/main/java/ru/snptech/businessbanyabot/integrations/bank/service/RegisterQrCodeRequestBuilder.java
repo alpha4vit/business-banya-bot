@@ -33,7 +33,7 @@ public class RegisterQrCodeRequestBuilder {
                     imageSettings.getMediaType()
                 ),
                 SOURCE_NAME,
-                qrCodeSettings.getTtlInMinutes()
+                qrCodeSettings.getTtl().toMinutes()
             )
         );
     }

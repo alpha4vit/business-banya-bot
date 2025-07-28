@@ -1,6 +1,5 @@
 package ru.snptech.businessbanyabot.service.scenario.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
@@ -21,9 +20,7 @@ import java.util.Set;
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Component
-@RequiredArgsConstructor
 public class UserMainMenuScenario extends AbstractScenario {
-    private final TelegramClientAdapter telegramClientAdapter;
 
     public static final String SEARCH = "Поиск";
     public static final String BALANCE = "Мой баланс";
@@ -36,6 +33,19 @@ public class UserMainMenuScenario extends AbstractScenario {
     private final UserContextService userContextService;
     private final UserRepository userRepository;
     private final SurveyScenario surveyScenario;
+
+    public UserMainMenuScenario(
+        TelegramClientAdapter telegramClientAdapter,
+        UserContextService userContextService,
+        UserRepository userRepository,
+        SurveyScenario surveyScenario
+    ) {
+        super(telegramClientAdapter);
+
+        this.userContextService = userContextService;
+        this.userRepository = userRepository;
+        this.surveyScenario = surveyScenario;
+    }
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -59,8 +69,8 @@ public class UserMainMenuScenario extends AbstractScenario {
                 }
 
                 default -> {
-                    telegramClientAdapter.sendMessage(
-                        CHAT_ID.getValue(requestContext, Long.class),
+                    sendMessage(
+                        requestContext,
                         MessageConstants.MAIN_MENU,
                         MenuConstants.createUserMainMenu(role)
                     );

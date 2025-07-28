@@ -79,6 +79,20 @@ public class TelegramClientAdapter {
     }
 
     @SneakyThrows
+    public void sendFile(Long chatId, File file, String caption) {
+        var inputFile = new InputFile(file);
+
+        var message = SendPhoto.builder()
+            .chatId(chatId)
+            .photo(inputFile)
+            .caption(TelegramUtils.escapeMarkdownV2(caption))
+            .parseMode(ParseMode.MARKDOWNV2)
+            .build();
+
+        telegramClient.execute(message);
+    }
+
+    @SneakyThrows
     public void releaseCallback(String callbackId) {
         telegramClient.execute(new AnswerCallbackQuery(callbackId));
     }

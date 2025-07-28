@@ -1,6 +1,5 @@
 package ru.snptech.businessbanyabot.service.scenario.survey;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,10 +29,8 @@ import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 import static ru.snptech.businessbanyabot.service.survey.SurveyStepMappings.updateField;
 
 @Component
-@RequiredArgsConstructor
 public class SurveyScenario extends AbstractScenario {
 
-    private final TelegramClientAdapter telegramClientAdapter;
     private final SurveyQuestionRepository surveyQuestionRepository;
     private final SurveyRepository surveyRepository;
     private final UserContextService userContextService;
@@ -44,6 +41,23 @@ public class SurveyScenario extends AbstractScenario {
 
     private long lastQuestionNumber = 0L;
     private static final long FIRST_MESSAGE_NUMBER = 1L;
+
+    public SurveyScenario(
+        TelegramClientAdapter telegramClientAdapter,
+        SurveyQuestionRepository surveyQuestionRepository,
+        SurveyRepository surveyRepository,
+        UserContextService userContextService,
+        UserRepository userRepository,
+        ApplicationEventPublisher eventPublisher
+    ) {
+        super(telegramClientAdapter);
+
+        this.surveyQuestionRepository = surveyQuestionRepository;
+        this.surveyRepository = surveyRepository;
+        this.userContextService = userContextService;
+        this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
+    }
 
     @Scheduled(initialDelay = 0L, fixedRate = 1L, timeUnit = TimeUnit.HOURS)
     private void updateQuestions() {
@@ -92,7 +106,7 @@ public class SurveyScenario extends AbstractScenario {
 
         SCENARIO_STEP.setValue(requestContext, nextQuestion.getScenarioStep().name());
 
-        sendQuestion(user, nextQuestion);
+        sendMessage(requestContext, nextQuestion.getMessage());
 
         userContextService.updateUserContext(user, requestContext);
         surveyRepository.save(updated);
@@ -106,7 +120,7 @@ public class SurveyScenario extends AbstractScenario {
         SCENARIO_STEP.setValue(context, firstQuestion.getScenarioStep().name());
         IS_SURVEY_ACCEPTED.setValue(context, false);
 
-        sendQuestion(user, firstQuestion);
+        sendMessage(context, firstQuestion.getMessage());
 
         userContextService.updateUserContext(user, context);
     }
@@ -150,11 +164,5 @@ public class SurveyScenario extends AbstractScenario {
             .filter(predicate)
             .findFirst()
             .orElseThrow(BusinessBanyaInternalException.SURVEY_QUESTION_NOT_FOUND::new);
-    }
-
-
-    @SneakyThrows
-    private void sendQuestion(TelegramUser user, SurveyQuestion question) {
-        telegramClientAdapter.sendMessage(user.getChatId(), question.getMessage());
     }
 }

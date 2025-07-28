@@ -35,9 +35,9 @@ application:
         image-settings:
           size: 400
           media-type: image/png
-        ttl-in-minutes: 120
+        ttl: 3d
         currency: RUB
-        money-amount: 100
+        money-amount: 20000
       webhook:
         url: ${application.host}/${application.base-url}/integration/bank/webhook
 

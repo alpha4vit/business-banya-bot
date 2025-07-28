@@ -31,6 +31,17 @@ public class MessageConstants {
         """;
     public static final String SURVEY_COMPLETE_MESSAGE
         = "Анкета успешно заполнена! Ожидайте уведомления о результате прохождения модерации.";
+
+    public static final String SURVEY_ACCEPTED_CHOOSE_PAYMENT_METHOD
+        = "Ваше анкета одобрена администратором. Выберите желаемый способ оплаты";
+
+    public static final String FAST_PAYMENT_TEMPLATE = """
+        *Стоимость:* %s %s
+        *Номер QR-кода:* %s
+        *Действителен до:* %s
+        *Ссылка на оплату:* %s
+        """;
+
     public static final String MODERATION_APPROVED_TO_USER_MESSAGE = """
         ✅ Анкета одобрена, вам открыт доступ к заявкам и основным функциям бота.
         """;

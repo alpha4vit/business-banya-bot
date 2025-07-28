@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.integrations.bank.client.FeignBankClient;
 import ru.snptech.businessbanyabot.integrations.bank.dto.common.QrType;
+import ru.snptech.businessbanyabot.integrations.bank.dto.request.qr.RegisterPaymentQrCodeRequest;
 import ru.snptech.businessbanyabot.integrations.bank.dto.request.webhook.CreateWebhookRequest;
 import ru.snptech.businessbanyabot.integrations.bank.dto.response.qr.RegisterPaymentQrCodeResponse;
 import ru.snptech.businessbanyabot.integrations.bank.properties.BankIntegrationProperties;
@@ -15,15 +16,12 @@ import ru.snptech.businessbanyabot.integrations.bank.properties.BankIntegrationP
 @RequiredArgsConstructor
 public class BankIntegrationServiceImpl implements BankIntegrationService {
 
-    private final RegisterQrCodeRequestBuilder registerQrCodeRequestBuilder;
     private final BankIntegrationProperties bankIntegrationProperties;
     private final FeignBankClient feignBankClient;
 
     @Override
     @SneakyThrows
-    public RegisterPaymentQrCodeResponse registerQrCode(QrType type) {
-        var request = registerQrCodeRequestBuilder.build(type);
-
+    public RegisterPaymentQrCodeResponse registerQrCode(RegisterPaymentQrCodeRequest request) {
         return feignBankClient.registerQrCode(
                 bankIntegrationProperties.getApiVersion(),
                 bankIntegrationProperties.getMerchantId(),

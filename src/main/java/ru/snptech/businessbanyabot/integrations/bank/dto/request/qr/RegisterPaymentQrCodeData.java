@@ -9,6 +9,6 @@ public record RegisterPaymentQrCodeData(
     String qrcType,
     QrImage imageParams,
     String sourceName,
-    Integer ttl
+    Long ttl
 ) {
 }
