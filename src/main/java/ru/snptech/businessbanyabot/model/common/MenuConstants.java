@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.model.user.UserRole;
-import ru.snptech.businessbanyabot.service.scenario.user.UserCallbackScenario;
+import ru.snptech.businessbanyabot.service.scenario.admin.AdminMainMenuScenario;
 import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
 
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import java.util.List;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
 
 @UtilityClass
 public class MenuConstants {
@@ -50,6 +50,18 @@ public class MenuConstants {
                 new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS))
             ));
         }
+
+        return keyboardMarkup;
+    }
+
+    public static ReplyKeyboard createAdminMainMenu() {
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(new ArrayList<>());
+        keyboardMarkup.setIsPersistent(true);
+        keyboardMarkup.setResizeKeyboard(true);
+
+        keyboardMarkup.getKeyboard().addAll(List.of(
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.PAYMENT_REPORT))
+        ));
 
         return keyboardMarkup;
     }

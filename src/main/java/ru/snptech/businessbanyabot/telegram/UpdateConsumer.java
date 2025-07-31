@@ -7,6 +7,7 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
+import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.VerificationScenario;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminUpdateScenario;
@@ -17,7 +18,8 @@ import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.IS_VERIFIED;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
 
 @Slf4j
 @Component
@@ -39,9 +41,9 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
             Map<String, Object> requestContext = new HashMap<>();
             TG_UPDATE.setValue(requestContext, update);
 
-            registrationScenario.invoke(requestContext);
+            var user = registrationScenario.invoke(requestContext);
 
-            if (USER_ROLE.getValue(requestContext, UserRole.class).equals(UserRole.ADMIN)) {// {
+            if (UserRole.ADMIN.equals(user.getRole())) {
                 adminUpdateScenario.invoke(requestContext);
 
                 return;

@@ -33,19 +33,27 @@ abstract public class AbstractScenario {
     }
 
     @SneakyThrows
-    protected void sendFile(Map<String, Object> requestContext, File file) {
-        telegramClientAdapter.sendFile(
+    protected void sendPhoto(Map<String, Object> requestContext, File file) {
+        telegramClientAdapter.sendPhoto(
             CHAT_ID.getValue(requestContext, Long.class),
             file
         );
     }
 
     @SneakyThrows
-    protected void sendFile(Map<String, Object> requestContext, File file, String caption) {
-        telegramClientAdapter.sendFile(
+    protected void sendPhoto(Map<String, Object> requestContext, File file, String caption) {
+        telegramClientAdapter.sendPhoto(
             CHAT_ID.getValue(requestContext, Long.class),
             file,
             caption
+        );
+    }
+
+    @SneakyThrows
+    protected void sendFile(Map<String, Object> requestContext, File file) {
+        telegramClientAdapter.sendFile(
+            CHAT_ID.getValue(requestContext, Long.class),
+            file
         );
     }
 }

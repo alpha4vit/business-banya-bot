@@ -3,9 +3,9 @@ package ru.snptech.businessbanyabot.service.scenario.user;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.integrations.bank.dto.common.QrType;
-import ru.snptech.businessbanyabot.integrations.bank.service.BankIntegrationService;
-import ru.snptech.businessbanyabot.integrations.bank.service.RegisterQrCodeRequestBuilder;
+import ru.snptech.businessbanyabot.integration.bank.dto.common.QrType;
+import ru.snptech.businessbanyabot.integration.bank.service.BankIntegrationService;
+import ru.snptech.businessbanyabot.integration.bank.service.RegisterQrCodeRequestBuilder;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.payment.FastPaymentContent;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
@@ -14,7 +14,7 @@ import ru.snptech.businessbanyabot.service.payment.PaymentService;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.service.util.ImageUtil;
-import ru.snptech.businessbanyabot.service.util.TimeUtil;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
@@ -60,11 +60,11 @@ public class PaymentScenario extends AbstractScenario {
                 payment.getAmount().toString(),
                 payment.getCurrency(),
                 payment.getExternalId(),
-                TimeUtil.formatToRussianDate(payment.getExpiredAt()),
+                TimeUtils.formatToRussianDate(payment.getExpiredAt()),
                 content.getLink()
             );
 
-            sendFile(context, file, caption);
+            sendPhoto(context, file, caption);
 
             return;
         }
@@ -95,11 +95,11 @@ public class PaymentScenario extends AbstractScenario {
             fastPaymentData.data().amount().toString(),
             fastPaymentData.data().currency(),
             bankResponse.data().qrcId(),
-            TimeUtil.formatToRussianDate(createdPayment.getExpiredAt()),
+            TimeUtils.formatToRussianDate(createdPayment.getExpiredAt()),
             bankResponse.data().payload()
         );
 
-        sendFile(context, file, caption);
+        sendPhoto(context, file, caption);
     }
 
     private void handleInvoice(TelegramUser user, Map<String, Object> context) {

@@ -7,7 +7,6 @@ import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
-import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
@@ -52,7 +51,6 @@ public class UserMainMenuScenario extends AbstractScenario {
         var tgUpdate = TG_UPDATE.getValue(requestContext);
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
         var user = userRepository.findByChatId(chatId);
-        var role = USER_ROLE.getValue(requestContext, UserRole.class);
 
         if (tgUpdate.getMessage().hasText()) {
             switch (tgUpdate.getMessage().getText()) {
@@ -72,7 +70,7 @@ public class UserMainMenuScenario extends AbstractScenario {
                     sendMessage(
                         requestContext,
                         MessageConstants.MAIN_MENU,
-                        MenuConstants.createUserMainMenu(role)
+                        MenuConstants.createUserMainMenu(user.getRole())
                     );
                 }
             }

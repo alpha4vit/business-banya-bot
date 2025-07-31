@@ -10,5 +10,6 @@ WORKDIR /app
 # Копируем JAR-файл приложения в контейнер
 COPY target/*.jar app.jar
 
+EXPOSE 8080
 # Запускаем приложение при старте контейнера
 ENTRYPOINT ["java", "-Xms1024m", "-Xmx3072m", "-jar", "/app/app.jar"]

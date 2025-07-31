@@ -18,7 +18,6 @@ logging:
     ru.snptech.businessbanyabot: DEBUG
 
 application:
-  host: http://localhost:8080
   base-url: api/v1
 
   telegram:
@@ -39,5 +38,9 @@ application:
         currency: RUB
         money-amount: 20000
       webhook:
-        url: ${application.host}/${application.base-url}/integration/bank/webhook
+        url: http://localhost:8080/${application.base-url}/integration/bank/webhook
+    bitrix:
+      url: https://prime-ural.bitrix24.ru/rest/1942/
+      client_secret: ARcx32D4goH0KmJBOF43A9ypmm0E0GYg2hEnStMKfeJA7eKKdd
+      client_id: local.688a9160e5e2a6.64223377
 

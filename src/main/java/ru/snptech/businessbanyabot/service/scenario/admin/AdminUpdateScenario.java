@@ -2,37 +2,76 @@ package ru.snptech.businessbanyabot.service.scenario.admin;
 
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
+import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
+import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
 
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.SCENARIO;
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
 
 @Component
 public class AdminUpdateScenario extends AbstractScenario {
 
     private final AdminCallbackScenario adminCallbackScenario;
+    private final UserRepository userRepository;
+    private final AdminMainMenuScenario adminMainMenuScenario;
+    private final UserContextService userContextService;
 
     public AdminUpdateScenario(
         TelegramClientAdapter telegramClientAdapter,
-        AdminCallbackScenario adminCallbackScenario
+        AdminCallbackScenario adminCallbackScenario,
+        UserRepository userRepository,
+        AdminMainMenuScenario adminMainMenuScenario,
+        UserContextService userContextService
     ) {
         super(telegramClientAdapter);
 
+        this.userContextService = userContextService;
+        this.userRepository = userRepository;
+        this.adminMainMenuScenario = adminMainMenuScenario;
         this.adminCallbackScenario = adminCallbackScenario;
     }
 
     public void invoke(Map<String, Object> requestContext) {
-        if (TG_UPDATE.getValue(requestContext).hasCallbackQuery()) {
+        var update = TG_UPDATE.getValue(requestContext);
+
+        if (update.hasCallbackQuery()) {
             adminCallbackScenario.invoke(requestContext);
 
             return;
         }
 
-        if (!TG_UPDATE.getValue(requestContext).hasMessage()) {
+        if (!update.hasMessage()) {
             throw new BusinessBanyaInternalException.MESSAGE_HAS_NO_CONTENT();
         }
 
+        var currentScenario = SCENARIO.getValue(requestContext, ScenarioType.class);
+
+        switch (currentScenario) {
+            case MAIN_MENU -> {
+                adminMainMenuScenario.invoke(requestContext);
+            }
+
+            default -> {
+                // nothing for now
+            }
+        }
+    }
+
+    private void cleanContextIfNeeded(Long chatId, Map<String, Object> requestContext) {
+        if (
+            TG_UPDATE.getValue(requestContext).getMessage().hasText()
+                && "/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                && UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
+        ) {
+            var user = userRepository.findByChatId(chatId);
+
+            userContextService.cleanUserContext(user);
+        }
     }
 }

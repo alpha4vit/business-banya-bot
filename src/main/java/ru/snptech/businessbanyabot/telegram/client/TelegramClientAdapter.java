@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -67,7 +68,7 @@ public class TelegramClientAdapter {
     }
 
     @SneakyThrows
-    public void sendFile(Long chatId, File file) {
+    public void sendPhoto(Long chatId, File file) {
         var inputFile = new InputFile(file);
 
         var message = SendPhoto.builder()
@@ -79,7 +80,7 @@ public class TelegramClientAdapter {
     }
 
     @SneakyThrows
-    public void sendFile(Long chatId, File file, String caption) {
+    public void sendPhoto(Long chatId, File file, String caption) {
         var inputFile = new InputFile(file);
 
         var message = SendPhoto.builder()
@@ -87,6 +88,18 @@ public class TelegramClientAdapter {
             .photo(inputFile)
             .caption(TelegramUtils.escapeMarkdownV2(caption))
             .parseMode(ParseMode.MARKDOWNV2)
+            .build();
+
+        telegramClient.execute(message);
+    }
+
+    @SneakyThrows
+    public void sendFile(Long chatId, File file) {
+        var inputFile = new InputFile(file);
+
+        var message = SendDocument.builder()
+            .chatId(chatId)
+            .document(inputFile)
             .build();
 
         telegramClient.execute(message);

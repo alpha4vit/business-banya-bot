@@ -14,7 +14,7 @@ import ru.snptech.businessbanyabot.repository.SurveyRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.BaseCallbackScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
-import ru.snptech.businessbanyabot.service.util.TimeUtil;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.time.Duration;
@@ -70,7 +70,7 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
                 USER_STATUS.setValue(requestContext, UserStatus.BANNED);
 
                 // TODO use value from env
-                var bannedUntil = TimeUtil.formatToRussianDate(
+                var bannedUntil = TimeUtils.formatToRussianDate(
                     bannedAt.plus(Duration.ofDays(93))
                 );
 

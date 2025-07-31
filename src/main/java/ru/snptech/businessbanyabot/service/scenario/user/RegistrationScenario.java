@@ -21,7 +21,7 @@ public class RegistrationScenario {
     private final UserRepository userRepository;
     private final UserContextService userContextService;
 
-    public void invoke(Map<String, Object> requestContext) {
+    public TelegramUser invoke(Map<String, Object> requestContext) {
         var tgUpdate = TG_UPDATE.getValue(requestContext);
         var chatId = TelegramUtils.extractChatIdFromUpdate(tgUpdate);
         var user = userRepository.findByChatId(chatId);
@@ -37,7 +37,8 @@ public class RegistrationScenario {
                 ));
 
             requestContext.putAll(contextWithoutUpdates);
-            return;
+
+            return user;
         }
 
         var tgUser = TelegramUtils.extractUserFromUpdate(tgUpdate);
@@ -52,8 +53,9 @@ public class RegistrationScenario {
 
         CHAT_ID.setValue(requestContext, user.getChatId().toString());
         SCENARIO.setValue(requestContext, ScenarioType.VERIFICATION.name());
-        USER_ROLE.setValue(requestContext, user.getRole());
 
         userContextService.updateUserContext(user, requestContext);
+
+        return user;
     }
 }

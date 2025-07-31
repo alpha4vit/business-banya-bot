@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.Payment;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.integrations.bank.properties.BankIntegrationProperties;
+import ru.snptech.businessbanyabot.integration.bank.properties.BankIntegrationProperties;
 import ru.snptech.businessbanyabot.model.payment.PaymentContent;
 import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;

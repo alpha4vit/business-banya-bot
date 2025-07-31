@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.ResidentStatus;
+import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
+import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
@@ -21,6 +24,7 @@ import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 @Component
 public class VerificationScenario extends AbstractScenario {
 
+    private final BitrixIntegrationService bitrixIntegrationService;
     private final UserContextService userContextService;
     private final UserRepository userRepository;
 
@@ -29,7 +33,7 @@ public class VerificationScenario extends AbstractScenario {
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
         var user = userRepository.findByChatId(chatId);
 
-        if (UserRole.ADMIN.equals(USER_ROLE.getValue(requestContext))) return;
+        if (UserRole.ADMIN.equals(user.getRole())) return;
 
         var isVerified = IS_VERIFIED.getValue(requestContext);
 
@@ -62,7 +66,22 @@ public class VerificationScenario extends AbstractScenario {
             throw new BusinessBanyaDomainLogicException.PHONE_NUMBER_IS_REQUIRED();
         }
 
-        user.setPhoneNumber(message.getText());
+        var phoneNumber = message.getText();
+
+        var existedUser = bitrixIntegrationService.findCompanyByPhoneNumber(phoneNumber);
+
+        existedUser.ifPresent(
+            (company) -> {
+                user.setExternalId(company.id());
+                user.setInfo(company);
+
+                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
+
+                user.setRole(residentStatus.toUserRole());
+            }
+        );
+
+        user.setPhoneNumber(phoneNumber);
         IS_VERIFIED.setValue(context, true);
         SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
 
@@ -74,11 +93,13 @@ public class VerificationScenario extends AbstractScenario {
     }
 
     public VerificationScenario(
+        BitrixIntegrationService bitrixIntegrationService,
         TelegramClientAdapter telegramClientAdapter,
         UserContextService userContextService,
         UserRepository userRepository
     ) {
         super(telegramClientAdapter);
+        this.bitrixIntegrationService = bitrixIntegrationService;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
     }
