@@ -35,4 +35,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<Boolean> IS_SURVEY_ACCEPTED = new MetaDataKey<>("isSurveyAccepted", Boolean.class);
     public static final MetaDataKey<Survey> LATEST_SURVEY = new MetaDataKey<>("latestSurvey", Survey.class);
     public static final MetaDataKey<PaymentType> PAYMENT_TYPE = new MetaDataKey<>("paymentType", PaymentType.class);
+    public static final MetaDataKey<Integer> RESIDENT_SLIDER_CURSOR = new MetaDataKey<>("residentSliderCursor", Integer.class);
 }

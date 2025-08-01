@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS telegram_users
     telegram_first_name TEXT        NOT NULL,
     telegram_last_name  TEXT,
     full_name           TEXT,
+    social_media        TEXT,
     phone_number        TEXT,
     created_at          timestamptz NOT NULL,
     context             json,

@@ -10,6 +10,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.dto.BitrixFilter;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,23 +26,22 @@ public class BitrixIntegrationService {
                 "PHONE",
                 List.of(phoneNumber)
             )
-        );
+        ).getBody();
 
-        var companyIds = response.getBody()
-            .result()
-            .get(BitrixEntityType.COMPANY.name());
+        if (!(response.result() instanceof Map<?, ?>)) return Optional.empty();
+
+        var result = (Map<String, List<Integer>>) response.result();
+
+        var companyIds = result.get(BitrixEntityType.COMPANY.name());
 
         if (companyIds == null || companyIds.isEmpty()) {
             return Optional.empty();
         }
 
         var matchedCompanies = companyIds.stream()
-            .map((id) -> crmClient.getCompanyById(id).getBody().result())
+            .map((id) -> crmClient.getCompanyById(String.valueOf(id)).getBody().result())
             .toList();
-
-        var t = 10;
 
         return matchedCompanies.stream().max(Comparator.comparing(o -> Instant.parse(o.dateCreate())));
     }
-
 }

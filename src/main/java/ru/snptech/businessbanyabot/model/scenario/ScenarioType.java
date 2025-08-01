@@ -5,5 +5,6 @@ public enum ScenarioType {
     MAIN_MENU,
     SURVEY,
     PAYMENT,
+    SEARCH,
     PAYMENT_REPORT;
 }

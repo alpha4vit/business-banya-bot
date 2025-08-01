@@ -7,6 +7,7 @@ import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -24,6 +25,7 @@ public class UserUpdateScenario extends AbstractScenario {
     private final UserContextService userContextService;
     private final UserRepository userRepository;
     private final PaymentScenario paymentScenario;
+    private final SearchScenario searchScenario;
 
     public UserUpdateScenario(
         UserCallbackScenario userCallbackScenario,
@@ -32,7 +34,8 @@ public class UserUpdateScenario extends AbstractScenario {
         UserContextService userContextService,
         UserRepository userRepository,
         TelegramClientAdapter telegramClientAdapter,
-        PaymentScenario paymentScenario
+        PaymentScenario paymentScenario,
+        SearchScenario searchScenario
     ) {
         super(telegramClientAdapter);
 
@@ -42,6 +45,7 @@ public class UserUpdateScenario extends AbstractScenario {
         this.surveyScenario = surveyScenario;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
+        this.searchScenario = searchScenario;
     }
 
     @SneakyThrows
@@ -70,17 +74,25 @@ public class UserUpdateScenario extends AbstractScenario {
                 surveyScenario.invoke(requestContext);
             }
 
-            // TODO use payment scenario instead
             case PAYMENT -> {
                 var paymentType = PAYMENT_TYPE.getValue(requestContext, PaymentType.class);
 
                 paymentScenario.handle(paymentType, requestContext);
             }
 
+            case SEARCH -> {
+                searchScenario.invoke(requestContext);
+            }
+
             default -> {
                 // nothing for now
             }
         }
+    }
+
+    private void handleMenuButtons(
+
+    ) {
     }
 
     private void cleanContextIfNeeded(Long chatId, Map<String, Object> requestContext) {

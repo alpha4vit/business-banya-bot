@@ -7,7 +7,7 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
-import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
+import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.VerificationScenario;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminUpdateScenario;

@@ -28,6 +28,8 @@ public class TelegramUser {
 
     private String fullName;
 
+    private String socialMedia;
+
     private String phoneNumber;
 
     @CreationTimestamp

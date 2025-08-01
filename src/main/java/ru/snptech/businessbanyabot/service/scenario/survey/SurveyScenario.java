@@ -88,14 +88,14 @@ public class SurveyScenario extends AbstractScenario {
 
         var survey = getOrCreateSurvey(user);
         var text = update.getMessage().getText();
-        var updated = updateSurvey(survey, surveyStep, text);
+        var updatedSurvey = updateSurvey(survey, surveyStep, text);
+        updateUser(user, surveyStep, text);
 
         LATEST_SURVEY.setValue(requestContext, survey);
 
         if (currentQuestion.getNumber() == lastQuestionNumber) {
-            surveyRepository.save(updated);
 
-            handleSurveyComplete(requestContext, user, updated);
+            handleSurveyComplete(requestContext, user, updatedSurvey);
 
             return;
         }
@@ -109,7 +109,6 @@ public class SurveyScenario extends AbstractScenario {
         sendMessage(requestContext, nextQuestion.getMessage());
 
         userContextService.updateUserContext(user, requestContext);
-        surveyRepository.save(updated);
     }
 
     private void handleSurveyInit(Map<String, Object> context, TelegramUser user) {
@@ -157,6 +156,15 @@ public class SurveyScenario extends AbstractScenario {
         var updated = updateField(survey, step, value);
 
         return surveyRepository.save(updated);
+    }
+
+    private TelegramUser updateUser(TelegramUser user, SurveyScenarioStep step, String value) {
+        switch (step) {
+            case FIO -> user.setFullName(value);
+            case SOCIAL_MEDIA -> user.setSocialMedia(value);
+        }
+
+        return userRepository.save(user);
     }
 
     private SurveyQuestion getQuestionByFilter(Predicate<SurveyQuestion> predicate) {

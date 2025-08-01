@@ -42,6 +42,18 @@ public class MessageConstants {
         *Ссылка на оплату:* %s
         """;
 
+    public static final String SEARCH_MENU_MESSAGE = "Введите ФИО искомого резидента";
+
+    public static final String NO_RESIDENTS_FIND =
+        "Резиденты с заданными параметрами не найдены! Попробуйте изменить запрос";
+
+    public static final String USER_CARD_PREVIEW = """
+        *Имя пользователя: * %s
+        *Номер мобильного телефона: * %s
+        *Текущий бизнес: * %s
+        *Ключевой актив: * %s
+        """;
+
     public static final String MODERATION_APPROVED_TO_USER_MESSAGE = """
         ✅ Анкета одобрена, вам открыт доступ к заявкам и основным функциям бота.
         """;

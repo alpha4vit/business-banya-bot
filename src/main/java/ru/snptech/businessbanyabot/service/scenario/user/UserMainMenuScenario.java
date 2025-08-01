@@ -6,9 +6,11 @@ import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.step.SearchScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -32,18 +34,21 @@ public class UserMainMenuScenario extends AbstractScenario {
     private final UserContextService userContextService;
     private final UserRepository userRepository;
     private final SurveyScenario surveyScenario;
+    private final SearchScenario searchScenario;
 
     public UserMainMenuScenario(
         TelegramClientAdapter telegramClientAdapter,
         UserContextService userContextService,
         UserRepository userRepository,
-        SurveyScenario surveyScenario
+        SurveyScenario surveyScenario,
+        SearchScenario searchScenario
     ) {
         super(telegramClientAdapter);
 
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.surveyScenario = surveyScenario;
+        this.searchScenario = searchScenario;
     }
 
     @SneakyThrows
@@ -64,6 +69,15 @@ public class UserMainMenuScenario extends AbstractScenario {
                     userContextService.updateUserContext(user, requestContext);
 
                     surveyScenario.invoke(requestContext);
+                }
+
+                case SEARCH -> {
+                    SCENARIO.setValue(requestContext, ScenarioType.SEARCH.name());
+                    SCENARIO_STEP.setValue(requestContext, SearchScenarioStep.INIT.name());
+
+                    userContextService.updateUserContext(user, requestContext);
+
+                    searchScenario.invoke(requestContext);
                 }
 
                 default -> {

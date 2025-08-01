@@ -28,13 +28,18 @@ public interface BitrixCrmClient {
         @RequestParam("filter[UF_CRM_1740029712849]") String status
     );
 
+    @GetMapping("/wr0nsrymtgpphupm/crm.company.list.json")
+    ResponseEntity<BitrixResponse<List<BitrixCompanyDto>>> findCompanies(
+        @RequestParam Map<String, Object> filters
+    );
+
     @GetMapping("/wr0nsrymtgpphupm/crm.company.get.json")
     ResponseEntity<BitrixResponse<BitrixCompanyDto>> getCompanyById(
         @RequestParam("id") String companyId
     );
 
     @PostMapping("/hepp0ysnq72g56zu/crm.duplicate.findbycomm.json")
-    ResponseEntity<BitrixResponse<Map<String, List<String>>>> findByFilter(
+    ResponseEntity<BitrixResponse<Object>> findByFilter(
         @RequestBody BitrixFilter filter
     );
 }

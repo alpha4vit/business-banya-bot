@@ -12,7 +12,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 @EnableScheduling
 @EnableFeignClients(clients = {
     FeignBankClient.class,
-    BitrixCrmClient.class
+    BitrixCrmClient.class,
 })
 @SpringBootApplication
 public class BusinessBanyaBotApplication {

@@ -74,6 +74,8 @@ public class VerificationScenario extends AbstractScenario {
             (company) -> {
                 user.setExternalId(company.id());
                 user.setInfo(company);
+                user.setFullName(company.title());
+                user.setSocialMedia(user.getTelegramUsername());
 
                 var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
 
