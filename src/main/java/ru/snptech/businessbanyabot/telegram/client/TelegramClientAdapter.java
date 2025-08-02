@@ -8,7 +8,9 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import ru.snptech.businessbanyabot.telegram.TelegramUtils;
@@ -22,29 +24,29 @@ public class TelegramClientAdapter {
     private final TelegramClient telegramClient;
 
     @SneakyThrows
-    public void sendMessage(Long chatId, String text) {
+    public Integer sendMessage(Long chatId, String text) {
         var message = SendMessage.builder()
             .chatId(chatId)
             .text(TelegramUtils.escapeMarkdownV2(text))
             .parseMode(ParseMode.MARKDOWNV2)
             .build();
 
-        telegramClient.execute(message);
+        return telegramClient.execute(message).getMessageId();
     }
 
     @SneakyThrows
-    public void sendMessage(Long chatId, String text, String parseMode) {
+    public Integer sendMessage(Long chatId, String text, String parseMode) {
         var message = SendMessage.builder()
             .chatId(chatId)
             .text(text)
             .parseMode(parseMode)
             .build();
 
-        telegramClient.execute(message);
+        return telegramClient.execute(message).getMessageId();
     }
 
     @SneakyThrows
-    public void sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {
+    public Integer sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard) {
         var message = SendMessage.builder()
             .chatId(chatId)
             .text(TelegramUtils.escapeMarkdownV2(text))
@@ -52,11 +54,11 @@ public class TelegramClientAdapter {
             .parseMode(ParseMode.MARKDOWNV2)
             .build();
 
-        telegramClient.execute(message);
+        return telegramClient.execute(message).getMessageId();
     }
 
     @SneakyThrows
-    public void sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard, String parseMode) {
+    public Integer sendMessage(Long chatId, String text, ReplyKeyboard replyKeyboard, String parseMode) {
         var message = SendMessage.builder()
             .chatId(chatId)
             .text(text)
@@ -64,7 +66,7 @@ public class TelegramClientAdapter {
             .parseMode(parseMode)
             .build();
 
-        telegramClient.execute(message);
+        return telegramClient.execute(message).getMessageId();
     }
 
     @SneakyThrows
@@ -103,6 +105,21 @@ public class TelegramClientAdapter {
             .build();
 
         telegramClient.execute(message);
+    }
+
+    @SneakyThrows
+    public Integer updateMessage(Integer messageId, Long chatId, String text, InlineKeyboardMarkup replyKeyboard) {
+        EditMessageText editMessage = EditMessageText.builder()
+            .chatId(chatId.toString())
+            .messageId(messageId)
+            .text(text)
+            .parseMode(ParseMode.MARKDOWNV2)
+            .replyMarkup(replyKeyboard)
+            .build();
+
+        telegramClient.execute(editMessage);
+
+        return messageId;
     }
 
     @SneakyThrows

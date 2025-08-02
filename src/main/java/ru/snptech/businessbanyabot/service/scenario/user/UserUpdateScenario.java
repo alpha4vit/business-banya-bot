@@ -61,9 +61,10 @@ public class UserUpdateScenario extends AbstractScenario {
         }
 
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
-        var currentScenario = SCENARIO.getValue(requestContext, ScenarioType.class);
 
-        cleanContextIfNeeded(chatId, requestContext);
+        resetToMainMenuContextIfNeeded(chatId, requestContext);
+
+        var currentScenario = SCENARIO.getValue(requestContext, ScenarioType.class);
 
         switch (currentScenario) {
             case MAIN_MENU -> {
@@ -90,20 +91,17 @@ public class UserUpdateScenario extends AbstractScenario {
         }
     }
 
-    private void handleMenuButtons(
-
-    ) {
-    }
-
-    private void cleanContextIfNeeded(Long chatId, Map<String, Object> requestContext) {
+    private void resetToMainMenuContextIfNeeded(Long chatId, Map<String, Object> requestContext) {
         if (
             TG_UPDATE.getValue(requestContext).getMessage().hasText()
-                && "/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
-                && UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                && ("/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText()))
         ) {
             var user = userRepository.findByChatId(chatId);
 
-            userContextService.cleanUserContext(user);
+            SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+            SCENARIO_STEP.setValue(requestContext, "");
+
+            userContextService.updateUserContext(user, requestContext);
         }
     }
 }

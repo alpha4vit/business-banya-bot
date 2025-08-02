@@ -2,6 +2,7 @@ package ru.snptech.businessbanyabot.service.scenario;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
@@ -24,8 +25,8 @@ abstract public class AbstractScenario {
     }
 
     @SneakyThrows
-    protected void sendMessage(Map<String, Object> requestContext, String message, ReplyKeyboard replyKeyboard) {
-        telegramClientAdapter.sendMessage(
+    protected Integer sendMessage(Map<String, Object> requestContext, String message, ReplyKeyboard replyKeyboard) {
+        return telegramClientAdapter.sendMessage(
             CHAT_ID.getValue(requestContext, Long.class),
             message,
             replyKeyboard
@@ -54,6 +55,16 @@ abstract public class AbstractScenario {
         telegramClientAdapter.sendFile(
             CHAT_ID.getValue(requestContext, Long.class),
             file
+        );
+    }
+
+    @SneakyThrows
+    protected Integer updateMessage(Integer messageId, Map<String, Object> requestContext, String message, InlineKeyboardMarkup replyKeyboard) {
+        return telegramClientAdapter.updateMessage(
+            messageId,
+            CHAT_ID.getValue(requestContext, Long.class),
+            message,
+            replyKeyboard
         );
     }
 }

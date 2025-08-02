@@ -18,6 +18,8 @@ import java.util.List;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_CARD_DETAILS;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_PREVIOUS_CARD_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
 
@@ -86,6 +88,19 @@ public class MenuConstants {
                 ),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_CHOOSE_INVOICE_PAYMENT + chatId).build()
+                )
+            ));
+    }
+
+    public static InlineKeyboardMarkup createSliderMenu(Long chatId, String cardUserId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Подробнее").callbackData(SLIDER_CARD_DETAILS + chatId + "_" + cardUserId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("◀").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
+                    InlineKeyboardButton.builder().text("▶").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
                 )
             ));
     }

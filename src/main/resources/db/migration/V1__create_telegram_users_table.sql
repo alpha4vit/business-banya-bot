@@ -16,3 +16,5 @@ CREATE TABLE IF NOT EXISTS telegram_users
     external_id         TEXT,
     info                jsonb
 );
+
+create index tg_user_external_id on telegram_users(external_id);

@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.BitrixCompanyDto;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.BitrixFilter;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.BitrixResponse;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.BitrixResponse;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixFilter;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixListFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,8 @@ public interface BitrixCrmClient {
 
     @GetMapping("/wr0nsrymtgpphupm/crm.company.list.json")
     ResponseEntity<BitrixResponse<List<BitrixCompanyDto>>> getCompaniesByResidentStatus(
-        @RequestParam("filter[UF_CRM_1740029712849]") String status
+        @RequestParam("filter[UF_CRM_1740029712849]") String status,
+        @RequestParam("start") Integer start
     );
 
     @GetMapping("/wr0nsrymtgpphupm/crm.company.list.json")
@@ -41,5 +43,10 @@ public interface BitrixCrmClient {
     @PostMapping("/hepp0ysnq72g56zu/crm.duplicate.findbycomm.json")
     ResponseEntity<BitrixResponse<Object>> findByFilter(
         @RequestBody BitrixFilter filter
+    );
+
+    @PostMapping("/hepp0ysnq72g56zu/crm.company.list.json")
+    ResponseEntity<BitrixResponse<List<BitrixCompanyDto>>> findCompaniesByFilter(
+        @RequestBody BitrixListFilter filter
     );
 }

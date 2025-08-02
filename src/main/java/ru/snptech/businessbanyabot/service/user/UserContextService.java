@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.model.common.MetaDataKey;
+import ru.snptech.businessbanyabot.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -66,9 +65,4 @@ public class UserContextService {
     public <T> T getUserContextParamValue(TelegramUser telegramUser, MetaDataKey<T> metaDataKey) {
         return metaDataKey.getValue(getUserContext(telegramUser));
     }
-
-    public void cleanUserContext(TelegramUser telegramUser) {
-        updateUserContext(telegramUser, Collections.emptyMap());
-    }
-
 }

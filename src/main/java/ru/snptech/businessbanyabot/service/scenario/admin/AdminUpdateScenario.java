@@ -11,8 +11,7 @@ import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.SCENARIO;
-import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
+import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Component
 public class AdminUpdateScenario extends AbstractScenario {
@@ -39,6 +38,7 @@ public class AdminUpdateScenario extends AbstractScenario {
 
     public void invoke(Map<String, Object> requestContext) {
         var update = TG_UPDATE.getValue(requestContext);
+        var chatId = CHAT_ID.getValue(requestContext, Long.class);
 
         if (update.hasCallbackQuery()) {
             adminCallbackScenario.invoke(requestContext);
@@ -50,7 +50,10 @@ public class AdminUpdateScenario extends AbstractScenario {
             throw new BusinessBanyaInternalException.MESSAGE_HAS_NO_CONTENT();
         }
 
+        cleanContextIfNeeded(chatId, requestContext);
+
         var currentScenario = SCENARIO.getValue(requestContext, ScenarioType.class);
+
 
         switch (currentScenario) {
             case MAIN_MENU -> {
@@ -71,7 +74,11 @@ public class AdminUpdateScenario extends AbstractScenario {
         ) {
             var user = userRepository.findByChatId(chatId);
 
-            userContextService.cleanUserContext(user);
+            requestContext.clear();
+
+            SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+
+            userContextService.updateUserContext(user, requestContext);
         }
     }
 }
