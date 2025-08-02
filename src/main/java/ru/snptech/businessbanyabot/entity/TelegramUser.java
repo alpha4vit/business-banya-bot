@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.BitrixCompanyDto;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
 

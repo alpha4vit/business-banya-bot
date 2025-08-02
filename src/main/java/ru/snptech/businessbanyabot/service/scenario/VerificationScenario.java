@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.ResidentStatus;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
-import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
@@ -68,20 +66,20 @@ public class VerificationScenario extends AbstractScenario {
 
         var phoneNumber = message.getText();
 
-        var existedUser = bitrixIntegrationService.findCompanyByPhoneNumber(phoneNumber);
-
-        existedUser.ifPresent(
-            (company) -> {
-                user.setExternalId(company.id());
-                user.setInfo(company);
-                user.setFullName(company.title());
-                user.setSocialMedia(user.getTelegramUsername());
-
-                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
-
-                user.setRole(residentStatus.toUserRole());
-            }
-        );
+//        var existedUser = bitrixIntegrationService.findCompanyByPhoneNumber(phoneNumber);
+//
+//        existedUser.ifPresent(
+//            (company) -> {
+//                user.setExternalId(company.id());
+//                user.setInfo(company);
+//                user.setFullName(company.title());
+//                user.setSocialMedia(user.getTelegramUsername());
+//
+//                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
+//
+//                user.setRole(residentStatus.toUserRole());
+//            }
+//        );
 
         user.setPhoneNumber(phoneNumber);
         IS_VERIFIED.setValue(context, true);

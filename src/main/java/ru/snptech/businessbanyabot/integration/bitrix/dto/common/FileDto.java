@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.integration.bitrix.dto;
+package ru.snptech.businessbanyabot.integration.bitrix.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

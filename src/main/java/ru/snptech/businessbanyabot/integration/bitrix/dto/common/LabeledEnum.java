@@ -1,4 +1,4 @@
-package ru.snptech.businessbanyabot.integration.bitrix.dto;
+package ru.snptech.businessbanyabot.integration.bitrix.dto.common;
 
 public interface LabeledEnum {
     String getId();

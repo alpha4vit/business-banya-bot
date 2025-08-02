@@ -1,7 +1,7 @@
 package ru.snptech.businessbanyabot.integration.bitrix.util;
 
 import lombok.experimental.UtilityClass;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.LabeledEnum;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
 
 @UtilityClass
 public final class LabeledEnumUtil {

@@ -1,6 +1,7 @@
-package ru.snptech.businessbanyabot.integration.bitrix.dto;
+package ru.snptech.businessbanyabot.integration.bitrix.dto.company;
 
 import lombok.Getter;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 
 @Getter

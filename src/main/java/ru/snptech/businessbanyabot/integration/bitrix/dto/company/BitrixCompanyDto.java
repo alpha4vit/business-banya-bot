@@ -1,7 +1,8 @@
-package ru.snptech.businessbanyabot.integration.bitrix.dto;
+package ru.snptech.businessbanyabot.integration.bitrix.dto.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.FileDto;
 
 import java.util.List;
 
