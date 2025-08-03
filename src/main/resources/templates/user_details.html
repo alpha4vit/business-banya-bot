@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль пользователя</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        img.avatar {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            background-color: #eee;
+            border-radius: 5%;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        .section {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .section h3 {
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .section p {
+            margin: 3px 0;
+        }
+
+        .section p strong {
+            display: block;
+            margin-bottom: 2px;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img th:src="${avatarLink}" alt="Аватар" class="avatar"/>
+    <h1 th:text="${fullName}">Имя пользователя</h1>
+    <div class="info">
+        <p><strong>Телефон:</strong> <span th:text="${phoneNumber}">Не указано</span></p>
+        <p><strong>Описание бизнеса:</strong> <span th:text="${businessDescription}">Не указано</span></p>
+        <p><strong>Главная активность:</strong> <span th:text="${mainActive}">Не указано</span></p>
+        <p><strong>Главная пассивность:</strong> <span th:text="${mainPassive}">Не указано</span></p>
+<!--        <p><strong>Chat ID:</strong> <span th:text="${chatId}">Не указано</span></p>-->
+    </div>
+
+    <div class="section">
+        <h3>Интересы</h3>
+        <p><strong>Спорт</strong> <span th:utext="${sport}">-</span></p>
+        <p><strong>Ключевые убеждения</strong> <span th:text="${principles}">-</span></p>
+        <p><strong>Любимые музыкальные исполнители</strong> <span th:text="${music}">-</span></p>
+        <p><strong>Ключевые слова</strong> <span th:text="${keywords}">-</span></p>
+        <p><strong>Любимые фильмы</strong> <span th:text="${favoriteMovies}">-</span></p>
+        <p><strong>Сильные стороны (качества)</strong> <span th:text="${strengths}">-</span></p>
+        <p><strong>Значимые победы</strong> <span th:text="${achievements}">-</span></p>
+        <p><strong>Значимые поражения</strong> <span th:text="${defeats}">-</span></p>
+        <p><strong>Главные учителя в жизни</strong> <span th:text="${teachers}">-</span></p>
+        <p><strong>Глобальные цели на 5-10-25 лет</strong> <span th:text="${futureGoals}">-</span></p>
+        <p><strong>Сферы для нетворкинга</strong> <span th:text="${networkingSphere}">-</span></p>
+        <p><strong>Главный ограничитель роста</strong> <span th:text="${growthLimit}">-</span></p>
+        <p><strong>Готовность стать наставником</strong> <span th:text="${readyToBeTeacher}">-</span></p>
+    </div>
+</div>
+</body>
+</html>

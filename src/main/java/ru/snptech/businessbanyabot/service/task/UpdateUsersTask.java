@@ -44,6 +44,7 @@ public class UpdateUsersTask {
             var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
 
             user.setInfo(company);
+            user.setFullName(company.title());
             user.setRole(residentStatus.toUserRole());
 
             if (!company.phoneList().isEmpty()) {

@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminMainMenuScenario;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_CARD_DETAILS;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_PREVIOUS_CARD_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
@@ -93,11 +93,16 @@ public class MenuConstants {
     }
 
     public static InlineKeyboardMarkup createSliderMenu(Long chatId, String cardUserId) {
+        String url = "https://modern-glasses-give.loca.lt/users/%s/details".formatted(cardUserId);
+
+        InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
+            .text("Подробнее")
+            .webApp(new WebAppInfo(url))
+            .build();
+
         return new InlineKeyboardMarkup(
             List.of(
-                new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Подробнее").callbackData(SLIDER_CARD_DETAILS + chatId + "_" + cardUserId).build()
-                ),
+                new InlineKeyboardRow(webAppButton),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("◀").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
                     InlineKeyboardButton.builder().text("▶").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()

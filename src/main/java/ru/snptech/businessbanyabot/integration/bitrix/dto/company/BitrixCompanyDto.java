@@ -117,7 +117,7 @@ public record BitrixCompanyDto(
     String favoriteMovies,
 
     @JsonProperty("UF_CRM_1753566529182")
-    String strongSides,
+    String strengths,
 
     @JsonProperty("UF_CRM_1753566550751")
     String achievements,
