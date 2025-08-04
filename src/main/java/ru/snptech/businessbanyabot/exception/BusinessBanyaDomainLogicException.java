@@ -18,4 +18,12 @@ public class BusinessBanyaDomainLogicException extends BaseBusinessBanyaExceptio
         }
     }
 
+    public static class INVALID_DEPOSIT_AMOUNT extends BusinessBanyaDomainLogicException {
+        public INVALID_DEPOSIT_AMOUNT(String multiplicity) {
+            super(
+                "Сумма пополнение должна быть валидным целым числом, а также должна быть кратна %s".formatted(multiplicity)
+            );
+        }
+    }
+
 }

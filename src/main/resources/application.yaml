@@ -19,13 +19,17 @@ logging:
 
 application:
   base-url: api/v1
-
+  payment:
+    currency: RUB
+    amount: 20000_00
+  deposit:
+    multiplicity: 10000
   telegram:
     token: 7987083088:AAGsUg3Y9tU05Q0GDCBCn06PTAYl446bMnE
   integration:
     bank:
       token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJmYmZmNzYyMzYxMzIwNDNlODVmMjUyNGFkNTk1MjRiOCJ9.gZtq3vwZWNiLUO5kC8i1lKyuLOX5u1Y94HOHC1jiIBqtHF8i2ZJn36YjR-VMILCLHy7e05aqEU_5hbQ9lFNsK4F3OYKwTadMvQB2hhB_bE2osgu8IbLDsKHLIgNxWes4Jf3KmIN_xwsA2CrvB2-9vCY-EgtkLTZBQgWBe0hNRVFl1ts9ayzBf-lIo2dW8rrzhDGLsU2hZEL3O9WAmKD3hWEPdxLUkCF0D7Ya2lQ7I7ltQ743QaHmdS-uPMz4wooZl0CmtaxtCpqvwjQlfiaPG8vF-Gz2aD4f-igMEWTNPPqVttDgtNzAcM8DmXSpoPfLOnz3TizUPhwjRMQR5GsEVY-yJFfkXqa-HykITAk84cB8DQb7yPNHEquIEcuZqvyrSBa1LYYL90POmWJg1kaM8JcJCBA_pJKwiLWmEDOsdd3cHyRbbXH_RfWUudY8TClvA8mHRnZyMnwIKCZgts8DY9Nj4AdGlXaJEFZegDH8g8ETiIKpLqBOyvPWgdTYFB12
-      url: https://enter.tochka.com/sandbox/v2
+      url: https://enter.tochka.com/uapi
       merchant-id: MA0004166381
       account-id: 40802810420000153009/044525104
       client-id: fbff76236132043e85f2524ad59524b8
@@ -35,8 +39,6 @@ application:
           size: 400
           media-type: image/png
         ttl: 3d
-        currency: RUB
-        money-amount: 20000
       webhook:
         url: http://localhost:8080/${application.base-url}/integration/bank/webhook
     bitrix:

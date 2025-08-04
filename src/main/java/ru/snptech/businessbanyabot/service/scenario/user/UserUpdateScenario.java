@@ -75,10 +75,10 @@ public class UserUpdateScenario extends AbstractScenario {
                 surveyScenario.invoke(requestContext);
             }
 
-            case PAYMENT -> {
+            case PAYMENT, DEPOSIT -> {
                 var paymentType = PAYMENT_TYPE.getValue(requestContext, PaymentType.class);
 
-                paymentScenario.handle(paymentType, requestContext);
+                paymentScenario.handlePayment(paymentType, requestContext);
             }
 
             case SEARCH -> {

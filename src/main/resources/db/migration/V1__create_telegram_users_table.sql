@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS telegram_users
+CREATE TABLE IF NOT EXISTS telegram_user
 (
     chat_id             BIGINT      NOT NULL PRIMARY KEY,
     telegram_username   TEXT        NOT NULL,
@@ -17,4 +17,4 @@ CREATE TABLE IF NOT EXISTS telegram_users
     info                jsonb
 );
 
-create index tg_user_external_id on telegram_users(external_id);
+create index tg_user_external_id_index on telegram_user(external_id);

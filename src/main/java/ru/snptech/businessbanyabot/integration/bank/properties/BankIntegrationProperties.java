@@ -32,8 +32,6 @@ public class BankIntegrationProperties {
     public static class QrCodeSettings {
         private Duration ttl;
         private QrCodeImageSettings imageSettings;
-        private String currency;
-        private Integer moneyAmount;
     }
 
     @Getter

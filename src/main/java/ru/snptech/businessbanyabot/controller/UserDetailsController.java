@@ -11,6 +11,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixGrowthLimit;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixNetworkingSphere;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixReadyToBeTeacher;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixSport;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixAuthService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.repository.UserRepository;
@@ -36,9 +37,13 @@ public class UserDetailsController {
     ) {
         var user = userRepository.findByChatId(Long.parseLong(chatId));
 
-        var networkingSphere = LabeledEnumUtil.fromId(BitrixNetworkingSphere.class, user.getInfo().networkingSphere());
-        var growthLimit = LabeledEnumUtil.fromId(BitrixGrowthLimit.class, user.getInfo().growthLimit());
-        var readyToBeTeacher = LabeledEnumUtil.fromId(BitrixReadyToBeTeacher.class, user.getInfo().readyToBeTeacher());
+        var sports = mapToString(user.getInfo().sports(), BitrixSport.class);
+
+        log.error(sports);
+
+        var networkingSphere = LabeledEnumUtil.fromId(BitrixNetworkingSphere.class, user.getInfo().networkingSphere()).getLabel();
+        var growthLimit = LabeledEnumUtil.fromId(BitrixGrowthLimit.class, user.getInfo().growthLimit()).getLabel();
+        var readyToBeTeacher = LabeledEnumUtil.fromId(BitrixReadyToBeTeacher.class, user.getInfo().readyToBeTeacher()).getLabel();
         var link = addAuthParam(user.getInfo().photo().showUrl());
 
         model.addAttribute("chatId", chatId);

@@ -16,6 +16,6 @@ public class FeignBankClientAuthorizationInterceptor implements RequestIntercept
     @Override
     @SneakyThrows
     public void apply(final RequestTemplate requestTemplate) {
-//        requestTemplate.header("Authorization", "Bearer %s".formatted(bankIntegrationProperties.getToken()));
+        requestTemplate.header("Authorization", "Bearer %s".formatted(bankIntegrationProperties.getToken()));
     }
 }

@@ -8,6 +8,8 @@ public final class CallbackPrefixes {
     public final class User {
         public static final String USER_CHOOSE_FAST_PAYMENT = "UCFP_";
         public static final String USER_CHOOSE_INVOICE_PAYMENT = "UCIP_";
+        public static final String USER_DEPOSIT_FAST_PAYMENT = "UDFP_";
+        public static final String USER_DEPOSIT_INVOICE_PAYMENT = "UDIP_";
     }
 
     public final class Admin {

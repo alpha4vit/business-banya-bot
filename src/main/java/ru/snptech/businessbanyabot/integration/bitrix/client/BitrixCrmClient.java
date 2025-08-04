@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.common.BitrixResponse;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.event.BitrixEventDto;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixFilter;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixListFilter;
 
@@ -16,8 +17,8 @@ import java.util.Map;
 
 @FeignClient(
     name = "bitrix-company-feign-client",
-    url = "${application.integration.bitrix.url}"
-//    configuration = FeignBitrixClientConfiguration.class
+    url = "${application.integration.bitrix.url}",
+    configuration = FeignBitrixClientConfiguration.class
 )
 public interface BitrixCrmClient {
 
@@ -47,6 +48,11 @@ public interface BitrixCrmClient {
 
     @PostMapping("/hepp0ysnq72g56zu/crm.company.list.json")
     ResponseEntity<BitrixResponse<List<BitrixCompanyDto>>> findCompaniesByFilter(
+        @RequestBody BitrixListFilter filter
+    );
+
+    @PostMapping("/84w0gyd9p2e8gowe/crm.deal.list.json")
+    ResponseEntity<BitrixResponse<List<BitrixEventDto>>> findEvents(
         @RequestBody BitrixListFilter filter
     );
 }

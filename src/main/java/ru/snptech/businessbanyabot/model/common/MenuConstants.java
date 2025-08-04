@@ -20,8 +20,7 @@ import java.util.List;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_PREVIOUS_CARD_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.*;
 
 @UtilityClass
 public class MenuConstants {
@@ -88,6 +87,18 @@ public class MenuConstants {
                 ),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_CHOOSE_INVOICE_PAYMENT + chatId).build()
+                )
+            ));
+    }
+
+    public static InlineKeyboardMarkup createChooseDepositMethodMenu(Long chatId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Пополнение через СБП QR").callbackData(USER_DEPOSIT_FAST_PAYMENT + chatId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_DEPOSIT_INVOICE_PAYMENT + chatId).build()
                 )
             ));
     }

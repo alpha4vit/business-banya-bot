@@ -28,10 +28,16 @@ public class UserCallbackScenario extends BaseCallbackScenario {
 
         switch (callbackPrefix) {
             case CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT ->
-                paymentScenario.handle(PaymentType.FAST_PAYMENT, requestContext);
+                paymentScenario.handlePayment(PaymentType.FAST_PAYMENT, requestContext);
 
             case CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT ->
-                paymentScenario.handle(PaymentType.INVOICE, requestContext);
+                paymentScenario.handlePayment(PaymentType.INVOICE, requestContext);
+
+            case CallbackPrefixes.User.USER_DEPOSIT_FAST_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.DEPOSIT_FAST_PAYMENT, requestContext);
+
+            case CallbackPrefixes.User.USER_DEPOSIT_INVOICE_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.DEPOSIT_INVOICE, requestContext);
 
             case SLIDER_NEXT_CARD_PREFIX -> searchScenario.slideTo(SlideDirection.NEXT, requestContext);
 

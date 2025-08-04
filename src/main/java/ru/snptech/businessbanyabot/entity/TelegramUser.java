@@ -13,7 +13,7 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "telegram_users")
+@Table(name = "telegram_user")
 public class TelegramUser {
 
     @Id

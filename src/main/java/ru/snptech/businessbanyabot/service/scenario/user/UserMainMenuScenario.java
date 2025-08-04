@@ -35,13 +35,15 @@ public class UserMainMenuScenario extends AbstractScenario {
     private final UserRepository userRepository;
     private final SurveyScenario surveyScenario;
     private final SearchScenario searchScenario;
+    private final PaymentScenario paymentScenario;
 
     public UserMainMenuScenario(
         TelegramClientAdapter telegramClientAdapter,
         UserContextService userContextService,
         UserRepository userRepository,
         SurveyScenario surveyScenario,
-        SearchScenario searchScenario
+        SearchScenario searchScenario,
+        PaymentScenario paymentScenario
     ) {
         super(telegramClientAdapter);
 
@@ -49,6 +51,7 @@ public class UserMainMenuScenario extends AbstractScenario {
         this.userRepository = userRepository;
         this.surveyScenario = surveyScenario;
         this.searchScenario = searchScenario;
+        this.paymentScenario = paymentScenario;
     }
 
     @SneakyThrows
@@ -78,6 +81,14 @@ public class UserMainMenuScenario extends AbstractScenario {
                     userContextService.updateUserContext(user, requestContext);
 
                     searchScenario.invoke(requestContext);
+                }
+
+                case BALANCE -> {
+                    SCENARIO.setValue(requestContext, ScenarioType.DEPOSIT.name());
+
+                    userContextService.updateUserContext(user, requestContext);
+
+                    paymentScenario.balance(requestContext);
                 }
 
                 default -> {
