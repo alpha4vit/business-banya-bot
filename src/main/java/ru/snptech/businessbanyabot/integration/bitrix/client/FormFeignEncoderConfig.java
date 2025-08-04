@@ -1,14 +1,14 @@
 package ru.snptech.businessbanyabot.integration.bitrix.client;
 
 import feign.Logger;
-import feign.codec.Encoder;
-import feign.form.FormEncoder;
+import feign.form.spring.SpringFormEncoder;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.FormHttpMessageConverter;
 
-public class FeignBitrixClientConfiguration {
+
+class FormFeignEncoderConfig {
 
     @Bean
     Logger.Level feignLoggerLevel() {
@@ -16,8 +16,7 @@ public class FeignBitrixClientConfiguration {
     }
 
     @Bean
-    public Encoder feignFormEncoder() {
-        return new FormEncoder(new SpringEncoder(() -> new HttpMessageConverters(new FormHttpMessageConverter())));
+    public feign.codec.Encoder encoder(ObjectFactory<HttpMessageConverters> converters) {
+        return new SpringFormEncoder(new SpringEncoder(converters));
     }
-
 }

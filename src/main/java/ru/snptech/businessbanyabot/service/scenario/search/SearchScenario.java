@@ -112,7 +112,7 @@ public class SearchScenario extends AbstractScenario {
             getOrEmpty(user.getInfo().mainActive())
         );
 
-        var menu = MenuConstants.createSliderMenu(chatId, user.getInfo().id());
+        var menu = MenuConstants.createSliderMenu(chatId, user.getChatId());
 
         if (messageId == null) return sendMessage(context, message, menu);
 

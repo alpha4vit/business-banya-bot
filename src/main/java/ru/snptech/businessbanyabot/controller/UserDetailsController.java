@@ -1,18 +1,32 @@
 package ru.snptech.businessbanyabot.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixGrowthLimit;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixNetworkingSphere;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixReadyToBeTeacher;
+import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixAuthService;
+import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserDetailsController {
 
+    private static final String AUTH_PARAM = "&auth=";
+
+    private final BitrixAuthService bitrixAuthService;
     private final UserRepository userRepository;
 
     @GetMapping("/{chatId}/details")
@@ -22,6 +36,11 @@ public class UserDetailsController {
     ) {
         var user = userRepository.findByChatId(Long.parseLong(chatId));
 
+        var networkingSphere = LabeledEnumUtil.fromId(BitrixNetworkingSphere.class, user.getInfo().networkingSphere());
+        var growthLimit = LabeledEnumUtil.fromId(BitrixGrowthLimit.class, user.getInfo().growthLimit());
+        var readyToBeTeacher = LabeledEnumUtil.fromId(BitrixReadyToBeTeacher.class, user.getInfo().readyToBeTeacher());
+        var link = addAuthParam(user.getInfo().photo().showUrl());
+
         model.addAttribute("chatId", chatId);
         model.addAttribute("fullName", user.getFullName());
         model.addAttribute("phoneNumber", user.getPhoneNumber());
@@ -29,7 +48,7 @@ public class UserDetailsController {
         model.addAttribute("mainActive", user.getInfo().mainActive());
         model.addAttribute("mainPassive", user.getInfo().mainPassive());
         model.addAttribute("interests", user.getInfo());
-        model.addAttribute("avatarLink", "https://prime-ural.bitrix24.ru/bitrix/components/bitrix/crm.company.show/show_file.php?auth=6d4d8f68007ac9280000560200000796000007aabd928d766fd9c5709d85acfd69fe95&ownerId=4516&fieldName=UF_CRM_1753626792826&dynamic=Y&fileId=301793");
+        model.addAttribute("avatarLink", "https://prime-ural.bitrix24.ru" + link);
         model.addAttribute("sport", user.getInfo().sports().toString());
         model.addAttribute("principles", user.getInfo().principles().toString());
         model.addAttribute("music", user.getInfo().music());
@@ -40,10 +59,23 @@ public class UserDetailsController {
         model.addAttribute("defeats", user.getInfo().defeats());
         model.addAttribute("teachers", user.getInfo().teachers());
         model.addAttribute("futureGoals", user.getInfo().futureGoals());
-        model.addAttribute("networkingSphere", user.getInfo().networkingSphere());
-        model.addAttribute("growthLimit", user.getInfo().growthLimit());
-        model.addAttribute("readyToBeTeacher", user.getInfo().readyToBeTeacher());
+        model.addAttribute("networkingSphere", networkingSphere);
+        model.addAttribute("growthLimit", growthLimit);
+        model.addAttribute("readyToBeTeacher", readyToBeTeacher);
+
         return "user_details";
     }
 
+    private String addAuthParam(String link) {
+        return link + AUTH_PARAM + bitrixAuthService.getValidAccessToken();
+    }
+
+    private <T extends Enum<T> & LabeledEnum> String mapToString(Object value, Class<T> enumClass) {
+        List<Integer> ids = (List<Integer>) value;
+
+        return ids.stream()
+            .map(id -> LabeledEnumUtil.fromId(enumClass, String.valueOf(id)))
+            .map(LabeledEnum::getLabel)
+            .collect(Collectors.joining(", "));
+    }
 }

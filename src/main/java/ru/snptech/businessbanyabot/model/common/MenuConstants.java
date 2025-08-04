@@ -92,8 +92,8 @@ public class MenuConstants {
             ));
     }
 
-    public static InlineKeyboardMarkup createSliderMenu(Long chatId, String cardUserId) {
-        String url = "https://modern-glasses-give.loca.lt/users/%s/details".formatted(cardUserId);
+    public static InlineKeyboardMarkup createSliderMenu(Long chatId, Long cardUserChatId) {
+        String url = "https://businessbanyasnp.duckdns.org/users/%s/details".formatted(cardUserChatId);
 
         InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
             .text("Подробнее")

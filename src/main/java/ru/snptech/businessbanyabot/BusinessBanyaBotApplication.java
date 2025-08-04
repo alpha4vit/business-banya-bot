@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import ru.snptech.businessbanyabot.integration.bank.client.FeignBankClient;
+import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixAuthClient;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 
 @EnableAsync
@@ -13,6 +14,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 @EnableFeignClients(clients = {
     FeignBankClient.class,
     BitrixCrmClient.class,
+    BitrixAuthClient.class,
 })
 @SpringBootApplication
 public class BusinessBanyaBotApplication {

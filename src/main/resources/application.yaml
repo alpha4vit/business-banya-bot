@@ -40,7 +40,10 @@ application:
       webhook:
         url: http://localhost:8080/${application.base-url}/integration/bank/webhook
     bitrix:
+      auth-url: https://oauth.bitrix.info/oauth/token/
       url: https://prime-ural.bitrix24.ru/rest/1942/
       client_secret: ARcx32D4goH0KmJBOF43A9ypmm0E0GYg2hEnStMKfeJA7eKKdd
       client_id: local.688a9160e5e2a6.64223377
+      access_token: 6af28f68007ac92800005602000007960000079a563f21504b88b2ea8293a04e372593
+      refresh_token: 5a71b768007ac92800005602000007960000077110f3804c8ff03640fcd186c7218d7c
 
