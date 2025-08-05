@@ -19,7 +19,7 @@ import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.payment.PaymentService;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
-import ru.snptech.businessbanyabot.service.util.ImageUtils;
+import ru.snptech.businessbanyabot.service.util.FileUtils;
 import ru.snptech.businessbanyabot.service.util.MoneyUtils;
 import ru.snptech.businessbanyabot.service.util.TextUtils;
 import ru.snptech.businessbanyabot.service.util.TimeUtils;
@@ -83,7 +83,7 @@ public class PaymentScenario extends AbstractScenario {
 
         var content = payment.getContentAs(FastPaymentContent.class);
 
-        var file = ImageUtils.decodeBase64ToFile(content.getBase64Image());
+        var file = FileUtils.decodeBase64ToFile(content.getBase64Image());
 
         var caption = MessageConstants.FAST_PAYMENT_TEMPLATE.formatted(
             MoneyUtils.getHumanReadableAmount(payment.getAmount()),
@@ -172,7 +172,7 @@ public class PaymentScenario extends AbstractScenario {
         );
 
         var base64QrCode = bankResponse.data().image().content();
-        var file = ImageUtils.decodeBase64ToFile(base64QrCode);
+        var file = FileUtils.decodeBase64ToFile(base64QrCode);
 
         var caption = MessageConstants.FAST_PAYMENT_TEMPLATE.formatted(
             MoneyUtils.getHumanReadableAmount(fastPaymentData.data().amount()),

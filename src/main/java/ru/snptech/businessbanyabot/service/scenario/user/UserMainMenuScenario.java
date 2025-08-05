@@ -6,10 +6,12 @@ import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.step.EventScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.SearchScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
+import ru.snptech.businessbanyabot.service.scenario.event.EventScenario;
 import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
@@ -27,7 +29,7 @@ public class UserMainMenuScenario extends AbstractScenario {
     public static final String BALANCE = "Мой баланс";
     public static final String EVENTS = "События";
     public static final String REQUEST = "Заявка";
-    public static final String MAIN_MENU = "Главное меню";
+
     public static final Set<String> MAIN_MENU_COMMANDS = Set.of(
         SEARCH, BALANCE, EVENTS
     );
@@ -36,6 +38,7 @@ public class UserMainMenuScenario extends AbstractScenario {
     private final SurveyScenario surveyScenario;
     private final SearchScenario searchScenario;
     private final PaymentScenario paymentScenario;
+    private final EventScenario eventScenario;
 
     public UserMainMenuScenario(
         TelegramClientAdapter telegramClientAdapter,
@@ -43,7 +46,8 @@ public class UserMainMenuScenario extends AbstractScenario {
         UserRepository userRepository,
         SurveyScenario surveyScenario,
         SearchScenario searchScenario,
-        PaymentScenario paymentScenario
+        PaymentScenario paymentScenario,
+        EventScenario eventScenario
     ) {
         super(telegramClientAdapter);
 
@@ -52,6 +56,7 @@ public class UserMainMenuScenario extends AbstractScenario {
         this.surveyScenario = surveyScenario;
         this.searchScenario = searchScenario;
         this.paymentScenario = paymentScenario;
+        this.eventScenario = eventScenario;
     }
 
     @SneakyThrows
@@ -89,6 +94,15 @@ public class UserMainMenuScenario extends AbstractScenario {
                     userContextService.updateUserContext(user, requestContext);
 
                     paymentScenario.balance(requestContext);
+                }
+
+                case EVENTS -> {
+                    SCENARIO.setValue(requestContext, ScenarioType.EVENTS.name());
+                    SCENARIO_STEP.setValue(requestContext, EventScenarioStep.INIT.name());
+
+                    userContextService.updateUserContext(user, requestContext);
+
+                    eventScenario.invoke(requestContext);
                 }
 
                 default -> {

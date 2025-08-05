@@ -94,7 +94,10 @@ public class UserUpdateScenario extends AbstractScenario {
     private void resetToMainMenuContextIfNeeded(Long chatId, Map<String, Object> requestContext) {
         if (
             TG_UPDATE.getValue(requestContext).getMessage().hasText()
-                && ("/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText()))
+                && ("/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                || UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText()
+            )
+            )
         ) {
             var user = userRepository.findByChatId(chatId);
 

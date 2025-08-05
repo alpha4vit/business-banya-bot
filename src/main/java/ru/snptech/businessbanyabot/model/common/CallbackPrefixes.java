@@ -19,8 +19,12 @@ public final class CallbackPrefixes {
 
     public final class Slider {
         public static final String SLIDER_CARD_DETAILS = "SCD_";
-        public static final String SLIDER_NEXT_CARD_PREFIX = "SNC_";
-        public static final String SLIDER_PREVIOUS_CARD_PREFIX = "SPC_";
+
+        public static final String RESIDENT_SLIDER_NEXT_CARD_PREFIX = "RSNC_";
+        public static final String RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX = "RSPC_";
+
+        public static final String EVENT_SLIDER_NEXT_CARD_PREFIX = "ESNC_";
+        public static final String EVENT_SLIDER_PREVIOUS_CARD_PREFIX = "ESPC_";
     }
 
 }

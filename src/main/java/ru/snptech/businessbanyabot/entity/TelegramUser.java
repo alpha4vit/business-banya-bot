@@ -36,7 +36,7 @@ public class TelegramUser {
     private Instant createdAt;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "jsonb")
     private String context;
 
     @Enumerated(EnumType.STRING)
@@ -49,7 +49,7 @@ public class TelegramUser {
     private String externalId;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "jsonb")
     private BitrixCompanyDto info;
 
     private Instant bannedAt;

@@ -9,6 +9,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyS
 import ru.snptech.businessbanyabot.integration.bitrix.dto.event.BitrixEventDto;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixFilter;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.filter.BitrixListFilter;
+import ru.snptech.businessbanyabot.integration.bitrix.properties.BitrixProperties;
 import ru.snptech.businessbanyabot.integration.bitrix.util.CompanyFields;
 import ru.snptech.businessbanyabot.integration.bitrix.util.EventFields;
 
@@ -19,6 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BitrixIntegrationService {
 
+    private final BitrixProperties bitrixProperties;
     private final BitrixCrmClient crmClient;
 
     private static final Integer PAGE_SIZE = 50;

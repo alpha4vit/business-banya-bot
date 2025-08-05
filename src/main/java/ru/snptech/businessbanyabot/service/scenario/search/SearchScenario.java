@@ -93,11 +93,11 @@ public class SearchScenario extends AbstractScenario {
             );
         }
 
-        var nextCursor = direction.nextPosition(searchMetadata.getResidentSliderCursor(), matchingUsers.size());
+        var nextCursor = direction.nextPosition(searchMetadata.getSliderCursor(), matchingUsers.size());
 
         sendUserPreviewCard(messageId, chatId, context, matchingUsers.get(nextCursor));
 
-        searchMetadata.setResidentSliderCursor(nextCursor);
+        searchMetadata.setSliderCursor(nextCursor);
 
         SEARCH_METADATA.setValue(context, searchMetadata);
 
@@ -112,7 +112,7 @@ public class SearchScenario extends AbstractScenario {
             getOrEmpty(user.getInfo().mainActive())
         );
 
-        var menu = MenuConstants.createSliderMenu(chatId, user.getChatId());
+        var menu = MenuConstants.createResidentSliderMenu(chatId, user.getChatId());
 
         if (messageId == null) return sendMessage(context, message, menu);
 

@@ -6,13 +6,13 @@ import ru.snptech.businessbanyabot.model.common.CallbackPrefixes;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.search.SlideDirection;
 import ru.snptech.businessbanyabot.service.scenario.BaseCallbackScenario;
+import ru.snptech.businessbanyabot.service.scenario.event.EventScenario;
 import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_NEXT_CARD_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_PREVIOUS_CARD_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.*;
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.TG_UPDATE;
 
 @Component
@@ -20,6 +20,7 @@ public class UserCallbackScenario extends BaseCallbackScenario {
 
     private final PaymentScenario paymentScenario;
     private final SearchScenario searchScenario;
+    private final EventScenario eventScenario;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -39,9 +40,12 @@ public class UserCallbackScenario extends BaseCallbackScenario {
             case CallbackPrefixes.User.USER_DEPOSIT_INVOICE_PAYMENT ->
                 paymentScenario.handlePayment(PaymentType.DEPOSIT_INVOICE, requestContext);
 
-            case SLIDER_NEXT_CARD_PREFIX -> searchScenario.slideTo(SlideDirection.NEXT, requestContext);
+            case RESIDENT_SLIDER_NEXT_CARD_PREFIX -> searchScenario.slideTo(SlideDirection.NEXT, requestContext);
+            case RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX ->
+                searchScenario.slideTo(SlideDirection.PREVIOUS, requestContext);
 
-            case SLIDER_PREVIOUS_CARD_PREFIX -> searchScenario.slideTo(SlideDirection.PREVIOUS, requestContext);
+            case EVENT_SLIDER_NEXT_CARD_PREFIX -> eventScenario.slideTo(SlideDirection.NEXT, requestContext);
+            case EVENT_SLIDER_PREVIOUS_CARD_PREFIX -> eventScenario.slideTo(SlideDirection.PREVIOUS, requestContext);
         }
 
         releaseCallback(requestContext);
@@ -50,10 +54,12 @@ public class UserCallbackScenario extends BaseCallbackScenario {
     public UserCallbackScenario(
         TelegramClientAdapter telegramClientAdapter,
         PaymentScenario paymentScenario,
-        SearchScenario searchScenario
+        SearchScenario searchScenario,
+        EventScenario eventScenario
     ) {
         super(telegramClientAdapter);
 
+        this.eventScenario = eventScenario;
         this.searchScenario = searchScenario;
         this.paymentScenario = paymentScenario;
     }

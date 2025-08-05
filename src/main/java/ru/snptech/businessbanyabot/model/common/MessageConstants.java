@@ -28,6 +28,9 @@ public class MessageConstants {
     public static final String NO_RESIDENTS_FIND =
         "Резиденты с заданными параметрами не найдены! Попробуйте изменить запрос";
 
+    public static final String NO_FUTURE_EVENTS_FIND =
+        "Запланированные мероприятия не найдены!";
+
     public static final String USER_CARD_PREVIEW = """
         *Имя пользователя: * %s
         *Номер мобильного телефона: * %s

@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
+import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminMainMenuScenario;
@@ -19,7 +20,7 @@ import java.util.List;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.SLIDER_PREVIOUS_CARD_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.*;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.*;
 
 @UtilityClass
@@ -103,7 +104,7 @@ public class MenuConstants {
             ));
     }
 
-    public static InlineKeyboardMarkup createSliderMenu(Long chatId, Long cardUserChatId) {
+    public static InlineKeyboardMarkup createResidentSliderMenu(Long chatId, Long cardUserChatId) {
         String url = "https://businessbanyasnp.duckdns.org/users/%s/details".formatted(cardUserChatId);
 
         InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
@@ -115,8 +116,24 @@ public class MenuConstants {
             List.of(
                 new InlineKeyboardRow(webAppButton),
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("◀").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
-                    InlineKeyboardButton.builder().text("▶").callbackData(SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
+                    InlineKeyboardButton.builder().text("◀").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
+                    InlineKeyboardButton.builder().text("▶").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
+                )
+            ));
+    }
+
+    public static InlineKeyboardMarkup createEventSliderMenu(Long chatId, Event event) {
+        InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
+            .text("Зарегистрироваться")
+            .webApp(new WebAppInfo(event.getRegistrationLink()))
+            .build();
+
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(webAppButton),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("◀").callbackData(EVENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
+                    InlineKeyboardButton.builder().text("▶").callbackData(EVENT_SLIDER_NEXT_CARD_PREFIX + chatId).build()
                 )
             ));
     }

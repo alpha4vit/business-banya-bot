@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.util.Base64;
 import java.util.UUID;
 
-public class ImageUtils {
+public class FileUtils {
 
     private static final Base64.Decoder decoder = Base64.getDecoder();
 

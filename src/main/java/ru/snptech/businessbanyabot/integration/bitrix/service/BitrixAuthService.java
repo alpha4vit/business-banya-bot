@@ -15,6 +15,7 @@ import java.time.Instant;
 public class BitrixAuthService {
 
     private static final String REFRESH_GRANT_TYPE = "refresh_token";
+    private static final String AUTH_PARAM = "&auth=";
 
     private final BitrixAuthClient bitrixAuthClient;
     private final BitrixProperties bitrixProperties;
@@ -30,6 +31,10 @@ public class BitrixAuthService {
 
 
     private Instant expiresAt = Instant.now();
+
+    public String getAuthPathParam() {
+        return AUTH_PARAM + getValidAccessToken();
+    }
 
     public synchronized String getValidAccessToken() {
         if (Instant.now().isAfter(expiresAt)) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "application.integration.bitrix")
 public class BitrixProperties {
 
+    private String restUrl;
     private String url;
     private String clientId;
     private String clientSecret;

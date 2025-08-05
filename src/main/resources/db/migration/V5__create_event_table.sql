@@ -2,15 +2,15 @@ CREATE TABLE IF NOT EXISTS event
 (
     id                  uuid primary key,
     external_id         text,
-    title               text not null,
+    title               text        not null,
     speaker             text,
-    carry_date          text,
-    full_description    text,
-    preview_description text,
-    photo               text,
+    carry_date          timestamptz,
+    week_day            text,
+    time                time,
+    full_description    jsonb,
+    preview_description jsonb,
+    photo               jsonb,
     registration_link   text,
-    table_link          text
+    table_link          text,
+    created_at          timestamptz not null
 );
-
-create index event_external_id_index on event(external_id);
-

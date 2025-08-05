@@ -17,8 +17,8 @@ import java.util.Map;
 
 @FeignClient(
     name = "bitrix-company-feign-client",
-    url = "${application.integration.bitrix.url}",
-    configuration = FeignBitrixClientConfiguration.class
+    url = "${application.integration.bitrix.rest-url}"
+//    configuration = FeignBitrixClientConfiguration.class
 )
 public interface BitrixCrmClient {
 

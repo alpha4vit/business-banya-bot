@@ -112,7 +112,7 @@ public class TelegramClientAdapter {
         EditMessageText editMessage = EditMessageText.builder()
             .chatId(chatId.toString())
             .messageId(messageId)
-            .text(text)
+            .text(TelegramUtils.escapeMarkdownV2(text))
             .parseMode(ParseMode.MARKDOWNV2)
             .replyMarkup(replyKeyboard)
             .build();

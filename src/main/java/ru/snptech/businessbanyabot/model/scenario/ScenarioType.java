@@ -7,5 +7,6 @@ public enum ScenarioType {
     PAYMENT,
     DEPOSIT,
     SEARCH,
-    PAYMENT_REPORT;
+    PAYMENT_REPORT,
+    EVENTS;
 }

@@ -17,8 +17,8 @@ abstract public class AbstractScenario {
     protected final TelegramClientAdapter telegramClientAdapter;
 
     @SneakyThrows
-    protected void sendMessage(Map<String, Object> requestContext, String message) {
-        telegramClientAdapter.sendMessage(
+    protected Integer sendMessage(Map<String, Object> requestContext, String message) {
+        return telegramClientAdapter.sendMessage(
             CHAT_ID.getValue(requestContext, Long.class),
             message
         );

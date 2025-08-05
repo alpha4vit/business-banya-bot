@@ -12,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchMetadata {
     private String searchString;
-    private Integer residentSliderCursor;
+    private Integer sliderCursor;
 }

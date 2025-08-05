@@ -7,10 +7,10 @@ import ru.snptech.businessbanyabot.integration.bank.properties.BankIntegrationPr
 
 public class FeignBankClientConfiguration {
 
-    @Bean
-    Logger.Level feignLoggerLevel() {
-        return Logger.Level.FULL;
-    }
+//    @Bean
+//    Logger.Level feignLoggerLevel() {
+//        return Logger.Level.FULL;
+//    }
 
     @Bean
     public FeignBankClientAuthorizationInterceptor authRequestInterceptor(
