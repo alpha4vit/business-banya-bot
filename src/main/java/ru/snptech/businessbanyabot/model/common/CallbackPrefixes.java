@@ -15,6 +15,8 @@ public final class CallbackPrefixes {
     public final class Admin {
         public static final String ADMIN_SURVEY_ACCEPT_PREFIX = "ASA_";
         public static final String ADMIN_SURVEY_DECLINE_PREFIX = "ASD_";
+
+        public static final String ADMIN_SEND_NOTIFICATIONS = "ASN_";
     }
 
     public final class Slider {

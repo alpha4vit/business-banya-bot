@@ -26,7 +26,7 @@ public class SurveyRequestNotifier {
         log.info("Notifying admin about survey complete by user '{}'", event.user().getChatId());
 
         telegramClientAdapter.sendMessage(
-            event.user().getChatId(),
+            852874671L,
             createMessage(event.user(), event.survey()),
             MenuConstants.createAdminSurveyAcceptMenu(event.survey().getId())
         );

@@ -35,8 +35,6 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClientAdapter telegramClientAdapter;
 
-    private final BitrixCrmClient bitrixCrmClient;
-
     @Override
     public void consume(Update update) {
         var chatId = TelegramUtils.extractChatIdFromUpdate(update);
@@ -45,20 +43,6 @@ public class UpdateConsumer implements LongPollingSingleThreadUpdateConsumer {
             Map<String, Object> requestContext = new HashMap<>();
             TG_UPDATE.setValue(requestContext, update);
 
-            var filter = new BitrixListFilter(
-                Map.of("CATEGORY_ID", "58"),
-                List.of(
-                    "TITLE",
-                    "UF_CRM_1754335478118",
-                    "UF_CRM_1743440819598",
-                    "UF_CRM_1754335207065",
-                    "UF_CRM_1754335220238",
-                    "UF_CRM_1745990408213",
-                    "UF_CRM_1745990553362",
-                    "UF_CRM_1754335612157"
-                ),
-                0
-            );
             var user = registrationScenario.invoke(requestContext);
 
             if (UserRole.ADMIN.equals(user.getRole())) {

@@ -2,12 +2,15 @@ package ru.snptech.businessbanyabot.service.scenario.admin;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Call;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.model.common.AdminMessageConstants;
+import ru.snptech.businessbanyabot.model.common.CallbackPrefixes;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.step.NotificationScenarioStep;
 import ru.snptech.businessbanyabot.model.survey.SurveyStatus;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
 import ru.snptech.businessbanyabot.repository.SurveyRepository;
@@ -32,6 +35,7 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
     private final UserRepository userRepository;
     private final SurveyRepository surveyRepository;
     private final UserContextService userContextService;
+    private final AdminNotificationScenario adminNotificationScenario;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -39,9 +43,20 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
         var callbackPrefix = extractCallbackPrefix(callback.getData());
         var callbackPostfix = extractCallbackPostfix(callback.getData());
 
+        var chatId = CHAT_ID.getValue(requestContext, Long.class);
+        var user = userRepository.findByChatId(chatId);
+
         switch (callbackPrefix) {
             case ADMIN_SURVEY_DECLINE_PREFIX, ADMIN_SURVEY_ACCEPT_PREFIX ->
                 handleSurveyVerdict(requestContext, callbackPrefix, callbackPostfix);
+
+            case CallbackPrefixes.Admin.ADMIN_SEND_NOTIFICATIONS -> {
+                SCENARIO_STEP.setValue(requestContext, NotificationScenarioStep.SEND.name());
+
+                userContextService.updateUserContext(user, requestContext);
+
+                adminNotificationScenario.invoke(requestContext);
+            }
 
         }
 
@@ -97,15 +112,16 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
         surveyRepository.save(survey);
     }
 
-    // TODO find ways to avoid constructor declaration by lombok
     public AdminCallbackScenario(
         UserRepository userRepository,
         SurveyRepository surveyRepository,
         UserContextService userContextService,
-        TelegramClientAdapter telegramClientAdapter
+        TelegramClientAdapter telegramClientAdapter,
+        AdminNotificationScenario adminNotificationScenario
     ) {
         super(telegramClientAdapter);
 
+        this.adminNotificationScenario = adminNotificationScenario;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.surveyRepository = surveyRepository;

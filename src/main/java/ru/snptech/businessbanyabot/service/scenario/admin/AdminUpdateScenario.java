@@ -20,16 +20,19 @@ public class AdminUpdateScenario extends AbstractScenario {
     private final UserRepository userRepository;
     private final AdminMainMenuScenario adminMainMenuScenario;
     private final UserContextService userContextService;
+    private final AdminNotificationScenario notificationScenario;
 
     public AdminUpdateScenario(
         TelegramClientAdapter telegramClientAdapter,
         AdminCallbackScenario adminCallbackScenario,
         UserRepository userRepository,
         AdminMainMenuScenario adminMainMenuScenario,
-        UserContextService userContextService
+        UserContextService userContextService,
+        AdminNotificationScenario adminNotificationScenario
     ) {
         super(telegramClientAdapter);
 
+        this.notificationScenario = adminNotificationScenario;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.adminMainMenuScenario = adminMainMenuScenario;
@@ -54,11 +57,10 @@ public class AdminUpdateScenario extends AbstractScenario {
 
         var currentScenario = SCENARIO.getValue(requestContext, ScenarioType.class);
 
-
         switch (currentScenario) {
-            case MAIN_MENU -> {
-                adminMainMenuScenario.invoke(requestContext);
-            }
+            case MAIN_MENU -> adminMainMenuScenario.invoke(requestContext);
+
+            case NOTIFICATION -> notificationScenario.invoke(requestContext);
 
             default -> {
                 // nothing for now
@@ -69,14 +71,14 @@ public class AdminUpdateScenario extends AbstractScenario {
     private void cleanContextIfNeeded(Long chatId, Map<String, Object> requestContext) {
         if (
             TG_UPDATE.getValue(requestContext).getMessage().hasText()
-                && "/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
-                && UserMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                && ("/start".equals(TG_UPDATE.getValue(requestContext).getMessage().getText())
+                || AdminMainMenuScenario.MAIN_MENU_COMMANDS.contains(TG_UPDATE.getValue(requestContext).getMessage().getText())
+            )
         ) {
             var user = userRepository.findByChatId(chatId);
 
-            requestContext.clear();
-
             SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+            SCENARIO_STEP.setValue(requestContext, "");
 
             userContextService.updateUserContext(user, requestContext);
         }

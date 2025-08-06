@@ -37,7 +37,7 @@ public class Event {
     private Instant carryDate;
 
     @Column(name = "week_day")
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = EnumType.ORDINAL)
     private WeekDay weekDay;
 
     private LocalTime time;

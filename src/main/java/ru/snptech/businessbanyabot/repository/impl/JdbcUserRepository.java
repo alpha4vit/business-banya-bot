@@ -7,6 +7,7 @@ import ru.snptech.businessbanyabot.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface JdbcUserRepository extends CrudRepository<TelegramUser, Long>, UserRepository {
 
@@ -21,4 +22,7 @@ public interface JdbcUserRepository extends CrudRepository<TelegramUser, Long>, 
 
     @Override
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
+
+    @Override
+    List<TelegramUser> findByChatIdIn(Set<Long> chatIds);
 }

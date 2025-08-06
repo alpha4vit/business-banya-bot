@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS event
     title               text        not null,
     speaker             text,
     carry_date          timestamptz,
-    week_day            text,
+    week_day            int,
     time                time,
     full_description    jsonb,
     preview_description jsonb,

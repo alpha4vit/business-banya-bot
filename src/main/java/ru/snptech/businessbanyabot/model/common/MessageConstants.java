@@ -48,4 +48,16 @@ public class MessageConstants {
 
     public static final String BALANCE_MESSAGE
         = "*Ваш баланс:* %s";
+
+    public static final String NOTIFICATION_CONTENT_MESSAGE
+        = "Введите содержимое сообщения для рассылки";
+
+    public static final String NOTIFICATION_CONSUMER_MESSAGE
+        = "Введите ФИО получателей рассылки через запятую как в Bitrix";
+
+    public static final String CONSUMERS_NOT_FOUND_BY_FULL_NAMES
+        = "Пользователи с данными ФИО не найдены: \n\n%s \n\nПопробуйте снова или запустите рассылку";
+
+    public static final String NOTIFICATION_SUCCESSFULLY_SENT
+        = "Рассылка успешно отправлена!";
 }

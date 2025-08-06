@@ -2,6 +2,7 @@ package ru.snptech.businessbanyabot.service.scenario.event;
 
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixFileClient;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
@@ -18,6 +19,7 @@ import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
@@ -32,6 +34,11 @@ public class EventScenario extends AbstractScenario {
 
     private static final Integer INITIAL_EVENT_SLIDER_INDEX = 0;
 
+    Comparator<Event> eventComparator = Comparator
+        .comparing(Event::getCarryDate, Comparator.nullsLast(Comparator.naturalOrder()))
+        .thenComparing(Event::getWeekDay, Comparator.nullsLast(Comparator.naturalOrder()))
+        .thenComparing(Event::getTime, Comparator.nullsLast(Comparator.naturalOrder()));
+
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
@@ -45,13 +52,10 @@ public class EventScenario extends AbstractScenario {
 
                 userContextService.updateUserContext(user, requestContext);
 
-                var todayEvents = eventRepository.findByCarryDateAfterOrWeekDayAndTimeGreaterThanEqual(
-                    Instant.now(),
-                    TimeUtils.getCurrentWeekDay(),
-                    LocalTime.now()
-                );
+                var upcomingEvents = eventRepository.findByCarryDateAfterOrCarryDateNull(Instant.now())
+                    .stream().sorted(eventComparator).toList();
 
-                if (todayEvents.isEmpty()) {
+                if (upcomingEvents.isEmpty()) {
                     sendMessage(
                         requestContext,
                         MessageConstants.NO_FUTURE_EVENTS_FIND
@@ -60,7 +64,7 @@ public class EventScenario extends AbstractScenario {
                     return;
                 }
 
-                var event = todayEvents.get(INITIAL_EVENT_SLIDER_INDEX);
+                var event = upcomingEvents.get(INITIAL_EVENT_SLIDER_INDEX);
 
                 var messageId = sendMessage(
                     requestContext,
@@ -85,11 +89,9 @@ public class EventScenario extends AbstractScenario {
 
         var searchMetadata = SEARCH_METADATA.getValue(context, SearchMetadata.class);
 
-        var upcomingEvents = eventRepository.findByCarryDateAfterOrWeekDayAndTimeGreaterThanEqual(
-            Instant.now(),
-            TimeUtils.getCurrentWeekDay(),
-            LocalTime.now()
-        );
+        var upcomingEvents = eventRepository.findByCarryDateAfterOrCarryDateNull(Instant.now())
+            .stream().sorted(eventComparator).toList();
+
 
         if (upcomingEvents.isEmpty()) {
             sendMessage(

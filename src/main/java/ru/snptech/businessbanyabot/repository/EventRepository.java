@@ -1,5 +1,6 @@
 package ru.snptech.businessbanyabot.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.integration.bank.dto.common.WeekDay;
 
@@ -16,6 +17,5 @@ public interface EventRepository {
 
     List<Event> findByExternalIdIn(Collection<String> externalIds);
 
-    List<Event> findByCarryDateAfterOrWeekDayAndTimeGreaterThanEqual(Instant after, WeekDay weekDay, LocalTime afterTime);
-
+    List<Event> findByCarryDateAfterOrCarryDateNull(Instant after);
 }

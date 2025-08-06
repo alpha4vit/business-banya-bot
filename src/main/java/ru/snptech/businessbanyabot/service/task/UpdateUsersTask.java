@@ -21,8 +21,9 @@ public class UpdateUsersTask {
     private final BitrixIntegrationService bitrixIntegrationService;
     private final UserRepository userRepository;
 
+    // TODO remove 100, set 1
     @Transactional
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MINUTES)
     public void updateResidents() {
         var companies = bitrixIntegrationService.findAllCompaniesByStatus(BitrixCompanyStatus.RESIDENT)
             .stream()

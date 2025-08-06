@@ -33,6 +33,7 @@ public class UserMainMenuScenario extends AbstractScenario {
     public static final Set<String> MAIN_MENU_COMMANDS = Set.of(
         SEARCH, BALANCE, EVENTS
     );
+
     private final UserContextService userContextService;
     private final UserRepository userRepository;
     private final SurveyScenario surveyScenario;

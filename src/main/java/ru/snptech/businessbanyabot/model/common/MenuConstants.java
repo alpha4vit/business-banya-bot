@@ -18,8 +18,7 @@ import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.*;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.*;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.*;
 
@@ -62,6 +61,7 @@ public class MenuConstants {
         keyboardMarkup.setResizeKeyboard(true);
 
         keyboardMarkup.getKeyboard().addAll(List.of(
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.NOTIFICATION)),
             new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.PAYMENT_REPORT))
         ));
 
@@ -134,6 +134,15 @@ public class MenuConstants {
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("◀").callbackData(EVENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
                     InlineKeyboardButton.builder().text("▶").callbackData(EVENT_SLIDER_NEXT_CARD_PREFIX + chatId).build()
+                )
+            ));
+    }
+
+    public static InlineKeyboardMarkup createNotificationMenu(Long chatId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Отправить").callbackData(ADMIN_SEND_NOTIFICATIONS + chatId).build()
                 )
             ));
     }
