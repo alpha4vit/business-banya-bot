@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
+import ru.snptech.businessbanyabot.model.report.ReportType;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminMainMenuScenario;
 import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
@@ -62,7 +64,8 @@ public class MenuConstants {
 
         keyboardMarkup.getKeyboard().addAll(List.of(
             new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.NOTIFICATION)),
-            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.PAYMENT_REPORT))
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.PAYMENT_REPORT)),
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.REPORT))
         ));
 
         return keyboardMarkup;
@@ -137,6 +140,35 @@ public class MenuConstants {
                 )
             ));
     }
+
+    public static InlineKeyboardMarkup createSelectReportType(List<ReportType> types) {
+        var keyboard = types.stream().map((type) ->
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder()
+                        .text(type.getLabel())
+                        .callbackData(REPORT_TYPE_PREFIX + type.getId())
+                        .build()
+                )
+            )
+            .toList();
+
+        return new InlineKeyboardMarkup(keyboard);
+    }
+
+    public static InlineKeyboardMarkup createSelectReportParam(List<LabeledEnum> types) {
+        var keyboard = types.stream().map((type) ->
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder()
+                        .text(type.getLabel())
+                        .callbackData(REPORT_TYPE_PREFIX + type.getId())
+                        .build()
+                )
+            )
+            .toList();
+
+        return new InlineKeyboardMarkup(keyboard);
+    }
+
 
     public static InlineKeyboardMarkup createNotificationMenu(Long chatId) {
         return new InlineKeyboardMarkup(

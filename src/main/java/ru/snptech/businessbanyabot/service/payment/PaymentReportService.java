@@ -20,7 +20,7 @@ public class PaymentReportService {
             Row header = sheet.createRow(0);
             String[] headers = {
                 "Номер", "Внешний номер", "Тип", "Статус", "Сумма",
-                "Валюта", "Никнейм пользователя", "Дата создания", "Дата истечения"
+                "Валюта", "ФИО", "Дата создания", "Дата истечения"
             };
 
             for (int i = 0; i < headers.length; i++) {
@@ -39,7 +39,7 @@ public class PaymentReportService {
                 row.createCell(3).setCellValue(payment.getStatus().toHumanReadable());
                 row.createCell(4).setCellValue(payment.getAmount());
                 row.createCell(5).setCellValue(payment.getCurrency());
-                row.createCell(6).setCellValue(payment.getUser().getTelegramUsername());
+                row.createCell(6).setCellValue(payment.getUser().getFullName());
                 row.createCell(7).setCellValue(payment.getCreatedAt().toString());
                 row.createCell(8).setCellValue(payment.getExpiredAt().toString());
             }

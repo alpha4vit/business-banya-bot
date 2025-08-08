@@ -8,7 +8,7 @@ import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.notification.Notification;
 import ru.snptech.businessbanyabot.model.scenario.step.NotificationScenarioStep;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.repository.specification.TelegramUserSpecification;
+import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -84,7 +84,7 @@ public class AdminNotificationScenario extends AbstractScenario {
                     .map(String::trim)
                     .collect(Collectors.toSet());
 
-                var users = userRepository.findAll(TelegramUserSpecification.nameContainsAny(userFullNames));
+                var users = userRepository.findAll(UserSpecification.nameContainsAny(userFullNames));
 
                 var existedUsers = users.stream()
                     .map((it) -> it.getFullName().trim())
@@ -114,8 +114,6 @@ public class AdminNotificationScenario extends AbstractScenario {
                 }
 
                 var toSend = userRepository.findByChatIdIn(notification.getChatIds());
-
-                toSend.addAll(users);
 
                 sendNotifications(notification, toSend);
 

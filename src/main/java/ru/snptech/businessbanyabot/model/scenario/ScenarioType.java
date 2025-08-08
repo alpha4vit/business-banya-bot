@@ -9,5 +9,6 @@ public enum ScenarioType {
     SEARCH,
     PAYMENT_REPORT,
     EVENTS,
-    NOTIFICATION
+    NOTIFICATION,
+    REPORT
 }

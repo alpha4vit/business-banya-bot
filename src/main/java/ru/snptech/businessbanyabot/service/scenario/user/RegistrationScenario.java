@@ -3,6 +3,7 @@ package ru.snptech.businessbanyabot.service.scenario.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
@@ -49,6 +50,7 @@ public class RegistrationScenario {
         user.setTelegramUsername(tgUser.getUserName());
         user.setRole(UserRole.NON_RESIDENT);
         user.setStatus(UserStatus.ACTIVE);
+        user.setInfo(BitrixCompanyDto.builder().build());
         user = userRepository.save(user);
 
         CHAT_ID.setValue(requestContext, user.getChatId().toString());

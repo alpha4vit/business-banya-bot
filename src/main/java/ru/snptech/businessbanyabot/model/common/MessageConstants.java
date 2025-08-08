@@ -60,4 +60,10 @@ public class MessageConstants {
 
     public static final String NOTIFICATION_SUCCESSFULLY_SENT
         = "Рассылка успешно отправлена!";
+
+    public static final String SELECT_REPORT_TYPE_MESSAGE
+        = "Выберите тип фильтра для получения отчета.";
+
+    public static final String SELECT_REPORT_TYPE_PARAM_MESSAGE
+        = "Выберите параметр фильтра для получения отчета.";
 }

@@ -2,6 +2,7 @@ package ru.snptech.businessbanyabot.integration.bitrix.util;
 
 import lombok.experimental.UtilityClass;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
+import ru.snptech.businessbanyabot.model.report.ReportType;
 
 @UtilityClass
 public final class LabeledEnumUtil {
@@ -12,7 +13,7 @@ public final class LabeledEnumUtil {
             }
         }
 
-        throw new IllegalArgumentException("Cannot parse id %s for %s".formatted(id, enumClass.getName()));
+        throw new IllegalArgumentException("Cannot parse phoneId %s for %s".formatted(id, enumClass.getName()));
     }
 
     public static <T extends Enum<T> & LabeledEnum> T fromLabel(Class<T> enumClass, String label) {

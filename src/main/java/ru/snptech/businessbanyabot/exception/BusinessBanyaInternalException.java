@@ -18,4 +18,10 @@ public class BusinessBanyaInternalException extends BaseBusinessBanyaException {
             super("Вопрос не найден в базе. Начните заоплнение анкеты заново.");
         }
     }
+
+    public static class REPORT_INPUT_CANNOT_BE_NULL extends BusinessBanyaInternalException {
+        public REPORT_INPUT_CANNOT_BE_NULL() {
+            super("Входные данные для получения отчета не могут быть пустыми!");
+        }
+    }
 }

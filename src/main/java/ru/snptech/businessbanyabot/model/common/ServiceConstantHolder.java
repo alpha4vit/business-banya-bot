@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.snptech.businessbanyabot.entity.Survey;
 import ru.snptech.businessbanyabot.model.notification.Notification;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
+import ru.snptech.businessbanyabot.model.report.ReportType;
 import ru.snptech.businessbanyabot.model.search.SearchMetadata;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
 
@@ -26,4 +27,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<SearchMetadata> SEARCH_METADATA = new MetaDataKey<>("searchMetadata", SearchMetadata.class);
     public static final MetaDataKey<Integer> MESSAGE_ID = new MetaDataKey<>("messageId", Integer.class);
     public static final MetaDataKey<Notification> NOTIFICATION = new MetaDataKey<>("notification", Notification.class);
+    public static final MetaDataKey<ReportType> REPORT_TYPE = new MetaDataKey<>("reportType", ReportType.class);
 }

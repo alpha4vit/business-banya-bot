@@ -1,6 +1,8 @@
 package ru.snptech.businessbanyabot.repository;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 
 import java.util.Collection;
@@ -19,11 +21,7 @@ public interface UserRepository {
 
     List<TelegramUser> findByFullNameContainingIgnoreCase(String partOfName);
 
-    List<TelegramUser> findByExternalIdIn(Collection<String> externalIds);
-
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
-
-    List<TelegramUser> findByFullNameIn(Collection<String> fullNames);
 
     List<TelegramUser> findAll(Specification<TelegramUser> specification);
 }

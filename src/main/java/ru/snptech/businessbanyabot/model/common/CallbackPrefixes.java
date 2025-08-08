@@ -17,6 +17,9 @@ public final class CallbackPrefixes {
         public static final String ADMIN_SURVEY_DECLINE_PREFIX = "ASD_";
 
         public static final String ADMIN_SEND_NOTIFICATIONS = "ASN_";
+
+        public static final String REPORT_TYPE_PREFIX = "RT_";
+        public static final String REPORT_TYPE_PARAM_PREFIX = "RTP_";
     }
 
     public final class Slider {

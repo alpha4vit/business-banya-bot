@@ -18,11 +18,9 @@ public interface JdbcUserRepository extends CrudRepository<TelegramUser, Long>, 
     List<TelegramUser> findByFullNameContainingIgnoreCase(String partOfName);
 
     @Override
-    List<TelegramUser> findByExternalIdIn(Collection<String> externalIds);
-
-    @Override
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
 
     @Override
     List<TelegramUser> findByChatIdIn(Set<Long> chatIds);
+
 }

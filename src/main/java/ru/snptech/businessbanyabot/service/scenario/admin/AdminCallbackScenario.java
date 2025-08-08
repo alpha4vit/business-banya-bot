@@ -2,7 +2,6 @@ package ru.snptech.businessbanyabot.service.scenario.admin;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Call;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.model.common.AdminMessageConstants;
@@ -16,6 +15,7 @@ import ru.snptech.businessbanyabot.model.user.UserStatus;
 import ru.snptech.businessbanyabot.repository.SurveyRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.BaseCallbackScenario;
+import ru.snptech.businessbanyabot.service.scenario.report.ReportScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -24,8 +24,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_ACCEPT_PREFIX;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.ADMIN_SURVEY_DECLINE_PREFIX;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.*;
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Slf4j
@@ -34,6 +33,7 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
 
     private final UserRepository userRepository;
     private final SurveyRepository surveyRepository;
+    private final ReportScenario reportScenario;
     private final UserContextService userContextService;
     private final AdminNotificationScenario adminNotificationScenario;
 
@@ -57,6 +57,9 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
 
                 adminNotificationScenario.invoke(requestContext);
             }
+
+            case REPORT_TYPE_PREFIX, REPORT_TYPE_PARAM_PREFIX -> reportScenario.invoke(requestContext, callbackPostfix);
+
 
         }
 
@@ -115,12 +118,14 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
     public AdminCallbackScenario(
         UserRepository userRepository,
         SurveyRepository surveyRepository,
+        ReportScenario reportScenario,
         UserContextService userContextService,
         TelegramClientAdapter telegramClientAdapter,
         AdminNotificationScenario adminNotificationScenario
     ) {
         super(telegramClientAdapter);
 
+        this.reportScenario = reportScenario;
         this.adminNotificationScenario = adminNotificationScenario;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
