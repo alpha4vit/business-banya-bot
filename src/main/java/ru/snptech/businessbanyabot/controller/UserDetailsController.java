@@ -37,33 +37,33 @@ public class UserDetailsController {
     ) {
         var user = userRepository.findByChatId(Long.parseLong(chatId));
 
-        var sports = mapToString(user.getInfo().sports(), BitrixSport.class);
+        var sports = mapToString(user.getInfo().getSports(), BitrixSport.class);
 
         log.error(sports);
 
-        var networkingSphere = LabeledEnumUtil.fromId(BitrixNetworkingSphere.class, user.getInfo().networkingSphere()).getLabel();
-        var growthLimit = LabeledEnumUtil.fromId(BitrixGrowthLimit.class, user.getInfo().growthLimit()).getLabel();
-        var readyToBeTeacher = LabeledEnumUtil.fromId(BitrixReadyToBeTeacher.class, user.getInfo().readyToBeTeacher()).getLabel();
-        var link = user.getInfo().photo().showUrl() + bitrixAuthService.getAuthPathParam();
+        var networkingSphere = LabeledEnumUtil.fromId(BitrixNetworkingSphere.class, user.getInfo().getNetworkingSphere()).getLabel();
+        var growthLimit = LabeledEnumUtil.fromId(BitrixGrowthLimit.class, user.getInfo().getGrowthLimit()).getLabel();
+        var readyToBeTeacher = LabeledEnumUtil.fromId(BitrixReadyToBeTeacher.class, user.getInfo().getReadyToBeTeacher()).getLabel();
+        var link = user.getInfo().getPhoto().showUrl() + bitrixAuthService.getAuthPathParam();
 
         model.addAttribute("chatId", chatId);
         model.addAttribute("fullName", user.getFullName());
         model.addAttribute("phoneNumber", user.getPhoneNumber());
-        model.addAttribute("businessDescription", user.getInfo().businessDescription());
-        model.addAttribute("mainActive", user.getInfo().mainActive());
-        model.addAttribute("mainPassive", user.getInfo().mainPassive());
+        model.addAttribute("businessDescription", user.getInfo().getBusinessDescription());
+        model.addAttribute("mainActive", user.getInfo().getMainActive());
+        model.addAttribute("mainPassive", user.getInfo().getMainPassive());
         model.addAttribute("interests", user.getInfo());
         model.addAttribute("avatarLink", bitrixProperties.getUrl() + link);
-        model.addAttribute("sport", user.getInfo().sports().toString());
-        model.addAttribute("principles", user.getInfo().principles().toString());
-        model.addAttribute("music", user.getInfo().music());
-        model.addAttribute("keywords", user.getInfo().keywords());
-        model.addAttribute("favoriteMovies", user.getInfo().favoriteMovies());
-        model.addAttribute("strengths", user.getInfo().strengths());
-        model.addAttribute("achievements", user.getInfo().achievements());
-        model.addAttribute("defeats", user.getInfo().defeats());
-        model.addAttribute("teachers", user.getInfo().teachers());
-        model.addAttribute("futureGoals", user.getInfo().futureGoals());
+        model.addAttribute("sport", user.getInfo().getSports().toString());
+        model.addAttribute("principles", user.getInfo().getPrinciples().toString());
+        model.addAttribute("music", user.getInfo().getMusic());
+        model.addAttribute("keywords", user.getInfo().getKeywords());
+        model.addAttribute("favoriteMovies", user.getInfo().getFavoriteMovies());
+        model.addAttribute("strengths", user.getInfo().getStrengths());
+        model.addAttribute("achievements", user.getInfo().getAchievements());
+        model.addAttribute("defeats", user.getInfo().getDefeats());
+        model.addAttribute("teachers", user.getInfo().getTeachers());
+        model.addAttribute("futureGoals", user.getInfo().getFutureGoals());
         model.addAttribute("networkingSphere", networkingSphere);
         model.addAttribute("growthLimit", growthLimit);
         model.addAttribute("readyToBeTeacher", readyToBeTeacher);

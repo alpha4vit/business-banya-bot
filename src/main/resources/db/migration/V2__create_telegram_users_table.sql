@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS telegram_user
     banned_at           timestamptz,
     qr_code             TEXT,
     external_id         TEXT,
-    info                jsonb
+    user_info_id        bigint references user_info(internal_id)
 );
 
 create index tg_user_external_id_index on telegram_user(external_id);

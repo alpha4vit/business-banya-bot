@@ -58,7 +58,7 @@ public class PaymentScenario extends AbstractScenario {
         var chatId = CHAT_ID.getValue(context, Long.class);
         var user = userRepository.findByChatId(chatId);
 
-        var balance = TextUtils.balanceToHumanReadable(user.getInfo().balance());
+        var balance = TextUtils.balanceToHumanReadable(user.getInfo().getBalance());
 
         sendMessage(
             context,

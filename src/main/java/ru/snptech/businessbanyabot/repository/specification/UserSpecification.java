@@ -1,11 +1,10 @@
 package ru.snptech.businessbanyabot.repository.specification;
 
-import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.metamodel.ManagedType;
 import org.springframework.data.jpa.domain.Specification;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
-import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyDto;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,9 +27,20 @@ public class UserSpecification {
             builder.equal(root.get("info").get("familyStatus"), familyStatus);
     }
 
-    public static Specification<TelegramUser> hasChildrenCount(String count) {
-        return (root, query, builder) ->
-            builder.equal(root.get("info").get("childrenCount"), count);
+    public static Specification<TelegramUser> hasChildrenCount(Integer count) {
+        return (root, query, builder) -> {
+            Expression<Integer> childrenCountPath = root.get("info").get("childrenCount");
+
+            if (count == null) {
+                return builder.conjunction();
+            }
+
+            if (count == 4) {
+                return builder.greaterThanOrEqualTo(childrenCountPath, 4);
+            } else {
+                return builder.equal(childrenCountPath, count);
+            }
+        };
     }
 
     public static Specification<TelegramUser> hasBusinessClients(String client) {
@@ -48,8 +58,21 @@ public class UserSpecification {
             builder.equal(root.get("info").get("growthLimit"), limit);
     }
 
-    public static Specification<TelegramUser> hasUfEmployees(String employeesCount) {
-        return (root, query, builder) ->
-            builder.equal(root.get("info").get("ufEmployees"), employeesCount);
+    public static Specification<TelegramUser> hasEmployees(Integer min, Integer max) {
+        return (root, query, builder) -> {
+            Expression<Integer> employeesCountPath = root.get("info").get("ufEmployees");
+
+            if (min == null && max == null) {
+                return builder.conjunction();
+            }
+
+            return builder.between(employeesCountPath, min, max);
+        };
     }
+
+    public static Specification<TelegramUser> hasRole(UserRole role) {
+        return (root, query, builder) ->
+            builder.equal(root.get("role"), role.name());
+    }
+
 }

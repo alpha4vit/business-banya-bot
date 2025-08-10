@@ -24,4 +24,6 @@ public interface UserRepository {
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
 
     List<TelegramUser> findAll(Specification<TelegramUser> specification);
+
+    List<TelegramUser> findAll();
 }

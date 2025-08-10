@@ -1,19 +1,16 @@
 package ru.snptech.businessbanyabot.integration.bitrix.dto.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import lombok.Builder;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.common.FileDto;
 
 import java.util.List;
 
 @Builder
-@Embeddable
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record BitrixCompanyDto(
-    @EmbeddedId
     @JsonProperty("ID")
     String id,
 
@@ -161,7 +158,6 @@ public record BitrixCompanyDto(
     @JsonProperty("UF_CRM_1753567605826")
     String readyToBeTeacher,
 
-    @Embedded
     @JsonProperty("UF_CRM_1753626792826")
     FileDto photo,
 

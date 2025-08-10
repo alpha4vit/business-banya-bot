@@ -3,15 +3,18 @@ package ru.snptech.businessbanyabot.service.scenario;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.ResidentStatus;
+import ru.snptech.businessbanyabot.integration.bitrix.mappers.UserInfoMapper;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
 import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.repository.UserInfoRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -27,6 +30,7 @@ public class VerificationScenario extends AbstractScenario {
     private final BitrixIntegrationService bitrixIntegrationService;
     private final UserContextService userContextService;
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -59,7 +63,8 @@ public class VerificationScenario extends AbstractScenario {
         userContextService.updateUserContext(user, requestContext);
     }
 
-    private void verifyPhoneNumber(Map<String, Object> context, TelegramUser user) {
+    @Transactional
+    protected void verifyPhoneNumber(Map<String, Object> context, TelegramUser user) {
         var message = TG_UPDATE.getValue(context).getMessage();
 
         if (!message.hasText() || !isPhoneNumber(message.getText())) {
@@ -72,14 +77,18 @@ public class VerificationScenario extends AbstractScenario {
 
         existedUser.ifPresent(
             (company) -> {
+                var userInfo = UserInfoMapper.toInfo(company);
+
                 user.setExternalId(company.id());
-                user.setInfo(company);
-                user.setFullName(company.title());
+                user.setInfo(userInfo);
+                user.setFullName(userInfo.getTitle());
                 user.setSocialMedia(user.getTelegramUsername());
 
-                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
+                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, userInfo.getResidentStatus());
 
                 user.setRole(residentStatus.toUserRole());
+
+                userInfoRepository.save(userInfo);
             }
         );
 
@@ -95,14 +104,16 @@ public class VerificationScenario extends AbstractScenario {
     }
 
     public VerificationScenario(
-        BitrixIntegrationService bitrixIntegrationService,
-        TelegramClientAdapter telegramClientAdapter,
-        UserContextService userContextService,
-        UserRepository userRepository
+            BitrixIntegrationService bitrixIntegrationService,
+            TelegramClientAdapter telegramClientAdapter,
+            UserContextService userContextService,
+            UserRepository userRepository,
+            UserInfoRepository userInfoRepository
     ) {
         super(telegramClientAdapter);
         this.bitrixIntegrationService = bitrixIntegrationService;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
+        this.userInfoRepository = userInfoRepository;
     }
 }

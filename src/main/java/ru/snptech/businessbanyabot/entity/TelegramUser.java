@@ -48,10 +48,9 @@ public class TelegramUser {
     @Column(name = "external_id")
     private String externalId;
 
-    @Embedded
-    @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
-    private BitrixCompanyDto info;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_info_id", referencedColumnName = "internal_id")
+    private UserInfo info;
 
     private Instant bannedAt;
 

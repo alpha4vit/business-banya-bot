@@ -6,7 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
-import ru.snptech.businessbanyabot.model.report.FamilyStatus;
+import ru.snptech.businessbanyabot.model.report.GrowthLimit;
 import ru.snptech.businessbanyabot.model.report.ReportType;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class FamilyStatusReportService implements ReportService {
+public class GrowthLimitReportService implements ReportService {
 
     private final UserRepository userRepository;
 
@@ -29,9 +29,9 @@ public class FamilyStatusReportService implements ReportService {
         }
 
         try {
-            var familyStatus = LabeledEnumUtil.fromId(FamilyStatus.class, input);
+            var growthLimit = LabeledEnumUtil.fromId(GrowthLimit.class, input);
 
-            var users = userRepository.findAll(UserSpecification.hasFamilyStatus(familyStatus.getId()));
+            var users = userRepository.findAll(UserSpecification.hasGrowthLimit(growthLimit.getId()));
 
             return exportToExcelFile(users);
         } catch (Throwable e) {

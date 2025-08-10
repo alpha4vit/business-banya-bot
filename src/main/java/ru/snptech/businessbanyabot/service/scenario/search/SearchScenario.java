@@ -108,8 +108,8 @@ public class SearchScenario extends AbstractScenario {
         var message = MessageConstants.USER_CARD_PREVIEW.formatted(
             user.getFullName(),
             user.getPhoneNumber(),
-            getOrEmpty(user.getInfo().businessDescription()),
-            getOrEmpty(user.getInfo().mainActive())
+            getOrEmpty(user.getInfo().getBusinessDescription()),
+            getOrEmpty(user.getInfo().getMainActive())
         );
 
         var menu = MenuConstants.createResidentSliderMenu(chatId, user.getChatId());

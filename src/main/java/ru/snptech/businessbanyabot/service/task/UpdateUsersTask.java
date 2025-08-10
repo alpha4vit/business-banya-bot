@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.BitrixCompanyStatus;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.ResidentStatus;
+import ru.snptech.businessbanyabot.integration.bitrix.mappers.UserInfoMapper;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.repository.UserRepository;
@@ -41,10 +42,15 @@ public class UpdateUsersTask {
         var users = userRepository.findByPhoneNumberIn(phoneNumbers);
 
         users.forEach((user) -> {
+            var existedInfo = user.getInfo();
             var company = companies.remove(user.getPhoneNumber());
+
+            var userInfo = UserInfoMapper.toInfo(company);
+            userInfo.setId(existedInfo.getId());
+
             var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
 
-            user.setInfo(company);
+            user.setInfo(userInfo);
             user.setFullName(company.title());
             user.setRole(residentStatus.toUserRole());
 

@@ -11,9 +11,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixAuthClient;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 import ru.snptech.businessbanyabot.model.report.ReportType;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.report.DispatchingReportService;
-import ru.snptech.businessbanyabot.service.report.FamilyStatusReportService;
-import ru.snptech.businessbanyabot.service.report.ReportService;
+import ru.snptech.businessbanyabot.service.report.*;
 
 import java.util.Map;
 
@@ -37,7 +35,12 @@ public class BusinessBanyaBotApplication {
     ) {
         return new DispatchingReportService(
             Map.of(
-                ReportType.FAMILY_STATUS, new FamilyStatusReportService(userRepository)
+                ReportType.FAMILY_STATUS, new FamilyStatusReportService(userRepository),
+                ReportType.CHILDREN_COUNT, new ChildrenCountReportService(userRepository),
+                ReportType.BUSINESS_CLIENTS, new BusinessClientReportService(userRepository),
+                ReportType.GROWTH_LIMIT, new GrowthLimitReportService(userRepository),
+                ReportType.EMPLOYEE_COUNT, new EmployeeCountReportService(userRepository),
+                ReportType.CITY, new CityReportService(userRepository)
             )
         );
     }

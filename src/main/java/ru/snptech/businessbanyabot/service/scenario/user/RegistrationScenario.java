@@ -50,7 +50,6 @@ public class RegistrationScenario {
         user.setTelegramUsername(tgUser.getUserName());
         user.setRole(UserRole.NON_RESIDENT);
         user.setStatus(UserStatus.ACTIVE);
-        user.setInfo(BitrixCompanyDto.builder().build());
         user = userRepository.save(user);
 
         CHAT_ID.setValue(requestContext, user.getChatId().toString());

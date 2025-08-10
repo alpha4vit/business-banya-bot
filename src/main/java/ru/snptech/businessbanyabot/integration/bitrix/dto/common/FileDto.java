@@ -6,10 +6,8 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-@Embeddable
 public record FileDto(
-    @EmbeddedId
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @JsonProperty("id")
     Integer fileId,
 
