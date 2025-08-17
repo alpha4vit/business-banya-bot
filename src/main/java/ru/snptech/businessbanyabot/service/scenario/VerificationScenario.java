@@ -66,6 +66,7 @@ public class VerificationScenario extends AbstractScenario {
     @Transactional
     protected void verifyPhoneNumber(Map<String, Object> context, TelegramUser user) {
         var message = TG_UPDATE.getValue(context).getMessage();
+        var chatId = CHAT_ID.getValue(context, Long.class);
 
         if (!message.hasText() || !isPhoneNumber(message.getText())) {
             throw new BusinessBanyaDomainLogicException.PHONE_NUMBER_IS_REQUIRED();
@@ -77,7 +78,7 @@ public class VerificationScenario extends AbstractScenario {
 
         existedUser.ifPresent(
             (company) -> {
-                var userInfo = UserInfoMapper.toInfo(company);
+                var userInfo = UserInfoMapper.toInfo(chatId, company);
 
                 user.setExternalId(company.id());
                 user.setInfo(userInfo);

@@ -7,8 +7,10 @@ import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.notification.Notification;
 import ru.snptech.businessbanyabot.model.scenario.step.NotificationScenarioStep;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
+import ru.snptech.businessbanyabot.service.notification.NotificationService;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
@@ -29,6 +31,7 @@ public class AdminNotificationScenario extends AbstractScenario {
 
     private final UserRepository userRepository;
     private final UserContextService userContextService;
+    private final NotificationService notificationService;
 
     public void invoke(Map<String, Object> requestContext) {
         var update = TG_UPDATE.getValue(requestContext);
@@ -66,7 +69,8 @@ public class AdminNotificationScenario extends AbstractScenario {
 
                 sendMessage(
                     requestContext,
-                    MessageConstants.NOTIFICATION_CONSUMER_MESSAGE
+                    MessageConstants.NOTIFICATION_CONSUMER_MESSAGE,
+                    MenuConstants.createSendNotificationForAllMenu(chatId)
                 );
 
                 userContextService.updateUserContext(user, requestContext);
@@ -115,7 +119,7 @@ public class AdminNotificationScenario extends AbstractScenario {
 
                 var toSend = userRepository.findByChatIdIn(notification.getChatIds());
 
-                sendNotifications(notification, toSend);
+                notificationService.sendNotification(notification, toSend);
 
                 sendMessage(
                     requestContext,
@@ -128,7 +132,11 @@ public class AdminNotificationScenario extends AbstractScenario {
 
                 var users = userRepository.findByChatIdIn(notification.getChatIds());
 
-                sendNotifications(notification, users);
+                if (users.isEmpty()) {
+                    users = userRepository.findAll(UserSpecification.hasRole(UserRole.RESIDENT));
+                }
+
+                notificationService.sendNotification(notification, users);
 
                 sendMessage(
                     requestContext,
@@ -138,24 +146,16 @@ public class AdminNotificationScenario extends AbstractScenario {
         }
     }
 
-    private void sendNotifications(Notification notification, List<TelegramUser> users) {
-        users.forEach((user) -> {
-            sendMessage(
-                userContextService.getUserContext(user),
-                notification.getContent()
-            );
-        });
-    }
-
-
     public AdminNotificationScenario(
         TelegramClientAdapter telegramClientAdapter,
         UserRepository userRepository,
-        UserContextService userContextService
+        UserContextService userContextService,
+        NotificationService notificationService
     ) {
         super(telegramClientAdapter);
 
         this.userContextService = userContextService;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 }

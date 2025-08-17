@@ -23,6 +23,10 @@ public class MessageConstants {
         *Ссылка на оплату:* %s
         """;
 
+    public static final String FAST_PAYMENT_ALREADY_EXISTS_TEMPLATE =
+        "*У вас имеется незавершенный платеж! Погасите его или отмените!*\n"
+            + FAST_PAYMENT_TEMPLATE;
+
     public static final String SEARCH_MENU_MESSAGE = "Введите ФИО искомого резидента";
 
     public static final String NO_RESIDENTS_FIND =
@@ -47,7 +51,10 @@ public class MessageConstants {
         = "Введите сумму депозита";
 
     public static final String BALANCE_MESSAGE
-        = "*Ваш баланс:* %s";
+        = """
+        *Ваш баланс:* %s
+        *Ваши баллы:* %s
+        """;
 
     public static final String NOTIFICATION_CONTENT_MESSAGE
         = "Введите содержимое сообщения для рассылки";
@@ -66,4 +73,21 @@ public class MessageConstants {
 
     public static final String SELECT_REPORT_TYPE_PARAM_MESSAGE
         = "Выберите параметр фильтра для получения отчета.";
+
+    public static final String LEADERBOARD_HEADER = """
+        *Ваша позиция в рейтинге:* %s
+        *Ваши баллы:* %s
+        """;
+
+    public static final String LEADERBOARD_ROW_TEMPLATE
+        = """
+        
+        *Позиция* %s
+        *ФИО:* %s
+        *Номер телефона:* %s
+        *Количество баллов:* %s
+        """;
+
+    public static final String SELECT_EVENT_TYPE_MESSAGE
+        = "Выберите тип события";
 }

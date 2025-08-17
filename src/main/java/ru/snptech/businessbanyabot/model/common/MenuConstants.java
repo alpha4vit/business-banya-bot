@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
+import ru.snptech.businessbanyabot.model.event.EventType;
 import ru.snptech.businessbanyabot.model.report.ReportType;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.service.scenario.admin.AdminMainMenuScenario;
@@ -19,6 +20,7 @@ import ru.snptech.businessbanyabot.service.scenario.user.UserMainMenuScenario;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Admin.*;
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.*;
@@ -50,7 +52,8 @@ public class MenuConstants {
             keyboardMarkup.getKeyboard().addAll(List.of(
                 new KeyboardRow(new KeyboardButton(UserMainMenuScenario.SEARCH)),
                 new KeyboardRow(new KeyboardButton(UserMainMenuScenario.BALANCE)),
-                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS))
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.EVENTS)),
+                new KeyboardRow(new KeyboardButton(UserMainMenuScenario.LEADERBOARD))
             ));
         }
 
@@ -65,7 +68,8 @@ public class MenuConstants {
         keyboardMarkup.getKeyboard().addAll(List.of(
             new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.NOTIFICATION)),
             new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.PAYMENT_REPORT)),
-            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.REPORT))
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.REPORT)),
+            new KeyboardRow(new KeyboardButton(AdminMainMenuScenario.LEADERBOARD))
         ));
 
         return keyboardMarkup;
@@ -119,8 +123,8 @@ public class MenuConstants {
             List.of(
                 new InlineKeyboardRow(webAppButton),
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("◀").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
-                    InlineKeyboardButton.builder().text("▶").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
+                    InlineKeyboardButton.builder().text("Предыдущий").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
+                    InlineKeyboardButton.builder().text("Следующий").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
                 )
             ));
     }
@@ -135,8 +139,8 @@ public class MenuConstants {
             List.of(
                 new InlineKeyboardRow(webAppButton),
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("◀").callbackData(EVENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
-                    InlineKeyboardButton.builder().text("▶").callbackData(EVENT_SLIDER_NEXT_CARD_PREFIX + chatId).build()
+                    InlineKeyboardButton.builder().text("Предыдущее").callbackData(EVENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
+                    InlineKeyboardButton.builder().text("Следующее").callbackData(EVENT_SLIDER_NEXT_CARD_PREFIX + chatId).build()
                 )
             ));
     }
@@ -169,13 +173,45 @@ public class MenuConstants {
         return new InlineKeyboardMarkup(keyboard);
     }
 
+    public static InlineKeyboardMarkup createSelectEventTypeMenu(List<EventType> types) {
+        var keyboard = types.stream().map((type) ->
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder()
+                        .text(type.getLabel())
+                        .callbackData(USER_CHOOSE_EVENT_TYPE + type.getId())
+                        .build()
+                )
+            )
+            .toList();
+
+        return new InlineKeyboardMarkup(keyboard);
+    }
+
+    public static InlineKeyboardMarkup createSendNotificationForAllMenu(Long chatId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Отправить всем").callbackData(ADMIN_SEND_FOR_ALL_NOTIFICATIONS + chatId).build()
+                )
+            ));
+    }
 
     public static InlineKeyboardMarkup createNotificationMenu(Long chatId) {
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Отправить").callbackData(ADMIN_SEND_NOTIFICATIONS + chatId).build()
+                    InlineKeyboardButton.builder().text("Отправить найденным").callbackData(ADMIN_SEND_NOTIFICATIONS + chatId).build()
                 )
             ));
     }
+
+    public static InlineKeyboardMarkup createDeclinePaymentMenu(UUID paymentId) {
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("❌ Отменить").callbackData(USER_DECLINE_PAYMENT + paymentId).build()
+                )
+            ));
+    }
+
 }

@@ -45,7 +45,7 @@ public class UpdateUsersTask {
             var existedInfo = user.getInfo();
             var company = companies.remove(user.getPhoneNumber());
 
-            var userInfo = UserInfoMapper.toInfo(company);
+            var userInfo = UserInfoMapper.toInfo(user.getChatId(), company);
             userInfo.setId(existedInfo.getId());
 
             var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());

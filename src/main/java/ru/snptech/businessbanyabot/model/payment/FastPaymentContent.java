@@ -1,5 +1,6 @@
 package ru.snptech.businessbanyabot.model.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FastPaymentContent extends PaymentContent {
     private PaymentType type;
     private String base64Image;
     private String link;
+
+    @Override
+    public String getExternalPayload() {
+        return this.link;
+    }
 }

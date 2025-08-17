@@ -50,7 +50,7 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
             case ADMIN_SURVEY_DECLINE_PREFIX, ADMIN_SURVEY_ACCEPT_PREFIX ->
                 handleSurveyVerdict(requestContext, callbackPrefix, callbackPostfix);
 
-            case CallbackPrefixes.Admin.ADMIN_SEND_NOTIFICATIONS -> {
+            case ADMIN_SEND_NOTIFICATIONS, ADMIN_SEND_FOR_ALL_NOTIFICATIONS -> {
                 SCENARIO_STEP.setValue(requestContext, NotificationScenarioStep.SEND.name());
 
                 userContextService.updateUserContext(user, requestContext);
@@ -59,8 +59,6 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
             }
 
             case REPORT_TYPE_PREFIX, REPORT_TYPE_PARAM_PREFIX -> reportScenario.invoke(requestContext, callbackPostfix);
-
-
         }
 
         releaseCallback(requestContext);

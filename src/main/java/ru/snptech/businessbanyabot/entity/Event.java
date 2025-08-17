@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import ru.snptech.businessbanyabot.integration.bank.dto.common.WeekDay;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.common.FileDto;
+import ru.snptech.businessbanyabot.model.event.EventType;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -39,6 +40,8 @@ public class Event {
     @Column(name = "week_day")
     @Enumerated(value = EnumType.ORDINAL)
     private WeekDay weekDay;
+
+    private String type;
 
     private LocalTime time;
 

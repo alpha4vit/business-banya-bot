@@ -83,6 +83,9 @@ public record BitrixCompanyDto(
     @JsonProperty("UF_CRM_1744062873266")
     String balance,
 
+    @JsonProperty("UF_CRM_1754916080520")
+    String points,
+
     @JsonProperty("UF_CRM_1751618553855")
     String activityCategory,
 

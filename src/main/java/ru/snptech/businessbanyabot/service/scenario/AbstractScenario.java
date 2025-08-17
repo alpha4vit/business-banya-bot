@@ -51,6 +51,21 @@ abstract public class AbstractScenario {
     }
 
     @SneakyThrows
+    protected void sendPhoto(
+        Map<String, Object> requestContext,
+        File file,
+        String caption,
+        InlineKeyboardMarkup replyKeyboard
+    ) {
+        telegramClientAdapter.sendPhoto(
+            CHAT_ID.getValue(requestContext, Long.class),
+            file,
+            caption,
+            replyKeyboard
+        );
+    }
+
+    @SneakyThrows
     protected void sendFile(Map<String, Object> requestContext, File file) {
         telegramClientAdapter.sendFile(
             CHAT_ID.getValue(requestContext, Long.class),

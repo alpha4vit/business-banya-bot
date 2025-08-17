@@ -9,7 +9,7 @@ import java.util.Map;
 public class EventFields {
 
     public static final Map<String, String> EVENT_FILTER = Map.of(
-        "CATEGORY_ID", "58",
+        "CATEGORY_ID", "72",
         "!UF_CRM_1754335207065", "",
         "!UF_CRM_1754335220238", ""
     );
@@ -24,7 +24,8 @@ public class EventFields {
         "UF_CRM_1754335220238",
         "UF_CRM_1745990408213",
         "UF_CRM_1754335598159",
-        "UF_CRM_1754335612157"
+        "UF_CRM_1754335612157",
+        "UF_CRM_1754989983689"
     );
 
 }

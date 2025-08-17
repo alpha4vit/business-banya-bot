@@ -6,7 +6,8 @@ import ru.snptech.businessbanyabot.model.report.Exportable;
 @Getter
 public enum PaymentStatus implements Exportable {
     PENDING("Ожидает оплаты"),
-    PAID("Оплачено");
+    PAID("Оплачено"),
+    CANCELED("Отменена");
 
     @Override
     public String toHumanReadable() {

@@ -19,6 +19,7 @@ logging:
 
 application:
   base-url: api/v1
+  leaderboard-size: 15
   payment:
     currency: RUB
     amount: 20000_00
@@ -49,4 +50,3 @@ application:
       client_id: local.688a9160e5e2a6.64223377
       access_token: 6af28f68007ac92800005602000007960000079a563f21504b88b2ea8293a04e372593
       refresh_token: 5a71b768007ac92800005602000007960000077110f3804c8ff03640fcd186c7218d7c
-

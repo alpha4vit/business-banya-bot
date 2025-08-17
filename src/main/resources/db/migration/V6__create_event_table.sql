@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS event
 (
     id                  uuid primary key,
     external_id         text,
+    type                text        not null,
     title               text        not null,
     speaker             text,
     carry_date          timestamptz,

@@ -10,10 +10,13 @@ import ru.snptech.businessbanyabot.integration.bank.dto.request.webhook.CreateWe
 import ru.snptech.businessbanyabot.integration.bank.dto.response.qr.RegisterPaymentQrCodeResponse;
 import ru.snptech.businessbanyabot.integration.bank.properties.BankIntegrationProperties;
 
+import java.time.Instant;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class BankIntegrationServiceImpl implements BankIntegrationService {
+
 
     private final BankIntegrationProperties bankIntegrationProperties;
     private final FeignBankClient feignBankClient;
@@ -37,6 +40,15 @@ public class BankIntegrationServiceImpl implements BankIntegrationService {
                 bankIntegrationProperties.getApiVersion(),
                 bankIntegrationProperties.getClientId(),
                 request
+            )
+            .getBody();
+    }
+
+    @SneakyThrows
+    public String getWebhooks() {
+        return feignBankClient.getWebhooks(
+                bankIntegrationProperties.getApiVersion(),
+                bankIntegrationProperties.getClientId()
             )
             .getBody();
     }

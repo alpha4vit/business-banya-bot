@@ -6,7 +6,8 @@ import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 public enum EventScenarioStep implements ScenarioStep {
 
     INIT,
-    RESIDENT_SLIDER;
+    EVENT_TYPE_CHOOSE,
+    EVENT_SLIDER;
 
     @Override
     public ScenarioType type() {

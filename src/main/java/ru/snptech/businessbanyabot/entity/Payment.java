@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import ru.snptech.businessbanyabot.model.payment.PaymentContent;
 import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
@@ -61,6 +62,10 @@ public class Payment {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false, updatable = false)
+    private Instant updatedAt;
 
     @Column(name = "expired_at")
     private Instant expiredAt;

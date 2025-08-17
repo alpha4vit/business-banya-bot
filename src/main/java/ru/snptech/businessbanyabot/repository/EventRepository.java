@@ -18,4 +18,8 @@ public interface EventRepository {
     List<Event> findByExternalIdIn(Collection<String> externalIds);
 
     List<Event> findByCarryDateAfterOrCarryDateNull(Instant after);
+
+    List<Event> findByTypeAndCarryDateAfter(String type, Instant after);
+
+    List<Event> findByTypeAndCarryDateNull(String type);
 }

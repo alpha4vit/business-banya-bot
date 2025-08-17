@@ -1,5 +1,6 @@
 package ru.snptech.businessbanyabot.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +25,8 @@ public interface UserRepository {
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
 
     List<TelegramUser> findAll(Specification<TelegramUser> specification);
+
+    List<TelegramUser> findAll(Specification<TelegramUser> specification, Pageable pageable);
 
     List<TelegramUser> findAll();
 }

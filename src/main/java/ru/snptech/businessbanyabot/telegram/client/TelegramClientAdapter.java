@@ -96,6 +96,21 @@ public class TelegramClientAdapter {
     }
 
     @SneakyThrows
+    public void sendPhoto(Long chatId, File file, String caption, InlineKeyboardMarkup replyKeyboard) {
+        var inputFile = new InputFile(file);
+
+        var message = SendPhoto.builder()
+            .chatId(chatId)
+            .photo(inputFile)
+            .caption(TelegramUtils.escapeMarkdownV2(caption))
+            .parseMode(ParseMode.MARKDOWNV2)
+            .replyMarkup(replyKeyboard)
+            .build();
+
+        telegramClient.execute(message);
+    }
+
+    @SneakyThrows
     public void sendFile(Long chatId, File file) {
         var inputFile = new InputFile(file);
 

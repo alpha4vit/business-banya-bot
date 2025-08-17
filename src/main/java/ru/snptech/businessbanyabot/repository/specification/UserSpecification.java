@@ -75,4 +75,11 @@ public class UserSpecification {
             builder.equal(root.get("role"), role.name());
     }
 
+    public static Specification<TelegramUser> hasPointsNotEmptyAndNotZero() {
+        return (root, query, builder) -> builder.and(
+            builder.isNotNull(root.get("info").get("points")),
+            builder.notEqual(root.get("info").get("points"), ""),
+            builder.notEqual(root.get("info").get("points"), "0")
+        );
+    }
 }

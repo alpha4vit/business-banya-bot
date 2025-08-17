@@ -54,4 +54,6 @@ public class TelegramUser {
 
     private Instant bannedAt;
 
+    private Instant residentUntil;
+
 }

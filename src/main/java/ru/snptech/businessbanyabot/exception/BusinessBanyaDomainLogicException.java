@@ -26,4 +26,10 @@ public class BusinessBanyaDomainLogicException extends BaseBusinessBanyaExceptio
         }
     }
 
+    public static class INITIAL_PAYMENT_CANNOT_BE_DECLINED extends BusinessBanyaDomainLogicException {
+        public INITIAL_PAYMENT_CANNOT_BE_DECLINED() {
+            super("Первоначальный взнос не может быть отклонен!");
+        }
+    }
+
 }

@@ -13,4 +13,8 @@ import java.util.UUID;
 public interface JdbcEventRepository extends EventRepository, JpaRepository<Event, UUID> {
 
     List<Event> findByCarryDateAfterOrCarryDateNull(Instant after);
+
+    List<Event> findByTypeAndCarryDateAfter(String type, Instant after);
+
+    List<Event> findByTypeAndCarryDateNull(String type);
 }

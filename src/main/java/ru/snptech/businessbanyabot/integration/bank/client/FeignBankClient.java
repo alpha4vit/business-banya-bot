@@ -2,10 +2,7 @@ package ru.snptech.businessbanyabot.integration.bank.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.snptech.businessbanyabot.integration.bank.dto.request.qr.RegisterPaymentQrCodeRequest;
 import ru.snptech.businessbanyabot.integration.bank.dto.request.webhook.CreateWebhookRequest;
 import ru.snptech.businessbanyabot.integration.bank.dto.response.qr.RegisterPaymentQrCodeResponse;
@@ -30,5 +27,11 @@ public interface FeignBankClient {
         @PathVariable("apiVersion") String apiVersion,
         @PathVariable("clientId") String clientId,
         @RequestBody CreateWebhookRequest createWebhookRequest
+    );
+
+    @GetMapping("/webhook/{apiVersion}/{clientId}")
+    ResponseEntity<String> getWebhooks(
+        @PathVariable("apiVersion") String apiVersion,
+        @PathVariable("clientId") String clientId
     );
 }

@@ -10,6 +10,9 @@ public final class CallbackPrefixes {
         public static final String USER_CHOOSE_INVOICE_PAYMENT = "UCIP_";
         public static final String USER_DEPOSIT_FAST_PAYMENT = "UDFP_";
         public static final String USER_DEPOSIT_INVOICE_PAYMENT = "UDIP_";
+        public static final String USER_DECLINE_PAYMENT = "UDP_";
+
+        public static final String USER_CHOOSE_EVENT_TYPE = "UCET_";
     }
 
     public final class Admin {
@@ -17,6 +20,7 @@ public final class CallbackPrefixes {
         public static final String ADMIN_SURVEY_DECLINE_PREFIX = "ASD_";
 
         public static final String ADMIN_SEND_NOTIFICATIONS = "ASN_";
+        public static final String ADMIN_SEND_FOR_ALL_NOTIFICATIONS = "ASFAN_";
 
         public static final String REPORT_TYPE_PREFIX = "RT_";
         public static final String REPORT_TYPE_PARAM_PREFIX = "RTP_";

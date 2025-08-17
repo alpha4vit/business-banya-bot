@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
 
+    private Integer leaderboardSize;
     private Deposit deposit;
     private Payment payment;
 

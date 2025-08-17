@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS payment
     currency    text        not null,
     chat_id     bigint      not null,
     created_at  timestamptz not null default now(),
+    updated_at  timestamptz not null default now(),
     expired_at  timestamptz
 );
 

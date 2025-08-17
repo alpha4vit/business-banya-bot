@@ -10,6 +10,7 @@ import ru.snptech.businessbanyabot.model.scenario.step.NotificationScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.ReportScenarioStep;
 import ru.snptech.businessbanyabot.repository.PaymentRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.leaderboard.LeaderboardService;
 import ru.snptech.businessbanyabot.service.payment.PaymentReportService;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.scenario.report.ReportScenario;
@@ -27,6 +28,7 @@ public class AdminMainMenuScenario extends AbstractScenario {
     public static final String PAYMENT_REPORT = "Отчет о оплатах";
     public static final String NOTIFICATION = "Рассылка";
     public static final String REPORT = "Отчеты";
+    public static final String LEADERBOARD = "Рейтинг";
 
     public static final Set<String> MAIN_MENU_COMMANDS = Set.of(
         PAYMENT_REPORT, NOTIFICATION
@@ -37,6 +39,7 @@ public class AdminMainMenuScenario extends AbstractScenario {
     private final AdminNotificationScenario adminNotificationScenario;
     private final UserContextService userContextService;
     private final ReportScenario reportScenario;
+    private final LeaderboardService leaderboardService;
 
     public AdminMainMenuScenario(
         TelegramClientAdapter telegramClientAdapter,
@@ -44,7 +47,8 @@ public class AdminMainMenuScenario extends AbstractScenario {
         AdminNotificationScenario adminNotificationScenario,
         UserContextService userContextService,
         UserRepository userRepository,
-        ReportScenario reportScenario
+        ReportScenario reportScenario,
+        LeaderboardService leaderboardService
     ) {
         super(telegramClientAdapter);
 
@@ -53,6 +57,7 @@ public class AdminMainMenuScenario extends AbstractScenario {
         this.paymentRepository = paymentRepository;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
+        this.leaderboardService = leaderboardService;
     }
 
     @SneakyThrows
@@ -91,6 +96,12 @@ public class AdminMainMenuScenario extends AbstractScenario {
                     userContextService.updateUserContext(user, requestContext);
 
                     reportScenario.invoke(requestContext, null);
+                }
+
+                case LEADERBOARD -> {
+                    var leaderboard = leaderboardService.getLeaderboard(requestContext);
+
+                    sendMessage(requestContext, leaderboard);
                 }
 
                 default -> {

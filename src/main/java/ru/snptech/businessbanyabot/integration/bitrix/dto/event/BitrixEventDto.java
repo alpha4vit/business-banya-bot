@@ -34,6 +34,9 @@ public record BitrixEventDto(
     String registrationLink,
 
     @JsonProperty("UF_CRM_1754335612157")
-    String tableLink
+    String tableLink,
+
+    @JsonProperty("UF_CRM_1754989983689")
+    String type
 ) {
 }

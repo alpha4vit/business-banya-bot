@@ -9,6 +9,7 @@ import ru.snptech.businessbanyabot.model.survey.SurveyStatus;
 import ru.snptech.businessbanyabot.repository.PaymentRepository;
 import ru.snptech.businessbanyabot.repository.SurveyRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,4 +18,8 @@ import java.util.UUID;
 public interface JdbcPaymentRepository extends PaymentRepository, CrudRepository<Payment, UUID> {
 
     Optional<Payment> findByUserChatIdAndStatus(Long chatId, PaymentStatus paymentStatus);
+
+    List<Payment> findAllByUpdatedAtBefore(Instant time);
+
+    Payment findByExternalId(String externalId);
 }

@@ -16,4 +16,5 @@ import lombok.Data;
 })
 public abstract class PaymentContent {
 
+    public abstract String getExternalPayload();
 }

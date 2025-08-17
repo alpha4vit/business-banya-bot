@@ -9,6 +9,9 @@ import ru.snptech.businessbanyabot.entity.Survey;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.event.SurveyCreatedEvent;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
+import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import static ru.snptech.businessbanyabot.model.common.AdminMessageConstants.NEW_SURVEY_MESSAGE_TEMPLATE;
@@ -19,14 +22,17 @@ import static ru.snptech.businessbanyabot.model.common.AdminMessageConstants.NEW
 public class SurveyRequestNotifier {
 
     private final TelegramClientAdapter telegramClientAdapter;
+    private final UserRepository userRepository;
 
     @SneakyThrows
     @EventListener
     public void notifyAdminAboutSurveyComplete(SurveyCreatedEvent event) {
         log.info("Notifying admin about survey complete by user '{}'", event.user().getChatId());
 
+        var admins = userRepository.findAll(UserSpecification.hasRole(UserRole.ADMIN));
+
         telegramClientAdapter.sendMessage(
-            852874671L,
+            admins.getFirst().getChatId(),
             createMessage(event.user(), event.survey()),
             MenuConstants.createAdminSurveyAcceptMenu(event.survey().getId())
         );

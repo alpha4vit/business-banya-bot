@@ -28,4 +28,5 @@ public class ServiceConstantHolder {
     public static final MetaDataKey<Integer> MESSAGE_ID = new MetaDataKey<>("messageId", Integer.class);
     public static final MetaDataKey<Notification> NOTIFICATION = new MetaDataKey<>("notification", Notification.class);
     public static final MetaDataKey<ReportType> REPORT_TYPE = new MetaDataKey<>("reportType", ReportType.class);
+    public static final MetaDataKey<String> EVENT_TYPE = new MetaDataKey<>("eventType", String.class);
 }

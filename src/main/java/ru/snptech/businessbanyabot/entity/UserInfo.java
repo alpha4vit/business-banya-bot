@@ -21,7 +21,6 @@ import java.util.List;
 public class UserInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "internal_id")
     private Long id;
 
@@ -93,6 +92,9 @@ public class UserInfo {
 
     @Column(name = "balance")
     private String balance;
+
+    @Column(name = "points")
+    private String points;
 
     @Column(name = "activity_category")
     private String activityCategory;

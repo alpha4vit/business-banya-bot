@@ -2,6 +2,7 @@ package ru.snptech.businessbanyabot.service.payment;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.snptech.businessbanyabot.entity.Payment;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.integration.bank.properties.BankIntegrationProperties;
@@ -14,6 +15,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class PaymentService {
 
@@ -49,4 +51,16 @@ public class PaymentService {
         return paymentRepository.findByUserChatIdAndStatus(chatId, PaymentStatus.PENDING);
     }
 
+    public void applyFastPayment(String externalId) {
+        var payment = paymentRepository.findByExternalId(externalId);
+
+        payment.setStatus(PaymentStatus.PAID);
+        payment.setUpdatedAt(Instant.now());
+
+        paymentRepository.save(payment);
+    }
+
+    public Payment save(Payment payment) {
+        return paymentRepository.save(payment);
+    }
 }

@@ -1,6 +1,6 @@
 create table user_info
 (
-    internal_id            bigserial primary key,
+    internal_id            bigint primary key,
     title                  text,
     has_phone              text,
     has_email              text,
@@ -24,6 +24,7 @@ create table user_info
     birth_date             text,
     entrance_date          text,
     balance                text,
+    points                 text,
     activity_category      text,
     city                   text,
     business_start_year    text,

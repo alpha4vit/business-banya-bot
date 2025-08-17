@@ -7,6 +7,7 @@ import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.integration.bank.dto.common.WeekDay;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.event.BitrixEventDto;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
+import ru.snptech.businessbanyabot.model.event.EventType;
 import ru.snptech.businessbanyabot.repository.EventRepository;
 
 import java.time.LocalTime;
@@ -85,6 +86,7 @@ public class UpdateEventsTask {
             .photo(dto.photo())
             .registrationLink(dto.registrationLink())
             .tableLink(dto.tableLink())
+            .type(dto.type())
             .build();
     }
 }

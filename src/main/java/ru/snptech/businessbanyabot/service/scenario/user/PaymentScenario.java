@@ -11,9 +11,11 @@ import ru.snptech.businessbanyabot.integration.bank.service.RegisterQrCodeReques
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.payment.FastPaymentContent;
+import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.DepositScenarioStep;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.propterties.ApplicationProperties;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.payment.PaymentService;
@@ -26,6 +28,7 @@ import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
@@ -59,12 +62,29 @@ public class PaymentScenario extends AbstractScenario {
         var user = userRepository.findByChatId(chatId);
 
         var balance = TextUtils.balanceToHumanReadable(user.getInfo().getBalance());
+        var points = TextUtils.balanceToHumanReadable(user.getInfo().getPoints());
 
         sendMessage(
             context,
-            MessageConstants.BALANCE_MESSAGE.formatted(balance),
+            MessageConstants.BALANCE_MESSAGE.formatted(balance, points),
             MenuConstants.createChooseDepositMethodMenu(chatId)
         );
+    }
+
+    public void declinePayment(Map<String, Object> context) {
+        var chatId = CHAT_ID.getValue(context, Long.class);
+        var user = userRepository.findByChatId(chatId);
+        var payment = paymentService.findPending(chatId);
+
+        if (UserRole.NON_RESIDENT.equals(user.getRole())) {
+            throw new BusinessBanyaDomainLogicException.INITIAL_PAYMENT_CANNOT_BE_DECLINED();
+        }
+
+        payment.ifPresent((it) -> {
+            it.setStatus(PaymentStatus.CANCELED);
+
+            paymentService.save(it);
+        });
     }
 
     @SneakyThrows
@@ -85,13 +105,19 @@ public class PaymentScenario extends AbstractScenario {
 
         var file = FileUtils.decodeBase64ToFile(content.getBase64Image());
 
-        var caption = MessageConstants.FAST_PAYMENT_TEMPLATE.formatted(
+        var caption = MessageConstants.FAST_PAYMENT_ALREADY_EXISTS_TEMPLATE.formatted(
             MoneyUtils.getHumanReadableAmount(payment.getAmount()),
             payment.getCurrency(),
             payment.getExternalId(),
             TimeUtils.formatToRussianDate(payment.getExpiredAt()),
             content.getLink()
         );
+
+        if (UserRole.RESIDENT.equals(user.getRole())) {
+            sendPhoto(context, file, caption, MenuConstants.createDeclinePaymentMenu(payment.getId()));
+
+            return;
+        }
 
         sendPhoto(context, file, caption);
     }

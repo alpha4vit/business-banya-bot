@@ -12,6 +12,7 @@ import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.scenario.event.EventScenario;
+import ru.snptech.businessbanyabot.service.leaderboard.LeaderboardService;
 import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
@@ -29,6 +30,7 @@ public class UserMainMenuScenario extends AbstractScenario {
     public static final String BALANCE = "Мой баланс";
     public static final String EVENTS = "События";
     public static final String REQUEST = "Заявка";
+    public static final String LEADERBOARD = "Рейтинг";
 
     public static final Set<String> MAIN_MENU_COMMANDS = Set.of(
         SEARCH, BALANCE, EVENTS
@@ -40,6 +42,7 @@ public class UserMainMenuScenario extends AbstractScenario {
     private final SearchScenario searchScenario;
     private final PaymentScenario paymentScenario;
     private final EventScenario eventScenario;
+    private final LeaderboardService leaderboardService;
 
     public UserMainMenuScenario(
         TelegramClientAdapter telegramClientAdapter,
@@ -48,7 +51,8 @@ public class UserMainMenuScenario extends AbstractScenario {
         SurveyScenario surveyScenario,
         SearchScenario searchScenario,
         PaymentScenario paymentScenario,
-        EventScenario eventScenario
+        EventScenario eventScenario,
+        LeaderboardService leaderboardService
     ) {
         super(telegramClientAdapter);
 
@@ -58,6 +62,7 @@ public class UserMainMenuScenario extends AbstractScenario {
         this.searchScenario = searchScenario;
         this.paymentScenario = paymentScenario;
         this.eventScenario = eventScenario;
+        this.leaderboardService = leaderboardService;
     }
 
     @SneakyThrows
@@ -104,6 +109,12 @@ public class UserMainMenuScenario extends AbstractScenario {
                     userContextService.updateUserContext(user, requestContext);
 
                     eventScenario.invoke(requestContext);
+                }
+
+                case LEADERBOARD -> {
+                    var leaderboard = leaderboardService.getLeaderboard(requestContext);
+
+                    sendMessage(requestContext, leaderboard);
                 }
 
                 default -> {

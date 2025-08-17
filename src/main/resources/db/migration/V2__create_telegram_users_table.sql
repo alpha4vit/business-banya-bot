@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS telegram_user
     role                TEXT        NOT NULL,
     status              TEXT        NOT NULL,
     banned_at           timestamptz,
+    resident_until      timestamptz,
     qr_code             TEXT,
     external_id         TEXT,
     user_info_id        bigint references user_info(internal_id)

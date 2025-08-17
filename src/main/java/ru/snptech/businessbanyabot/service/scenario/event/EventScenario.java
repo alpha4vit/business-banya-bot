@@ -2,10 +2,14 @@ package ru.snptech.businessbanyabot.service.scenario.event;
 
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import ru.snptech.businessbanyabot.entity.Event;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixFileClient;
+import ru.snptech.businessbanyabot.integration.bitrix.dto.common.LabeledEnum;
+import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
+import ru.snptech.businessbanyabot.model.event.EventType;
 import ru.snptech.businessbanyabot.model.scenario.step.EventScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.SearchScenarioStep;
 import ru.snptech.businessbanyabot.model.search.SearchMetadata;
@@ -14,15 +18,17 @@ import ru.snptech.businessbanyabot.repository.EventRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
-import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.time.Instant;
-import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.model.event.EventType.*;
+import static ru.snptech.businessbanyabot.model.scenario.step.EventScenarioStep.EVENT_SLIDER;
 
 @Component
 public class EventScenario extends AbstractScenario {
@@ -48,11 +54,25 @@ public class EventScenario extends AbstractScenario {
 
         switch (eventStep) {
             case INIT -> {
-                SCENARIO_STEP.setValue(requestContext, EventScenarioStep.RESIDENT_SLIDER.name());
+                SCENARIO_STEP.setValue(requestContext, EventScenarioStep.EVENT_TYPE_CHOOSE.name());
+
+                var types = Arrays.stream(EventType.values()).toList();
+
+                sendMessage(
+                    requestContext,
+                    MessageConstants.SELECT_EVENT_TYPE_MESSAGE,
+                    MenuConstants.createSelectEventTypeMenu(types)
+                );
+
+                userContextService.updateUserContext(user, requestContext);
+            }
+
+            case EVENT_SLIDER -> {
+                var type = LabeledEnumUtil.fromId(EventType.class, EVENT_TYPE.getValue(requestContext));
 
                 userContextService.updateUserContext(user, requestContext);
 
-                var upcomingEvents = eventRepository.findByCarryDateAfterOrCarryDateNull(Instant.now())
+                var upcomingEvents = findEventsByType(type)
                     .stream().sorted(eventComparator).toList();
 
                 if (upcomingEvents.isEmpty()) {
@@ -72,7 +92,7 @@ public class EventScenario extends AbstractScenario {
                     MenuConstants.createEventSliderMenu(chatId, event)
                 );
 
-                SCENARIO_STEP.setValue(requestContext, SearchScenarioStep.RESIDENT_SLIDER.name());
+                SCENARIO_STEP.setValue(requestContext, EVENT_SLIDER.name());
                 MESSAGE_ID.setValue(requestContext, messageId);
                 SEARCH_METADATA.setValue(requestContext, new SearchMetadata("", INITIAL_EVENT_SLIDER_INDEX));
 
@@ -87,11 +107,12 @@ public class EventScenario extends AbstractScenario {
         var user = userRepository.findByChatId(chatId);
         var messageId = MESSAGE_ID.getValue(context);
 
+        var type = LabeledEnumUtil.fromId(EventType.class, EVENT_TYPE.getValue(context));
+
         var searchMetadata = SEARCH_METADATA.getValue(context, SearchMetadata.class);
 
-        var upcomingEvents = eventRepository.findByCarryDateAfterOrCarryDateNull(Instant.now())
+        var upcomingEvents = findEventsByType(type)
             .stream().sorted(eventComparator).toList();
-
 
         if (upcomingEvents.isEmpty()) {
             sendMessage(
@@ -118,6 +139,14 @@ public class EventScenario extends AbstractScenario {
         SEARCH_METADATA.setValue(context, searchMetadata);
 
         userContextService.updateUserContext(user, context);
+    }
+
+    private List<Event> findEventsByType(EventType type) {
+        return switch (type) {
+            case BATH, WITH_SPEAKER -> eventRepository.findByTypeAndCarryDateAfter(type.getId(), Instant.now());
+            case CLUBS -> eventRepository.findByTypeAndCarryDateNull(type.getId());
+            case NOT_DEFINED -> eventRepository.findByCarryDateAfterOrCarryDateNull(Instant.now());
+        };
     }
 
     public EventScenario(
