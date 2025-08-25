@@ -58,6 +58,7 @@ public class CompanyFields {
         "UF_CRM_1753567528920",
         "UF_CRM_1753567605826",
         "UF_CRM_1753626792826",
+        "UF_CRM_1754916080520",
         "PHONE"
     );
 

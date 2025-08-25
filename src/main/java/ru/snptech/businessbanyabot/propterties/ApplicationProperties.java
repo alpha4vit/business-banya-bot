@@ -14,6 +14,8 @@ public class ApplicationProperties {
     private Integer leaderboardSize;
     private Deposit deposit;
     private Payment payment;
+    private String personalDataConsentLink;
+    private Integer subscriptionContinuationDurationInMonths;
 
     @Getter
     @Setter
@@ -26,5 +28,6 @@ public class ApplicationProperties {
     @Setter
     public static class Deposit {
         private Integer multiplicity;
+        private String legalEntityLink;
     }
 }

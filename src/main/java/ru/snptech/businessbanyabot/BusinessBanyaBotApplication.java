@@ -10,6 +10,7 @@ import ru.snptech.businessbanyabot.integration.bank.client.FeignBankClient;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixAuthClient;
 import ru.snptech.businessbanyabot.integration.bitrix.client.BitrixCrmClient;
 import ru.snptech.businessbanyabot.model.report.ReportType;
+import ru.snptech.businessbanyabot.repository.ButtonStatsRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.report.*;
 
@@ -31,7 +32,8 @@ public class BusinessBanyaBotApplication {
 
     @Bean
     public ReportService reportService(
-        UserRepository userRepository
+        UserRepository userRepository,
+        ButtonStatsRepository buttonStatsRepository
     ) {
         return new DispatchingReportService(
             Map.of(
@@ -40,7 +42,8 @@ public class BusinessBanyaBotApplication {
                 ReportType.BUSINESS_CLIENTS, new BusinessClientReportService(userRepository),
                 ReportType.GROWTH_LIMIT, new GrowthLimitReportService(userRepository),
                 ReportType.EMPLOYEE_COUNT, new EmployeeCountReportService(userRepository),
-                ReportType.CITY, new CityReportService(userRepository)
+                ReportType.CITY, new CityReportService(userRepository),
+                ReportType.BUTTONS_STATS, new ButtonStatsReportService(buttonStatsRepository)
             )
         );
     }

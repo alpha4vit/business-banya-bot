@@ -1,17 +1,19 @@
 package ru.snptech.businessbanyabot.service.scenario.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.model.common.AdminMessageConstants;
-import ru.snptech.businessbanyabot.model.common.CallbackPrefixes;
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
+import ru.snptech.businessbanyabot.model.payment.PaymentMetadata;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.NotificationScenarioStep;
 import ru.snptech.businessbanyabot.model.survey.SurveyStatus;
 import ru.snptech.businessbanyabot.model.user.UserStatus;
+import ru.snptech.businessbanyabot.propterties.ApplicationProperties;
 import ru.snptech.businessbanyabot.repository.SurveyRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.BaseCallbackScenario;
@@ -35,7 +37,9 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
     private final SurveyRepository surveyRepository;
     private final ReportScenario reportScenario;
     private final UserContextService userContextService;
+    private final ApplicationProperties applicationProperties;
     private final AdminNotificationScenario adminNotificationScenario;
+    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -98,10 +102,20 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
                 SCENARIO.setValue(userContext, ScenarioType.PAYMENT.name());
                 IS_SURVEY_ACCEPTED.setValue(userContext, true);
 
+                var paymentMetadata = objectMapper.writeValueAsString(
+                    new PaymentMetadata(
+                        applicationProperties.getPayment().getAmount(),
+                        applicationProperties.getSubscriptionContinuationDurationInMonths()
+                    )
+                );
+
                 sendMessage(
                     userContext,
                     MessageConstants.SURVEY_ACCEPTED_CHOOSE_PAYMENT_METHOD,
-                    MenuConstants.createChoosePaymentMethodMenu(user.getChatId())
+                    MenuConstants.createChoosePaymentMethodMenu(
+                        paymentMetadata,
+                        applicationProperties.getDeposit().getLegalEntityLink()
+                    )
                 );
 
                 sendMessage(requestContext, AdminMessageConstants.SURVEY_ACCEPT_MESSAGE);
@@ -119,14 +133,18 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
         ReportScenario reportScenario,
         UserContextService userContextService,
         TelegramClientAdapter telegramClientAdapter,
-        AdminNotificationScenario adminNotificationScenario
+        ApplicationProperties applicationProperties,
+        AdminNotificationScenario adminNotificationScenario,
+        ObjectMapper objectMapper
     ) {
         super(telegramClientAdapter);
 
         this.reportScenario = reportScenario;
+        this.applicationProperties = applicationProperties;
         this.adminNotificationScenario = adminNotificationScenario;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.surveyRepository = surveyRepository;
+        this.objectMapper = objectMapper;
     }
 }

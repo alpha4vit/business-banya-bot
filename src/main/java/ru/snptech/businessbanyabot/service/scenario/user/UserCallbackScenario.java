@@ -16,7 +16,7 @@ import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.Slider.*;
-import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.USER_CHOOSE_EVENT_TYPE;
+import static ru.snptech.businessbanyabot.model.common.CallbackPrefixes.User.*;
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
 @Component
@@ -37,17 +37,17 @@ public class UserCallbackScenario extends BaseCallbackScenario {
         var callbackPostfix = extractCallbackPostfix(callback.getData());
 
         switch (callbackPrefix) {
-            case CallbackPrefixes.User.USER_CHOOSE_FAST_PAYMENT ->
-                paymentScenario.handlePayment(PaymentType.FAST_PAYMENT, requestContext);
+            case USER_CHOOSE_FAST_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.FAST_PAYMENT, requestContext, callbackPostfix);
 
-            case CallbackPrefixes.User.USER_CHOOSE_INVOICE_PAYMENT ->
-                paymentScenario.handlePayment(PaymentType.INVOICE, requestContext);
+            case USER_CHOOSE_INVOICE_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.INVOICE, requestContext, callbackPostfix);
 
-            case CallbackPrefixes.User.USER_DEPOSIT_FAST_PAYMENT ->
-                paymentScenario.handlePayment(PaymentType.DEPOSIT_FAST_PAYMENT, requestContext);
+            case USER_DEPOSIT_FAST_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.DEPOSIT_FAST_PAYMENT, requestContext, callbackPostfix);
 
-            case CallbackPrefixes.User.USER_DEPOSIT_INVOICE_PAYMENT ->
-                paymentScenario.handlePayment(PaymentType.DEPOSIT_INVOICE, requestContext);
+            case USER_DEPOSIT_INVOICE_PAYMENT ->
+                paymentScenario.handlePayment(PaymentType.DEPOSIT_INVOICE, requestContext, callbackPostfix);
 
             case RESIDENT_SLIDER_NEXT_CARD_PREFIX -> searchScenario.slideTo(SlideDirection.NEXT, requestContext);
             case RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX ->
@@ -66,6 +66,8 @@ public class UserCallbackScenario extends BaseCallbackScenario {
 
             case EVENT_SLIDER_NEXT_CARD_PREFIX -> eventScenario.slideTo(SlideDirection.NEXT, requestContext);
             case EVENT_SLIDER_PREVIOUS_CARD_PREFIX -> eventScenario.slideTo(SlideDirection.PREVIOUS, requestContext);
+
+            case USER_DECLINE_PAYMENT -> paymentScenario.declinePayment(requestContext);
         }
 
         releaseCallback(requestContext);

@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
+import ru.snptech.businessbanyabot.model.payment.FastPaymentContent;
+import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.repository.PaymentRepository;
 import ru.snptech.businessbanyabot.service.util.MoneyUtils;
 import ru.snptech.businessbanyabot.service.util.TimeUtils;
@@ -30,14 +32,15 @@ public class PaymentExpiredTask {
     public void remindOutdated() {
         var now = Instant.now().minus(period);
 
-        var outdated = paymentRepository.findAllByUpdatedAtBefore(now);
+        var outdated = paymentRepository.findAllByUpdatedAtBeforeAndStatus(now, PaymentStatus.PENDING);
 
         outdated.forEach((payment -> {
-                var base64QrCode = payment.getContent().toString();
+                var base64QrCode = payment.getContentAs(FastPaymentContent.class).getBase64Image();
+
                 try {
                     var file = decodeBase64ToFile(base64QrCode);
 
-                    var caption = MessageConstants.FAST_PAYMENT_TEMPLATE.formatted(
+                    var caption = MessageConstants.FAST_PAYMENT_EXPIRED_TEMPLATE.formatted(
                         MoneyUtils.getHumanReadableAmount(payment.getAmount()),
                         payment.getCurrency(),
                         payment.getExternalId(),

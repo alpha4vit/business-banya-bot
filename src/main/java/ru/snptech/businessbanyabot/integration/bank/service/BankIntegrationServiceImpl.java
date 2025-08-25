@@ -1,9 +1,13 @@
 package ru.snptech.businessbanyabot.integration.bank.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
+import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
 import ru.snptech.businessbanyabot.integration.bank.client.FeignBankClient;
 import ru.snptech.businessbanyabot.integration.bank.dto.request.qr.RegisterPaymentQrCodeRequest;
 import ru.snptech.businessbanyabot.integration.bank.dto.request.webhook.CreateWebhookRequest;
@@ -21,16 +25,21 @@ public class BankIntegrationServiceImpl implements BankIntegrationService {
     private final BankIntegrationProperties bankIntegrationProperties;
     private final FeignBankClient feignBankClient;
 
+    // TODO add call method and handle all incoming errors from bank in human readable view
     @Override
     @SneakyThrows
     public RegisterPaymentQrCodeResponse registerQrCode(RegisterPaymentQrCodeRequest request) {
-        return feignBankClient.registerQrCode(
-                bankIntegrationProperties.getApiVersion(),
-                bankIntegrationProperties.getMerchantId(),
-                bankIntegrationProperties.getAccountId(),
-                request
-            )
-            .getBody();
+        try {
+            return feignBankClient.registerQrCode(
+                    bankIntegrationProperties.getApiVersion(),
+                    bankIntegrationProperties.getMerchantId(),
+                    bankIntegrationProperties.getAccountId(),
+                    request
+                )
+                .getBody();
+        } catch (FeignException.FeignClientException e) {
+            throw new BusinessBanyaInternalException.INTERNAL_ERROR(e.getMessage());
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import ru.snptech.businessbanyabot.integration.bitrix.dto.company.ResidentStatus
 import ru.snptech.businessbanyabot.integration.bitrix.mappers.UserInfoMapper;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
+import ru.snptech.businessbanyabot.repository.UserInfoRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 
 import java.util.concurrent.TimeUnit;
@@ -21,10 +22,10 @@ public class UpdateUsersTask {
 
     private final BitrixIntegrationService bitrixIntegrationService;
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
 
-    // TODO remove 100, set 1
     @Transactional
-    @Scheduled(fixedRate = 100, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void updateResidents() {
         var companies = bitrixIntegrationService.findAllCompaniesByStatus(BitrixCompanyStatus.RESIDENT)
             .stream()
@@ -41,24 +42,29 @@ public class UpdateUsersTask {
 
         var users = userRepository.findByPhoneNumberIn(phoneNumbers);
 
-        users.forEach((user) -> {
-            var existedInfo = user.getInfo();
-            var company = companies.remove(user.getPhoneNumber());
+        var updatedUserInfo = users.stream()
+            .map((user) -> {
+                var existedInfo = user.getInfo();
+                var company = companies.remove(user.getPhoneNumber());
 
-            var userInfo = UserInfoMapper.toInfo(user.getChatId(), company);
-            userInfo.setId(existedInfo.getId());
+                var userInfo = UserInfoMapper.toInfo(user.getChatId(), company);
+                userInfo.setId(existedInfo.getId());
 
-            var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
+                var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, company.residentStatus());
 
-            user.setInfo(userInfo);
-            user.setFullName(company.title());
-            user.setRole(residentStatus.toUserRole());
+                user.setInfo(userInfo);
+                user.setFullName(company.title());
+                user.setRole(residentStatus.toUserRole());
 
-            if (!company.phoneList().isEmpty()) {
-                user.setPhoneNumber(company.phoneList().getFirst().value());
-            }
-        });
+                if (!company.phoneList().isEmpty()) {
+                    user.setPhoneNumber(company.phoneList().getFirst().value());
+                }
+
+                return userInfo;
+            })
+            .toList();
 
         userRepository.saveAll(users);
+        userInfoRepository.saveAll(updatedUserInfo);
     }
 }

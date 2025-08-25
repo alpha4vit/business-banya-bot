@@ -24,4 +24,16 @@ public class BusinessBanyaInternalException extends BaseBusinessBanyaException {
             super("Входные данные для получения отчета не могут быть пустыми!");
         }
     }
+
+    public static class ACTIVE_PAYMENT_NOT_FOUND extends BusinessBanyaInternalException {
+        public ACTIVE_PAYMENT_NOT_FOUND() {
+            super("\uD83D\uDEAB Ошибка отклонения платежа. Незавершенный платеж не найден!");
+        }
+    }
+
+    public static class INTERNAL_ERROR extends BusinessBanyaInternalException {
+        public INTERNAL_ERROR(String message) {
+            super("Ошибка обработки запроса! " + message);
+        }
+    }
 }

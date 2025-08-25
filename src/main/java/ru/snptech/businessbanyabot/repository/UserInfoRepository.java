@@ -2,11 +2,14 @@ package ru.snptech.businessbanyabot.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.entity.UserInfo;
 
 public interface UserInfoRepository {
 
     UserInfo save(UserInfo userInfo);
+
+    <S extends UserInfo> Iterable<S> saveAll(Iterable<S> info);
 
     @Query(
         value = """

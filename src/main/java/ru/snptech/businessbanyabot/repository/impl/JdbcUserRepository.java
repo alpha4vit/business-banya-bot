@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -22,5 +23,7 @@ public interface JdbcUserRepository extends CrudRepository<TelegramUser, Long>, 
 
     @Override
     List<TelegramUser> findByChatIdIn(Set<Long> chatIds);
+
+    List<TelegramUser> findAllByResidentUntilBetween(Instant from, Instant to);
 
 }

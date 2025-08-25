@@ -3,22 +3,25 @@ package ru.snptech.businessbanyabot.service.scenario;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.integration.bitrix.dto.company.ResidentStatus;
 import ru.snptech.businessbanyabot.integration.bitrix.mappers.UserInfoMapper;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
+import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
 import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.propterties.ApplicationProperties;
 import ru.snptech.businessbanyabot.repository.UserInfoRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
+import java.time.Instant;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
@@ -31,6 +34,7 @@ public class VerificationScenario extends AbstractScenario {
     private final UserContextService userContextService;
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
+    private final ApplicationProperties applicationProperties;
 
     @SneakyThrows
     public void invoke(Map<String, Object> requestContext) {
@@ -44,6 +48,7 @@ public class VerificationScenario extends AbstractScenario {
         if (Boolean.TRUE.equals(isVerified)) {
             if (SCENARIO.getValue(requestContext) == null) {
                 SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+
                 userContextService.updateUserContext(user, requestContext);
             }
 
@@ -56,14 +61,17 @@ public class VerificationScenario extends AbstractScenario {
             return;
         }
 
-        sendMessage(requestContext, MessageConstants.VERIFICATION_NEED_MESSAGE);
+        sendMessage(
+            requestContext,
+            MessageConstants.VERIFICATION_NEED_MESSAGE,
+            MenuConstants.createVerificationMenu(applicationProperties.getPersonalDataConsentLink())
+        );
 
         IS_VERIFIED.setValue(requestContext, false);
         SCENARIO_STEP.setValue(requestContext, VerificationScenarioStep.WAITING_NUMBER);
         userContextService.updateUserContext(user, requestContext);
     }
 
-    @Transactional
     protected void verifyPhoneNumber(Map<String, Object> context, TelegramUser user) {
         var message = TG_UPDATE.getValue(context).getMessage();
         var chatId = CHAT_ID.getValue(context, Long.class);
@@ -84,6 +92,12 @@ public class VerificationScenario extends AbstractScenario {
                 user.setInfo(userInfo);
                 user.setFullName(userInfo.getTitle());
                 user.setSocialMedia(user.getTelegramUsername());
+                user.setResidentUntil(
+                    TimeUtils.plusMonths(
+                        Instant.now(),
+                        applicationProperties.getSubscriptionContinuationDurationInMonths()
+                    )
+                );
 
                 var residentStatus = LabeledEnumUtil.fromId(ResidentStatus.class, userInfo.getResidentStatus());
 
@@ -105,16 +119,18 @@ public class VerificationScenario extends AbstractScenario {
     }
 
     public VerificationScenario(
-            BitrixIntegrationService bitrixIntegrationService,
-            TelegramClientAdapter telegramClientAdapter,
-            UserContextService userContextService,
-            UserRepository userRepository,
-            UserInfoRepository userInfoRepository
+        BitrixIntegrationService bitrixIntegrationService,
+        TelegramClientAdapter telegramClientAdapter,
+        UserContextService userContextService,
+        UserRepository userRepository,
+        UserInfoRepository userInfoRepository,
+        ApplicationProperties applicationProperties
     ) {
         super(telegramClientAdapter);
         this.bitrixIntegrationService = bitrixIntegrationService;
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
+        this.applicationProperties = applicationProperties;
     }
 }

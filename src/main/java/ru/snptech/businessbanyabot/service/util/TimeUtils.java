@@ -38,7 +38,15 @@ public class TimeUtils {
         }
     }
 
-    public static LocalTime parteTime(String dateStr) {
+    public static Instant plusMonths(Instant time, Integer months) {
+        return time.atZone(zone)
+            .toLocalDate()
+            .plusMonths(months)
+            .atStartOfDay(zone)
+            .toInstant();
+    }
+
+    public static LocalTime parseTime(String dateStr) {
         if (dateStr == null || dateStr.isBlank()) return null;
         try {
             return LocalTime.parse(dateStr);

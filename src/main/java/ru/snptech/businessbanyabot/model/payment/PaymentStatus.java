@@ -11,7 +11,7 @@ public enum PaymentStatus implements Exportable {
 
     @Override
     public String toHumanReadable() {
-        return null;
+        return humanReadableValue;
     }
 
     private final String humanReadableValue;

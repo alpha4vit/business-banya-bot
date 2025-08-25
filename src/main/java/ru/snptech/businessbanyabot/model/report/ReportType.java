@@ -14,7 +14,8 @@ public enum ReportType implements LabeledEnum {
     BUSINESS_CLIENTS("4", "Клиенты", BusinessClients.class),
     RECRUITMENT_WAYS("5", "Способы привлечения клиентов", RecruitmentWays.class),
     GROWTH_LIMIT("6", "Ограничитель роста", GrowthLimit.class),
-    EMPLOYEE_COUNT("7", "Количество сотрудников", EmployeeCount.class);
+    EMPLOYEE_COUNT("7", "Количество сотрудников", EmployeeCount.class),
+    BUTTONS_STATS("8", "Количество нажатий на кнопики меню", null);
 
     public static final List<ReportType> ALL = Arrays.stream(values()).toList();
 

@@ -52,6 +52,9 @@ public class Payment {
 
     private String currency;
 
+    @Column(name = "subscription_continuation_months")
+    private Integer subscriptionContinuationMonths;
+
     @ManyToOne
     @JoinColumn(
         name = "chat_id",

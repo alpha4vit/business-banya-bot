@@ -10,10 +10,10 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 
 public class FeignBitrixClientConfiguration {
 
-    @Bean
-    Logger.Level feignLoggerLevel() {
-        return Logger.Level.FULL;
-    }
+//    @Bean
+//    Logger.Level feignLoggerLevel() {
+//        return Logger.Level.FULL;
+//    }
 
     @Bean
     public Encoder feignFormEncoder() {

@@ -19,7 +19,7 @@ public interface JdbcPaymentRepository extends PaymentRepository, CrudRepository
 
     Optional<Payment> findByUserChatIdAndStatus(Long chatId, PaymentStatus paymentStatus);
 
-    List<Payment> findAllByUpdatedAtBefore(Instant time);
+    List<Payment> findAllByUpdatedAtBeforeAndStatus(Instant time, PaymentStatus status);
 
     Payment findByExternalId(String externalId);
 }

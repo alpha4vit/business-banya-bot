@@ -21,7 +21,7 @@ public interface PaymentRepository {
 
     List<Payment> findAll();
 
-    List<Payment> findAllByUpdatedAtBefore(Instant time);
+    List<Payment> findAllByUpdatedAtBeforeAndStatus(Instant time, PaymentStatus status);
 
     Payment findByExternalId(String externalId);
 

@@ -1,7 +1,9 @@
 package ru.snptech.businessbanyabot.service.scenario.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+import ru.snptech.businessbanyabot.entity.Payment;
 import ru.snptech.businessbanyabot.entity.TelegramUser;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaDomainLogicException;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
@@ -11,6 +13,7 @@ import ru.snptech.businessbanyabot.integration.bank.service.RegisterQrCodeReques
 import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.payment.FastPaymentContent;
+import ru.snptech.businessbanyabot.model.payment.PaymentMetadata;
 import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
@@ -28,7 +31,6 @@ import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.util.Map;
-import java.util.UUID;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
 
@@ -41,14 +43,15 @@ public class PaymentScenario extends AbstractScenario {
     private final UserContextService userContextService;
     private final PaymentService paymentService;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public void handlePayment(PaymentType type, Map<String, Object> requestContext) {
+    public void handlePayment(PaymentType type, Map<String, Object> requestContext, String metadata) {
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
         var user = userRepository.findByChatId(chatId);
 
         switch (type) {
-            case FAST_PAYMENT -> handleFastPayment(user, requestContext, null);
+            case FAST_PAYMENT -> handleFastPayment(user, requestContext, metadata);
             case DEPOSIT_FAST_PAYMENT -> handleFastPaymentDeposit(user, requestContext);
             case INVOICE, DEPOSIT_INVOICE -> handleInvoice(user, requestContext);
         }
@@ -67,7 +70,7 @@ public class PaymentScenario extends AbstractScenario {
         sendMessage(
             context,
             MessageConstants.BALANCE_MESSAGE.formatted(balance, points),
-            MenuConstants.createChooseDepositMethodMenu(chatId)
+            MenuConstants.createChooseDepositMethodMenu(chatId, applicationProperties.getDeposit().getLegalEntityLink())
         );
     }
 
@@ -80,27 +83,67 @@ public class PaymentScenario extends AbstractScenario {
             throw new BusinessBanyaDomainLogicException.INITIAL_PAYMENT_CANNOT_BE_DECLINED();
         }
 
-        payment.ifPresent((it) -> {
-            it.setStatus(PaymentStatus.CANCELED);
+        payment.ifPresentOrElse(
+            // exists
+            (it) -> {
+                it.setStatus(PaymentStatus.CANCELED);
 
-            paymentService.save(it);
-        });
+                paymentService.save(it);
+
+                SCENARIO_STEP.setValue(context, DepositScenarioStep.INIT.name());
+
+                sendMessage(
+                    context,
+                    MessageConstants.PENDING_PAYMENT_SUCCESSFULLY_DECLINED,
+                    MenuConstants.createChooseDepositMethodMenu(chatId, applicationProperties.getDeposit().getLegalEntityLink())
+                );
+
+                userContextService.updateUserContext(user, context);
+            },
+            // not found
+            () -> {
+                throw new BusinessBanyaInternalException.ACTIVE_PAYMENT_NOT_FOUND();
+            }
+        );
     }
 
     @SneakyThrows
-    private void handleFastPayment(TelegramUser user, Map<String, Object> context, Integer amount) {
+    private void handleFastPayment(TelegramUser user, Map<String, Object> context, String metadata) {
         var pendingPayment = paymentService.findPending(user.getChatId());
 
         if (pendingPayment.isEmpty()) {
-            var paymentAmount = amount != null ? amount : applicationProperties.getPayment().getAmount();
 
-            createFastPayment(user, context, paymentAmount);
+            PaymentMetadata paymentMetadata;
+
+            if (metadata != null) {
+                paymentMetadata = objectMapper.readValue(metadata, PaymentMetadata.class);
+            } else {
+                paymentMetadata = new PaymentMetadata(
+                    applicationProperties.getPayment().getAmount(),
+                    null
+                );
+            }
+
+            createFastPayment(user, context, paymentMetadata);
 
             return;
         }
 
         var payment = pendingPayment.get();
 
+        sendExistedPayment(context, payment, user);
+    }
+
+    private void handleInvoice(TelegramUser user, Map<String, Object> context) {
+        sendMessage(context, "ССЫЛКА НА ЗАОПЛНЕНИЕ ЗАЯВКУ НА ОПЛАТУ ПО БЕЗНАЛУ");
+
+        SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
+
+        userContextService.updateUserContext(user, context);
+    }
+
+    @SneakyThrows
+    private void sendExistedPayment(Map<String, Object> context, Payment payment, TelegramUser user) {
         var content = payment.getContentAs(FastPaymentContent.class);
 
         var file = FileUtils.decodeBase64ToFile(content.getBase64Image());
@@ -122,16 +165,16 @@ public class PaymentScenario extends AbstractScenario {
         sendPhoto(context, file, caption);
     }
 
-
-    private void handleInvoice(TelegramUser user, Map<String, Object> context) {
-        sendMessage(context, "ССЫЛКА НА ЗАОПЛНЕНИЕ ЗАЯВКУ НА ОПЛАТУ ПО БЕЗНАЛУ");
-
-        SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
-
-        userContextService.updateUserContext(user, context);
-    }
-
+    @SneakyThrows
     private void handleFastPaymentDeposit(TelegramUser user, Map<String, Object> context) {
+        var pendingPayment = paymentService.findPending(user.getChatId());
+
+        if (pendingPayment.isPresent()) {
+            sendExistedPayment(context, pendingPayment.get(), user);
+
+            return;
+        }
+
         var step = SCENARIO_STEP.getValue(context);
 
         if (DepositScenarioStep.INPUT.name().equals(step)) {
@@ -143,7 +186,14 @@ public class PaymentScenario extends AbstractScenario {
 
             var depositAmount = getDepositAmount(update.getMessage().getText());
 
-            handleFastPayment(user, context, depositAmount);
+            var paymentMetadata = objectMapper.writeValueAsString(
+                new PaymentMetadata(
+                    depositAmount,
+                    null
+                )
+            );
+
+            handleFastPayment(user, context, paymentMetadata);
 
             SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
             userContextService.updateUserContext(user, context);
@@ -177,8 +227,8 @@ public class PaymentScenario extends AbstractScenario {
     }
 
     @SneakyThrows
-    private void createFastPayment(TelegramUser user, Map<String, Object> context, Integer amount) {
-        var fastPaymentData = registerQrCodeRequestBuilder.build(QrType.DYNAMIC, amount);
+    private void createFastPayment(TelegramUser user, Map<String, Object> context, PaymentMetadata metadata) {
+        var fastPaymentData = registerQrCodeRequestBuilder.build(QrType.DYNAMIC, metadata.paymentAmount());
 
         var bankResponse = bankIntegrationService.registerQrCode(fastPaymentData);
 
@@ -190,11 +240,12 @@ public class PaymentScenario extends AbstractScenario {
 
         var createdPayment = paymentService.create(
             user,
-            fastPaymentData.data().amount(),
+            metadata,
             fastPaymentData.data().currency(),
             PaymentType.FAST_PAYMENT,
             paymentContent,
-            bankResponse.data().qrcId()
+            bankResponse.data().qrcId(),
+            PaymentStatus.PENDING
         );
 
         var base64QrCode = bankResponse.data().image().content();
@@ -218,7 +269,8 @@ public class PaymentScenario extends AbstractScenario {
         PaymentService paymentService,
         UserRepository userRepository,
         TelegramClientAdapter telegramClientAdapter,
-        ApplicationProperties applicationProperties
+        ApplicationProperties applicationProperties,
+        ObjectMapper objectMapper
     ) {
         super(telegramClientAdapter);
         this.applicationProperties = applicationProperties;
@@ -227,5 +279,6 @@ public class PaymentScenario extends AbstractScenario {
         this.userContextService = userContextService;
         this.paymentService = paymentService;
         this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 }

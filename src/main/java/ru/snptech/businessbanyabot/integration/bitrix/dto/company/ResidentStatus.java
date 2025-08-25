@@ -21,8 +21,8 @@ public enum ResidentStatus implements LabeledEnum {
     public UserRole toUserRole() {
         return switch (this) {
             case YES -> UserRole.RESIDENT;
-            case NO, EX_RESIDENT -> UserRole.NON_RESIDENT;
+            case EX_RESIDENT -> UserRole.EX_RESIDENT;
+            case NO -> UserRole.NON_RESIDENT;
         };
     }
 }
-

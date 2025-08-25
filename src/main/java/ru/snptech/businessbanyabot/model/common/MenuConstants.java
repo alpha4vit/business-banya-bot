@@ -87,27 +87,47 @@ public class MenuConstants {
             ));
     }
 
-    public static InlineKeyboardMarkup createChoosePaymentMethodMenu(Long chatId) {
+    public static InlineKeyboardMarkup createChoosePaymentMethodMenu(String paymentMetadata, String legalEntityDeposit) {
+        InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
+            .text("Выставление счета для Юр. лица")
+            .webApp(new WebAppInfo(legalEntityDeposit))
+            .build();
+
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Оплата через СБП QR").callbackData(USER_CHOOSE_FAST_PAYMENT + chatId).build()
+                    InlineKeyboardButton.builder().text("Оплата через СБП QR").callbackData(USER_CHOOSE_FAST_PAYMENT + paymentMetadata).build()
                 ),
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_CHOOSE_INVOICE_PAYMENT + chatId).build()
+                    webAppButton
                 )
             ));
     }
 
-    public static InlineKeyboardMarkup createChooseDepositMethodMenu(Long chatId) {
+    public static InlineKeyboardMarkup createVerificationMenu(String personalDataConsentLink) {
+        InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
+            .text("Пользовательское соглашение")
+            .webApp(new WebAppInfo(personalDataConsentLink))
+            .build();
+
+        return new InlineKeyboardMarkup(
+            List.of(
+                new InlineKeyboardRow(webAppButton)
+            ));
+    }
+
+    public static InlineKeyboardMarkup createChooseDepositMethodMenu(Long chatId, String legalEntityDeposit) {
+        InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
+            .text("Выставление счета для Юр. лица")
+            .webApp(new WebAppInfo(legalEntityDeposit))
+            .build();
+
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("Пополнение через СБП QR").callbackData(USER_DEPOSIT_FAST_PAYMENT + chatId).build()
                 ),
-                new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("Выставление счета для Юр. лица").callbackData(USER_DEPOSIT_INVOICE_PAYMENT + chatId).build()
-                )
+                new InlineKeyboardRow(webAppButton)
             ));
     }
 

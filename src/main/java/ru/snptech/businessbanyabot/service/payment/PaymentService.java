@@ -9,7 +9,10 @@ import ru.snptech.businessbanyabot.integration.bank.properties.BankIntegrationPr
 import ru.snptech.businessbanyabot.model.payment.PaymentContent;
 import ru.snptech.businessbanyabot.model.payment.PaymentStatus;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
+import ru.snptech.businessbanyabot.model.payment.PaymentMetadata;
 import ru.snptech.businessbanyabot.repository.PaymentRepository;
+import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -19,26 +22,29 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentService {
 
+    private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final BankIntegrationProperties bankIntegrationProperties;
 
     public Payment create(
         TelegramUser user,
-        Integer amount,
+        PaymentMetadata metadata,
         String currency,
         PaymentType type,
         PaymentContent content,
-        String externalId
+        String externalId,
+        PaymentStatus status
     ) {
         var ttlInSeconds = bankIntegrationProperties.getQrCodeSettings().getTtl().getSeconds();
         var expiredAt = Instant.now().plusSeconds(ttlInSeconds);
 
         var payment = Payment.builder()
-            .status(PaymentStatus.PENDING)
+            .status(status)
             .content(content)
             .type(type)
             .externalId(externalId)
-            .amount(amount)
+            .amount(metadata.paymentAmount())
+            .subscriptionContinuationMonths(metadata.subscriptionDurationInMonths())
             .currency(currency)
             .expiredAt(expiredAt)
             .user(user)
@@ -57,10 +63,24 @@ public class PaymentService {
         payment.setStatus(PaymentStatus.PAID);
         payment.setUpdatedAt(Instant.now());
 
+        updateSubscriptionIfNeeded(payment.getUser(), payment);
+
         paymentRepository.save(payment);
     }
 
     public Payment save(Payment payment) {
         return paymentRepository.save(payment);
+    }
+
+    private void updateSubscriptionIfNeeded(TelegramUser user, Payment payment) {
+        var continuationDuration = payment.getSubscriptionContinuationMonths();
+
+        if (continuationDuration == null) return;
+
+        var updatedResidentUntil = TimeUtils.plusMonths(user.getResidentUntil(), continuationDuration);
+
+        user.setResidentUntil(updatedResidentUntil);
+
+        userRepository.save(user);
     }
 }

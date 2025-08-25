@@ -54,7 +54,7 @@ public class UserDetailsController {
         model.addAttribute("mainPassive", user.getInfo().getMainPassive());
         model.addAttribute("interests", user.getInfo());
         model.addAttribute("avatarLink", bitrixProperties.getUrl() + link);
-        model.addAttribute("sport", user.getInfo().getSports().toString());
+        model.addAttribute("sport", sports);
         model.addAttribute("principles", user.getInfo().getPrinciples().toString());
         model.addAttribute("music", user.getInfo().getMusic());
         model.addAttribute("keywords", user.getInfo().getKeywords());

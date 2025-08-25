@@ -1,63 +1,71 @@
 package ru.snptech.businessbanyabot.service.task;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ru.snptech.businessbanyabot.entity.TelegramUser;
+import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.common.MessageConstants;
+import ru.snptech.businessbanyabot.model.payment.PaymentMetadata;
+import ru.snptech.businessbanyabot.propterties.ApplicationProperties;
 import ru.snptech.businessbanyabot.repository.PaymentRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
-import ru.snptech.businessbanyabot.service.util.FileUtils;
+import ru.snptech.businessbanyabot.service.payment.PaymentCalculator;
 import ru.snptech.businessbanyabot.service.util.MoneyUtils;
-import ru.snptech.businessbanyabot.service.util.TimeUtils;
+import ru.snptech.businessbanyabot.service.util.TextUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
-
-import static ru.snptech.businessbanyabot.service.util.FileUtils.decodeBase64ToFile;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentReminderTask {
 
-    private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
     private final TelegramClientAdapter telegramClientAdapter;
+    private final ApplicationProperties applicationProperties;
+    private final ObjectMapper objectMapper;
 
-    private final Duration period = Duration.ofDays(3);
+    private final Duration period = Duration.ofDays(31);
 
     @SneakyThrows
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedRate = 3, timeUnit = TimeUnit.DAYS)
     public void remindOutdated() {
-        var now = Instant.now().minus(period);
+        var now = Instant.now();
 
-        var outdated = paymentRepository.findAllByUpdatedAtBefore(now);
+        var toRemind = userRepository.findAllByResidentUntilBetween(now, now.plus(period));
 
-        outdated.forEach((payment -> {
-                var base64QrCode = payment.getContent().toString();
-                try {
-                    var file = decodeBase64ToFile(base64QrCode);
+        for (TelegramUser user : toRemind) {
+            var paymentAmount = PaymentCalculator.calculateExtensionCost(
+                user.getResidentUntil(),
+                applicationProperties.getSubscriptionContinuationDurationInMonths()
+            );
 
-                    var caption = MessageConstants.FAST_PAYMENT_TEMPLATE.formatted(
-                        MoneyUtils.getHumanReadableAmount(payment.getAmount()),
-                        payment.getCurrency(),
-                        payment.getExternalId(),
-                        TimeUtils.formatToRussianDate(payment.getExpiredAt()),
-                        payment.getContent().getExternalPayload()
-                    );
+            var daysBeforeExpiration = ChronoUnit.DAYS.between(now, user.getResidentUntil());
 
+            var message = MessageConstants.RESIDENT_SUBSCRIPTION_CONTINUATION_TEMPLATE.formatted(
+                TextUtils.pluralizeDays(daysBeforeExpiration),
+                TextUtils.pluralizeMoths(applicationProperties.getSubscriptionContinuationDurationInMonths()),
+                MoneyUtils.withCurrency(paymentAmount, applicationProperties.getPayment().getCurrency())
+            );
 
-                    telegramClientAdapter.sendPhoto(payment.getUser().getChatId(), file, caption);
+            var paymentMetadata = objectMapper.writeValueAsString(
+                new PaymentMetadata(
+                    paymentAmount,
+                    applicationProperties.getSubscriptionContinuationDurationInMonths()
+                )
+            );
 
-                    payment.setUpdatedAt(now);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            })
-        );
-
-
-        paymentRepository.saveAll(outdated);
+            telegramClientAdapter.sendMessage(
+                user.getChatId(),
+                message,
+                MenuConstants.createChoosePaymentMethodMenu(paymentMetadata, applicationProperties.getDeposit().getLegalEntityLink())
+            );
+        }
     }
 }

@@ -78,7 +78,7 @@ public class UserUpdateScenario extends AbstractScenario {
             case PAYMENT, DEPOSIT -> {
                 var paymentType = PAYMENT_TYPE.getValue(requestContext, PaymentType.class);
 
-                paymentScenario.handlePayment(paymentType, requestContext);
+                paymentScenario.handlePayment(paymentType, requestContext, null);
             }
 
             case SEARCH -> {

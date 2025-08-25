@@ -6,9 +6,8 @@ import lombok.experimental.UtilityClass;
 public class MessageConstants {
 
     public static final String VERIFICATION_NEED_MESSAGE = """
-        ⚠️ Для продолжения взаимодействия с ботом вам необходимо принять пользовательское соглашение и ввести номер мобильного телефона.
-                    
-        ССЫЛКА
+        ⚠️ Для продолжения взаимодействия с ботом вам необходимо принять пользовательское соглашение.
+        ⚠️ Введите номер мобильного телефона, подтверждая соглашение.
         """;
     public static final String SURVEY_COMPLETE_MESSAGE
         = "✅ Анкета успешно заполнена! Ожидайте уведомления о результате прохождения модерации.";
@@ -22,6 +21,10 @@ public class MessageConstants {
         *Действителен до:* %s
         *Ссылка на оплату:* %s
         """;
+
+    public static final String FAST_PAYMENT_EXPIRED_TEMPLATE =
+        "Возможно вы забыли завершить оплату по данному платежу:\n"
+            + FAST_PAYMENT_TEMPLATE;
 
     public static final String FAST_PAYMENT_ALREADY_EXISTS_TEMPLATE =
         "*У вас имеется незавершенный платеж! Погасите его или отмените!*\n"
@@ -81,7 +84,7 @@ public class MessageConstants {
 
     public static final String LEADERBOARD_ROW_TEMPLATE
         = """
-        
+                
         *Позиция* %s
         *ФИО:* %s
         *Номер телефона:* %s
@@ -90,4 +93,16 @@ public class MessageConstants {
 
     public static final String SELECT_EVENT_TYPE_MESSAGE
         = "Выберите тип события";
+
+
+    public static final String PENDING_PAYMENT_SUCCESSFULLY_DECLINED
+        = "✅ Оплата успешно отменена";
+
+    public static final String RESIDENT_SUBSCRIPTION_CONTINUATION_TEMPLATE = """
+        Ваш статус резидента истекает через *%s*
+        Предлагаем вам продлить его на *%s*.
+        
+        Сумма платежа составит *%s*
+        """;
+
 }

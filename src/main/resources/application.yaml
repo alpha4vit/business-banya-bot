@@ -20,11 +20,14 @@ logging:
 application:
   base-url: api/v1
   leaderboard-size: 15
+  personal-data-consent-link: https://sistema247.ru/bb-soglasie
+  subscription-continuation-duration-in-months: 3
   payment:
     currency: RUB
     amount: 20000_00
   deposit:
     multiplicity: 10000
+    legal-entity-link: https://employee-profil-sistema247.bitrix24site.ru/crm_form_71t1k/
   telegram:
     token: 7987083088:AAGsUg3Y9tU05Q0GDCBCn06PTAYl446bMnE
   integration:
