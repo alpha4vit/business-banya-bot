@@ -25,6 +25,7 @@ public interface UserRepository {
     List<TelegramUser> findByChatIdIn(Set<Long> chatIds);
 
     List<TelegramUser> findByFullNameContainingIgnoreCase(String partOfName);
+    List<TelegramUser> findByPhoneNumberContainingIgnoreCase(String phoneNumber);
 
     List<TelegramUser> findByPhoneNumberIn(Collection<String> phoneNumbers);
 

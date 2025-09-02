@@ -1,9 +1,14 @@
 package ru.snptech.businessbanyabot.service.util;
 
 import lombok.experimental.UtilityClass;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 
 @UtilityClass
 public class TextUtils {
+
+    public static final String WHATSAPP_TEMPLATE = "https://wa.me/%s";
+    public static final String TG_USERNAME_TEMPLATE = "@%s";
 
     public static String balanceToHumanReadable(String balance) {
         if (balance.isBlank()) {
@@ -35,5 +40,9 @@ public class TextUtils {
             return number + " " + one;
         }
         return number + " " + many;
+    }
+
+    public static String phoneWithoutPlus(String phoneNumber) {
+        return StringUtils.removeStart(phoneNumber, "+");
     }
 }

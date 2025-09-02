@@ -79,7 +79,7 @@ public class MenuConstants {
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("✅ Принять").callbackData(ADMIN_SURVEY_ACCEPT_PREFIX + surveyId).build()
+                    InlineKeyboardButton.builder().text("✅ Анкета Б24 заполнена!").callbackData(ADMIN_SURVEY_ACCEPT_PREFIX + surveyId).build()
                 ),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("❌ Отклонить").callbackData(ADMIN_SURVEY_DECLINE_PREFIX + surveyId).build()
@@ -131,7 +131,12 @@ public class MenuConstants {
             ));
     }
 
-    public static InlineKeyboardMarkup createResidentSliderMenu(Long chatId, Long cardUserChatId) {
+    public static InlineKeyboardMarkup createResidentSliderMenu(
+        Long chatId,
+        Long cardUserChatId,
+        Integer current,
+        Integer all
+    ) {
         String url = "https://businessbanyasnp.duckdns.org/users/%s/details".formatted(cardUserChatId);
 
         InlineKeyboardButton webAppButton = InlineKeyboardButton.builder()
@@ -142,6 +147,9 @@ public class MenuConstants {
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(webAppButton),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("%s/%s".formatted(current, all)).callbackData("empty").build()
+                ),
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("Предыдущий").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build(),
                     InlineKeyboardButton.builder().text("Следующий").callbackData(RESIDENT_SLIDER_PREVIOUS_CARD_PREFIX + chatId).build()
@@ -207,11 +215,20 @@ public class MenuConstants {
         return new InlineKeyboardMarkup(keyboard);
     }
 
-    public static InlineKeyboardMarkup createSendNotificationForAllMenu(Long chatId) {
+    public static InlineKeyboardMarkup createSendNotificationParamsMenu(Long chatId) {
         return new InlineKeyboardMarkup(
             List.of(
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("Отправить всем").callbackData(ADMIN_SEND_FOR_ALL_NOTIFICATIONS + chatId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Отправить администраторам").callbackData(ADMIN_SEND_FOR_ADMIN_NOTIFICATIONS + chatId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Отправить модераторам").callbackData(ADMIN_SEND_FOR_MODERATOR_NOTIFICATIONS + chatId).build()
+                ),
+                new InlineKeyboardRow(
+                    InlineKeyboardButton.builder().text("Отправить координаторам").callbackData(ADMIN_SEND_FOR_COORDINATOR_NOTIFICATIONS + chatId).build()
                 )
             ));
     }

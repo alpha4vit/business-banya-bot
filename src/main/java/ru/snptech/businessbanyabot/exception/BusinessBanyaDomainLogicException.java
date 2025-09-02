@@ -32,4 +32,10 @@ public class BusinessBanyaDomainLogicException extends BaseBusinessBanyaExceptio
         }
     }
 
+    public static class ACCOUNT_WAS_BANNED extends BusinessBanyaDomainLogicException {
+        public ACCOUNT_WAS_BANNED(String bannedUntil) {
+            super("Ваш аккаунт заблокирован до " + bannedUntil);
+        }
+    }
+
 }

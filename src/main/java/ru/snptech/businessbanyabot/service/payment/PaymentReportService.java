@@ -29,6 +29,9 @@ public class PaymentReportService {
                 cell.setCellStyle(createHeaderStyle(workbook));
             }
 
+            CellStyle dateStyle = createDateStyle(workbook);
+            CellStyle amountStyle = createAmountStyle(workbook);
+
             for (int i = 0; i < payments.size(); i++) {
                 Payment payment = payments.get(i);
                 Row row = sheet.createRow(i + 1);
@@ -37,11 +40,20 @@ public class PaymentReportService {
                 row.createCell(1).setCellValue(payment.getExternalId());
                 row.createCell(2).setCellValue(payment.getType().toHumanReadable());
                 row.createCell(3).setCellValue(payment.getStatus().toHumanReadable());
-                row.createCell(4).setCellValue(payment.getAmount());
                 row.createCell(5).setCellValue(payment.getCurrency());
                 row.createCell(6).setCellValue(payment.getUser().getFullName());
-                row.createCell(7).setCellValue(payment.getCreatedAt().toString());
-                row.createCell(8).setCellValue(payment.getExpiredAt().toString());
+
+                Cell amountCell = row.createCell(4);
+                amountCell.setCellValue(payment.getAmount().doubleValue() / 100);
+                amountCell.setCellStyle(amountStyle);
+
+                Cell createdAtCell = row.createCell(7);
+                createdAtCell.setCellValue(java.util.Date.from(payment.getCreatedAt())); // если Instant
+                createdAtCell.setCellStyle(dateStyle);
+
+                Cell expiredAtCell = row.createCell(8);
+                expiredAtCell.setCellValue(java.util.Date.from(payment.getExpiredAt()));
+                expiredAtCell.setCellStyle(dateStyle);
             }
 
             for (int i = 0; i < headers.length; i++) {
@@ -70,4 +82,19 @@ public class PaymentReportService {
         style.setFont(font);
         return style;
     }
+
+    private static CellStyle createDateStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        style.setDataFormat(createHelper.createDataFormat().getFormat("dd.MM.yyyy HH:mm"));
+        return style;
+    }
+
+    private static CellStyle createAmountStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        style.setDataFormat(createHelper.createDataFormat().getFormat("#,##0.00"));
+        return style;
+    }
+
 }

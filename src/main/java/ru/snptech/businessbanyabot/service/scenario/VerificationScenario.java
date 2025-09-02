@@ -14,6 +14,7 @@ import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
 import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
 import ru.snptech.businessbanyabot.model.user.UserRole;
+import ru.snptech.businessbanyabot.model.user.UserStatus;
 import ru.snptech.businessbanyabot.propterties.ApplicationProperties;
 import ru.snptech.businessbanyabot.repository.UserInfoRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
@@ -21,6 +22,7 @@ import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
@@ -41,11 +43,19 @@ public class VerificationScenario extends AbstractScenario {
         var chatId = CHAT_ID.getValue(requestContext, Long.class);
         var user = userRepository.findByChatId(chatId);
 
+        if (user.getStatus().equals(UserStatus.BANNED)) {
+            throw new BusinessBanyaDomainLogicException.ACCOUNT_WAS_BANNED(
+                // TODO move to config
+                TimeUtils.formatToRussianDate(user.getBannedAt().plus(Duration.ofDays(93)))
+            );
+        }
+
         if (UserRole.ADMIN.equals(user.getRole())) return;
 
         var isVerified = IS_VERIFIED.getValue(requestContext);
 
         if (Boolean.TRUE.equals(isVerified)) {
+
             if (SCENARIO.getValue(requestContext) == null) {
                 SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
 

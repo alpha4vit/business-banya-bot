@@ -7,7 +7,7 @@ public class MessageConstants {
 
     public static final String VERIFICATION_NEED_MESSAGE = """
         ⚠️ Для продолжения взаимодействия с ботом вам необходимо принять пользовательское соглашение.
-        ⚠️ Введите номер мобильного телефона, подтверждая соглашение.
+        ⚠️ Введите номер мобильного телефона, связанный в WhatsApp, подтверждая соглашение.
         """;
     public static final String SURVEY_COMPLETE_MESSAGE
         = "✅ Анкета успешно заполнена! Ожидайте уведомления о результате прохождения модерации.";
@@ -30,7 +30,7 @@ public class MessageConstants {
         "*У вас имеется незавершенный платеж! Погасите его или отмените!*\n"
             + FAST_PAYMENT_TEMPLATE;
 
-    public static final String SEARCH_MENU_MESSAGE = "Введите ФИО искомого резидента";
+    public static final String SEARCH_MENU_MESSAGE = "Введите ФИО или номер телефона искомого резидента";
 
     public static final String NO_RESIDENTS_FIND =
         "Резиденты с заданными параметрами не найдены! Попробуйте изменить запрос";
@@ -40,9 +40,11 @@ public class MessageConstants {
 
     public static final String USER_CARD_PREVIEW = """
         *Имя пользователя: * %s
+        *Дата рождения: * %s
         *Номер мобильного телефона: * %s
+        *Ник Telegram* %s
+        *Чат WhatsApp* %s
         *Текущий бизнес: * %s
-        *Ключевой актив: * %s
         """;
 
 
@@ -63,10 +65,10 @@ public class MessageConstants {
         = "Введите содержимое сообщения для рассылки";
 
     public static final String NOTIFICATION_CONSUMER_MESSAGE
-        = "Введите ФИО получателей рассылки через запятую как в Bitrix";
+        = "Введите ФИО или номера телефонов получателей рассылки";
 
     public static final String CONSUMERS_NOT_FOUND_BY_FULL_NAMES
-        = "Пользователи с данными ФИО не найдены: \n\n%s \n\nПопробуйте снова или запустите рассылку";
+        = "Пользователи с данными ФИО или номерами телефонов не найдены: \n\n%s \n\nПопробуйте снова или запустите рассылку";
 
     public static final String NOTIFICATION_SUCCESSFULLY_SENT
         = "Рассылка успешно отправлена!";
@@ -97,6 +99,10 @@ public class MessageConstants {
 
     public static final String PENDING_PAYMENT_SUCCESSFULLY_DECLINED
         = "✅ Оплата успешно отменена";
+
+
+    public static final String ACCOUNT_WAS_BANNED
+        = "Ваш аккаунт заблокирован до %s";
 
     public static final String RESIDENT_SUBSCRIPTION_CONTINUATION_TEMPLATE = """
         Ваш статус резидента истекает через *%s*

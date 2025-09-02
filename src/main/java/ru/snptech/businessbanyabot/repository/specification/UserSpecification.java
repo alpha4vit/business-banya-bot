@@ -8,19 +8,23 @@ import ru.snptech.businessbanyabot.model.user.UserRole;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class UserSpecification {
 
     public static Specification<TelegramUser> nameContainsAny(Collection<String> patterns) {
         return (root, query, cb) -> {
-            List<Predicate> likePredicates = patterns.stream()
-                .map(p -> cb.like(cb.lower(root.get("fullName")), "%" + p.toLowerCase() + "%"))
+            List<Predicate> preds = patterns.stream()
+                .filter(p -> p != null && !p.isBlank())
+                .map(p -> cb.like(
+                    cb.lower(root.get("fullName")),
+                    "%" + p.toLowerCase(Locale.ROOT) + "%"
+                ))
                 .toList();
 
-            return cb.or(likePredicates.toArray(new Predicate[0]));
+            return preds.isEmpty() ? cb.conjunction() : cb.or(preds.toArray(new Predicate[0]));
         };
     }
-
 
     public static Specification<TelegramUser> hasFamilyStatus(String familyStatus) {
         return (root, query, builder) ->

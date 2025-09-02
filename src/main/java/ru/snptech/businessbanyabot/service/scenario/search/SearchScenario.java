@@ -8,14 +8,19 @@ import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.scenario.step.SearchScenarioStep;
 import ru.snptech.businessbanyabot.model.search.SearchMetadata;
 import ru.snptech.businessbanyabot.model.search.SlideDirection;
+import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
+import ru.snptech.businessbanyabot.service.util.TextUtils;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
+import java.util.List;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+import static ru.snptech.businessbanyabot.service.util.TextUtils.*;
 
 @Component
 public class SearchScenario extends AbstractScenario {
@@ -52,6 +57,12 @@ public class SearchScenario extends AbstractScenario {
                 var searchString = update.getMessage().getText();
                 var matchingUsers = userRepository.findByFullNameContainingIgnoreCase(searchString);
 
+                matchingUsers.addAll(userRepository.findByPhoneNumberContainingIgnoreCase(searchString));
+
+                matchingUsers = matchingUsers.stream()
+                    .filter(it -> it.getRole().equals(UserRole.RESIDENT))
+                    .toList();
+
                 if (matchingUsers.isEmpty()) {
                     sendMessage(
                         requestContext,
@@ -65,7 +76,8 @@ public class SearchScenario extends AbstractScenario {
                     null,
                     chatId,
                     requestContext,
-                    matchingUsers.get(INITIAL_RESIDENT_SLIDER_INDEX)
+                    INITIAL_RESIDENT_SLIDER_INDEX,
+                    matchingUsers
                 );
 
                 SCENARIO_STEP.setValue(requestContext, SearchScenarioStep.RESIDENT_SLIDER.name());
@@ -95,7 +107,7 @@ public class SearchScenario extends AbstractScenario {
 
         var nextCursor = direction.nextPosition(searchMetadata.getSliderCursor(), matchingUsers.size());
 
-        sendUserPreviewCard(messageId, chatId, context, matchingUsers.get(nextCursor));
+        sendUserPreviewCard(messageId, chatId, context, nextCursor, matchingUsers);
 
         searchMetadata.setSliderCursor(nextCursor);
 
@@ -104,15 +116,30 @@ public class SearchScenario extends AbstractScenario {
         userContextService.updateUserContext(user, context);
     }
 
-    private Integer sendUserPreviewCard(Integer messageId, Long chatId, Map<String, Object> context, TelegramUser user) {
+    private Integer sendUserPreviewCard(
+        Integer messageId,
+        Long chatId,
+        Map<String, Object> context,
+        Integer nextCursor,
+        List<TelegramUser> users
+    ) {
+        var user = users.get(nextCursor);
+
         var message = MessageConstants.USER_CARD_PREVIEW.formatted(
             user.getFullName(),
+            TimeUtils.formatToDefault(user.getInfo().getBirthDate()),
             user.getPhoneNumber(),
-            getOrEmpty(user.getInfo().getBusinessDescription()),
-            getOrEmpty(user.getInfo().getMainActive())
+            TG_USERNAME_TEMPLATE.formatted(user.getTelegramUsername()),
+            WHATSAPP_TEMPLATE.formatted(phoneWithoutPlus(user.getPhoneNumber())),
+            getOrEmpty(user.getInfo().getBusinessDescription())
         );
 
-        var menu = MenuConstants.createResidentSliderMenu(chatId, user.getChatId());
+        var menu = MenuConstants.createResidentSliderMenu(
+            chatId,
+            user.getChatId(),
+            nextCursor + 1,
+            users.size()
+        );
 
         if (messageId == null) return sendMessage(context, message, menu);
 

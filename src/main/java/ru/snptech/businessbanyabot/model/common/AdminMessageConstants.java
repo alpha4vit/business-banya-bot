@@ -12,6 +12,9 @@ public final class AdminMessageConstants {
         *ФИО:* %s
         *Номер мобильного телефона:* %s
         *Социальная сеть:* %s
+        *Ник Telegram:* %s
+        *Id Telegram:* %d
+        *WhatsApp: * %s
         """;
 
     public static final String SURVEY_ACCEPT_MESSAGE = "Анкета успешно одобрена. Ожидание оплаты от пользователя.";

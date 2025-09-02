@@ -15,10 +15,7 @@ import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
@@ -70,7 +67,7 @@ public class AdminNotificationScenario extends AbstractScenario {
                 sendMessage(
                     requestContext,
                     MessageConstants.NOTIFICATION_CONSUMER_MESSAGE,
-                    MenuConstants.createSendNotificationForAllMenu(chatId)
+                    MenuConstants.createSendNotificationParamsMenu(chatId)
                 );
 
                 userContextService.updateUserContext(user, requestContext);
@@ -88,13 +85,16 @@ public class AdminNotificationScenario extends AbstractScenario {
                     .map(String::trim)
                     .collect(Collectors.toSet());
 
-                var users = userRepository.findAll(UserSpecification.nameContainsAny(userFullNames));
+                Map<String, List<TelegramUser>> usersBySearch = userFullNames.stream()
+                    .map(search -> Map.entry(search, findMatchingUsersByPhoneOrFullName(search)))
+                    .filter(entry -> !entry.getValue().isEmpty())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-                var existedUsers = users.stream()
-                    .map((it) -> it.getFullName().trim())
-                    .collect(Collectors.toSet());
+                var existed = usersBySearch.values().stream()
+                    .flatMap(Collection::stream)
+                    .toList();
 
-                notification.setChatIds(users.stream().map(TelegramUser::getChatId).collect(Collectors.toSet()));
+                notification.setChatIds(existed.stream().map(TelegramUser::getChatId).collect(Collectors.toSet()));
 
                 NOTIFICATION.setValue(requestContext, notification);
 
@@ -102,7 +102,7 @@ public class AdminNotificationScenario extends AbstractScenario {
 
                 var notFound = userFullNames
                     .stream()
-                    .filter((it) -> !existedUsers.contains(it))
+                    .filter((it) -> !usersBySearch.containsKey(it))
                     .toList();
 
                 var notFoundList = String.join(LIST_SEPARATOR, notFound);
@@ -143,7 +143,36 @@ public class AdminNotificationScenario extends AbstractScenario {
                     MessageConstants.NOTIFICATION_SUCCESSFULLY_SENT
                 );
             }
+
+            case NOTIFY_ADMINS -> {
+                var users = userRepository.findAll(UserSpecification.hasRole(UserRole.ADMIN));
+
+                sendNotification(requestContext, users);
+            }
+
+            case NOTIFY_MODERATORS -> {
+                var users = userRepository.findAll(UserSpecification.hasRole(UserRole.MODERATOR));
+
+                sendNotification(requestContext, users);
+            }
+
+            case NOTIFY_COORDINATORS -> {
+                var users = userRepository.findAll(UserSpecification.hasRole(UserRole.COORDINATOR));
+
+                sendNotification(requestContext, users);
+            }
         }
+    }
+
+    private void sendNotification(Map<String, Object> context, List<TelegramUser> users) {
+        var notification = NOTIFICATION.getValue(context, Notification.class);
+
+        notificationService.sendNotification(notification, users);
+
+        sendMessage(
+            context,
+            MessageConstants.NOTIFICATION_SUCCESSFULLY_SENT
+        );
     }
 
     public AdminNotificationScenario(
@@ -157,5 +186,12 @@ public class AdminNotificationScenario extends AbstractScenario {
         this.userContextService = userContextService;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+    }
+
+    private List<TelegramUser> findMatchingUsersByPhoneOrFullName(String search) {
+        var matchingUsers = userRepository.findByFullNameContainingIgnoreCase(search);
+        matchingUsers.addAll(userRepository.findByPhoneNumberContainingIgnoreCase(search));
+
+        return matchingUsers;
     }
 }

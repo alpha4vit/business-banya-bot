@@ -30,7 +30,6 @@ public class CityReportService implements ReportService {
     public File getReport(final ReportType type, final String input) {
         var users = userRepository.findAll(UserSpecification.hasRole(UserRole.RESIDENT));
 
-
         var cityReportData = users.stream()
             .collect(Collectors.groupingBy(
                 user -> user.getInfo().getCity(),

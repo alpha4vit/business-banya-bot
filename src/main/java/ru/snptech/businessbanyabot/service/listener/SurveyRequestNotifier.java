@@ -12,9 +12,11 @@ import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
+import ru.snptech.businessbanyabot.service.util.TextUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 
 import static ru.snptech.businessbanyabot.model.common.AdminMessageConstants.NEW_SURVEY_MESSAGE_TEMPLATE;
+import static ru.snptech.businessbanyabot.service.util.TextUtils.*;
 
 @Slf4j
 @Component
@@ -44,7 +46,14 @@ public class SurveyRequestNotifier {
             survey.getId().toString(),
             survey.getFio(),
             user.getPhoneNumber(),
-            survey.getSocialMedia()
+            survey.getSocialMedia(),
+            TG_USERNAME_TEMPLATE.formatted(user.getTelegramUsername()),
+            user.getChatId(),
+            WHATSAPP_TEMPLATE.formatted(phoneWithoutPlus(user.getPhoneNumber()))
         );
+    }
+
+    private String trimPlus(String value) {
+        return value.replace("+", "");
     }
 }

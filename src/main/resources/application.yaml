@@ -20,7 +20,7 @@ logging:
 application:
   base-url: api/v1
   leaderboard-size: 15
-  personal-data-consent-link: https://sistema247.ru/bb-soglasie
+  personal-data-consent-link: https://bbural.ru/process-of-pers-data
   subscription-continuation-duration-in-months: 3
   payment:
     currency: RUB

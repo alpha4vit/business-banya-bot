@@ -44,10 +44,6 @@ public class BitrixController {
             return;
         }
 
-        log.error(paidAt);
-
-        log.error(body);
-
         paymentService.create(
             user.get(),
             new PaymentMetadata(

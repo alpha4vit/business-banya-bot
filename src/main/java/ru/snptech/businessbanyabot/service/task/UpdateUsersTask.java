@@ -9,9 +9,12 @@ import ru.snptech.businessbanyabot.integration.bitrix.dto.company.ResidentStatus
 import ru.snptech.businessbanyabot.integration.bitrix.mappers.UserInfoMapper;
 import ru.snptech.businessbanyabot.integration.bitrix.service.BitrixIntegrationService;
 import ru.snptech.businessbanyabot.integration.bitrix.util.LabeledEnumUtil;
+import ru.snptech.businessbanyabot.model.user.UserStatus;
 import ru.snptech.businessbanyabot.repository.UserInfoRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;

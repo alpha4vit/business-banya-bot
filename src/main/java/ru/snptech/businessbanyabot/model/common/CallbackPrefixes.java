@@ -21,6 +21,9 @@ public final class CallbackPrefixes {
 
         public static final String ADMIN_SEND_NOTIFICATIONS = "ASN_";
         public static final String ADMIN_SEND_FOR_ALL_NOTIFICATIONS = "ASFAN_";
+        public static final String ADMIN_SEND_FOR_ADMIN_NOTIFICATIONS = "ASFADMN_";
+        public static final String ADMIN_SEND_FOR_MODERATOR_NOTIFICATIONS = "ASFMN_";
+        public static final String ADMIN_SEND_FOR_COORDINATOR_NOTIFICATIONS = "ASFCN_";
 
         public static final String REPORT_TYPE_PREFIX = "RT_";
         public static final String REPORT_TYPE_PARAM_PREFIX = "RTP_";

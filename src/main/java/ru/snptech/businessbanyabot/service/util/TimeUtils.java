@@ -3,11 +3,9 @@ package ru.snptech.businessbanyabot.service.util;
 import lombok.experimental.UtilityClass;
 import ru.snptech.businessbanyabot.integration.bank.dto.common.WeekDay;
 
-import java.sql.Time;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
 import java.util.Locale;
 
 @UtilityClass
@@ -15,9 +13,17 @@ public class TimeUtils {
 
     private static final ZoneId zone = ZoneId.of("Europe/Moscow");
 
+    private static final DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.forLanguageTag("ru"));
     private static final DateTimeFormatter russianFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("ru"));
     private static final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm").withZone(zone);
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+    public static String formatToDefault(String time) {
+        var parsed = parseInstant(time);
+        ZonedDateTime zdt = parsed.atZone(zone);
+
+        return zdt.format(defaultFormatter);
+    }
 
     public static String formatToRussianDate(Instant time) {
         ZonedDateTime zdt = time.atZone(zone);

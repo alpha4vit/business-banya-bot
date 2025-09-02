@@ -62,6 +62,30 @@ public class AdminCallbackScenario extends BaseCallbackScenario {
                 adminNotificationScenario.invoke(requestContext);
             }
 
+            case ADMIN_SEND_FOR_ADMIN_NOTIFICATIONS -> {
+                SCENARIO_STEP.setValue(requestContext, NotificationScenarioStep.NOTIFY_ADMINS.name());
+
+                userContextService.updateUserContext(user, requestContext);
+
+                adminNotificationScenario.invoke(requestContext);
+            }
+
+            case ADMIN_SEND_FOR_MODERATOR_NOTIFICATIONS -> {
+                SCENARIO_STEP.setValue(requestContext, NotificationScenarioStep.NOTIFY_MODERATORS.name());
+
+                userContextService.updateUserContext(user, requestContext);
+
+                adminNotificationScenario.invoke(requestContext);
+            }
+
+            case ADMIN_SEND_FOR_COORDINATOR_NOTIFICATIONS -> {
+                SCENARIO_STEP.setValue(requestContext, NotificationScenarioStep.NOTIFY_COORDINATORS.name());
+
+                userContextService.updateUserContext(user, requestContext);
+
+                adminNotificationScenario.invoke(requestContext);
+            }
+
             case REPORT_TYPE_PREFIX, REPORT_TYPE_PARAM_PREFIX -> reportScenario.invoke(requestContext, callbackPostfix);
         }
 
