@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 public final class AdminMessageConstants {
 
     public static final String NEW_SURVEY_MESSAGE_TEMPLATE = """
-        *Новая заявка*
+        *Новая заявка %s*
                     
         *ID:* %s
         *ФИО:* %s

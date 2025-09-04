@@ -12,8 +12,10 @@ import ru.snptech.businessbanyabot.model.common.MenuConstants;
 import ru.snptech.businessbanyabot.model.user.UserRole;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.repository.specification.UserSpecification;
-import ru.snptech.businessbanyabot.service.util.TextUtils;
+import ru.snptech.businessbanyabot.service.util.TimeUtils;
 import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
+
+import java.time.Instant;
 
 import static ru.snptech.businessbanyabot.model.common.AdminMessageConstants.NEW_SURVEY_MESSAGE_TEMPLATE;
 import static ru.snptech.businessbanyabot.service.util.TextUtils.*;
@@ -43,6 +45,7 @@ public class SurveyRequestNotifier {
     @SneakyThrows
     private String createMessage(TelegramUser user, Survey survey) {
         return NEW_SURVEY_MESSAGE_TEMPLATE.formatted(
+            TimeUtils.formatToDefault(Instant.now().toString()),
             survey.getId().toString(),
             survey.getFio(),
             user.getPhoneNumber(),

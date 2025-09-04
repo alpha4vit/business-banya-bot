@@ -96,7 +96,10 @@ public class SearchScenario extends AbstractScenario {
 
         var searchMetadata = SEARCH_METADATA.getValue(context, SearchMetadata.class);
 
-        var matchingUsers = userRepository.findByFullNameContainingIgnoreCase(searchMetadata.getSearchString());
+        var matchingUsers = userRepository.findByFullNameContainingIgnoreCase(searchMetadata.getSearchString())
+            .stream()
+            .filter(it -> it.getRole().equals(UserRole.RESIDENT))
+            .toList();
 
         if (matchingUsers.isEmpty()) {
             sendMessage(
