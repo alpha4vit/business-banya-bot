@@ -119,7 +119,7 @@ public class VerificationScenario extends AbstractScenario {
 
         user.setPhoneNumber(phoneNumber);
         IS_VERIFIED.setValue(context, true);
-        SCENARIO.setValue(context, ScenarioType.MAIN_MENU.name());
+        SCENARIO.setValue(context, ScenarioType.GREETING_MESSAGE.name());
 
         userContextService.updateUserContext(user, context);
     }

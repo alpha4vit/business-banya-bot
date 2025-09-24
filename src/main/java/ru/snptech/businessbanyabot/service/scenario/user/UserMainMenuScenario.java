@@ -14,9 +14,9 @@ import ru.snptech.businessbanyabot.model.scenario.step.SearchScenarioStep;
 import ru.snptech.businessbanyabot.model.scenario.step.SurveyScenarioStep;
 import ru.snptech.businessbanyabot.repository.ButtonStatsRepository;
 import ru.snptech.businessbanyabot.repository.UserRepository;
+import ru.snptech.businessbanyabot.service.leaderboard.LeaderboardService;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.scenario.event.EventScenario;
-import ru.snptech.businessbanyabot.service.leaderboard.LeaderboardService;
 import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
 import ru.snptech.businessbanyabot.service.scenario.survey.SurveyScenario;
 import ru.snptech.businessbanyabot.service.user.UserContextService;
@@ -130,10 +130,10 @@ public class UserMainMenuScenario extends AbstractScenario {
                 }
 
                 default -> sendMessage(
-                        requestContext,
-                        MessageConstants.MAIN_MENU,
-                        MenuConstants.createUserMainMenu(user.getRole())
-                    );
+                    requestContext,
+                    MessageConstants.MAIN_MENU,
+                    MenuConstants.createUserMainMenu(user.getRole())
+                );
 
             }
         }

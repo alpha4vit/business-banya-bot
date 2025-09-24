@@ -80,10 +80,10 @@ public class MenuConstants {
             List.of(
                 new InlineKeyboardRow(
                     InlineKeyboardButton.builder().text("✅ Анкета Б24 заполнена!").callbackData(ADMIN_SURVEY_ACCEPT_PREFIX + surveyId).build()
-                ),
-                new InlineKeyboardRow(
-                    InlineKeyboardButton.builder().text("❌ Отклонить").callbackData(ADMIN_SURVEY_DECLINE_PREFIX + surveyId).build()
                 )
+//                new InlineKeyboardRow(
+//                    InlineKeyboardButton.builder().text("❌ Отклонить").callbackData(ADMIN_SURVEY_DECLINE_PREFIX + surveyId).build()
+//                )
             ));
     }
 

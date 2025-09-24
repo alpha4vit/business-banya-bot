@@ -10,5 +10,6 @@ public enum ScenarioType {
     PAYMENT_REPORT,
     EVENTS,
     NOTIFICATION,
-    REPORT
+    REPORT,
+    GREETING_MESSAGE
 }

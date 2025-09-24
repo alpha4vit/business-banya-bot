@@ -49,7 +49,6 @@ public class SurveyRequestNotifier {
             survey.getId().toString(),
             survey.getFio(),
             user.getPhoneNumber(),
-            survey.getSocialMedia(),
             TG_USERNAME_TEMPLATE.formatted(user.getTelegramUsername()),
             user.getChatId(),
             WHATSAPP_TEMPLATE.formatted(phoneWithoutPlus(user.getPhoneNumber()))

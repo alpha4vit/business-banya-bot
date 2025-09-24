@@ -11,7 +11,6 @@ public final class AdminMessageConstants {
         *ID:* %s
         *ФИО:* %s
         *Номер мобильного телефона:* %s
-        *Социальная сеть:* %s
         *Ник Telegram:* %s
         *Id Telegram:* %d
         *WhatsApp: * %s

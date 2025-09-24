@@ -15,13 +15,8 @@ public class StaticSurveyQuestionRepository implements SurveyQuestionRepository 
     private final List<SurveyQuestion> questions = List.of(
         new SurveyQuestion(
             1L,
-            "Укажите ваше ФИО",
+            "Укажите ваше Имя и Фамилию на русском языке",
             SurveyScenarioStep.FIO
-        ),
-        new SurveyQuestion(
-            2L,
-            "Укажите свой аккаунт в социальных сетях (Instagram, VK, Facebook, можно указать все, можно какую-то одну, где вы чаще всего бываете)",
-            SurveyScenarioStep.SOCIAL_MEDIA
         )
     );
 

@@ -3,8 +3,10 @@ package ru.snptech.businessbanyabot.service.scenario.user;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import ru.snptech.businessbanyabot.exception.BusinessBanyaInternalException;
+import ru.snptech.businessbanyabot.model.common.MessageConstants;
 import ru.snptech.businessbanyabot.model.payment.PaymentType;
 import ru.snptech.businessbanyabot.model.scenario.ScenarioType;
+import ru.snptech.businessbanyabot.model.scenario.step.VerificationScenarioStep;
 import ru.snptech.businessbanyabot.repository.UserRepository;
 import ru.snptech.businessbanyabot.service.scenario.AbstractScenario;
 import ru.snptech.businessbanyabot.service.scenario.search.SearchScenario;
@@ -15,6 +17,7 @@ import ru.snptech.businessbanyabot.telegram.client.TelegramClientAdapter;
 import java.util.Map;
 
 import static ru.snptech.businessbanyabot.model.common.ServiceConstantHolder.*;
+
 
 @Component
 public class UserUpdateScenario extends AbstractScenario {
@@ -83,6 +86,15 @@ public class UserUpdateScenario extends AbstractScenario {
 
             case SEARCH -> {
                 searchScenario.invoke(requestContext);
+            }
+
+            case GREETING_MESSAGE -> {
+                var user = userRepository.findByChatId(chatId);
+
+                sendMessage(requestContext, MessageConstants.GREETING_TEMPLATE.formatted(user.getTelegramFirstName()));
+
+                SCENARIO.setValue(requestContext, ScenarioType.MAIN_MENU.name());
+                userContextService.updateUserContext(user, requestContext);
             }
 
             default -> {
