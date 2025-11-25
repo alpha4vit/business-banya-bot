@@ -1,26 +1,26 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
+  business-banya:
+    image: alpha4vit/business_banya_bot-app:v40
     container_name: business-banya
     depends_on:
-      - postgres
+      - postgres-banya
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-banya:5432/business_banya
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8080:8080"
     networks:
-      - app-network
+      - banya
 
-  postgres:
+  postgres-banya:
     image: postgres:15
-    container_name: postgres-db
+    container_name: postgres-banya
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: business_banya
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
@@ -28,11 +28,42 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - banya
+
+  fx-signal-flow:
+    image: alpha4vit/fx-signal-flow-app:v1
+    container_name: fx-flow-signal
+    depends_on:
+      - postgres-fx
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-fx:5432/fx_signal_flow
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8080:8080"
+    networks:
+      - fx-signal
+
+  postgres-fx:
+    image: postgres:15
+    container_name: postgres-fx
+    restart: always
+    environment:
+      POSTGRES_DB: fx_signal_flow
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fx-signal
 
 volumes:
   postgres_data:
 
 networks:
-  app-network:
+  banya:
+    driver: bridge
+  fx-signal:
     driver: bridge
